@@ -1,25 +1,14 @@
 ---
-
-title: "test 2"
-
+title: test 2
 description: Welcome to Hugo Theme Stack
-
-date: "2025-03-10 21:30:19+0700"
-
+date: 2025-03-10 21:30:19+0700
 image: cover.jpg
-
 categories:
-
-* Example Category
-
+- tét
 tags:
-
-* Example
-
-* Tag
-
+- lét
+- biên
 math: false
-
 ---
 
-clgt, tét 2
+cc, clgt
