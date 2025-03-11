@@ -7,4 +7,5 @@ git commit -m "new"
 git push -u origin master
 
 echo Done!
+sleep 3
 exit

@@ -400,7 +400,7 @@ $$p(y\mid\mathbf{x},\theta)=\mathcal{N}\Bigl(y\mid \mathbf{W}^T\mathbf{x}+b,\,\s
 
 with ${\theta=(\mathbf{W},b,\sigma^2)}$. If the variance depends on the input (heteroskedastic regression), then:
 
-$$p(y\mid\mathbf{x},\theta)=\mathcal{N}\Bigl(y\mid \mathbf{W}_{\mu}^T\mathbf{x}+b,\,\sigma_+\bigl(\mathbf{W}_\sigma^T\mathbf{x}\bigr)^2\Bigr)$$
+$$p(y\mid\mathbf{x},\theta)=\mathcal{N}\Bigl(y\mid \mathbf{W}_{\mu}^T\mathbf{x}+b,\sigma_+\bigl(\mathbf{W}_\sigma^T\mathbf{x}\bigr)^2\Bigr)$$
 
 with ${\theta=(\mathbf{W}_{\mu},\mathbf{W}_\sigma)}$, and ${\sigma_+(x)}$ being the softplus function mapping ${\mathbb{R}}$ to ${\mathbb{R}_+}$.
 
