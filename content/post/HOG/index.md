@@ -165,20 +165,6 @@ Consider a **16×16 pixel grayscale image region** (usually HOG is applied on la
 
 * **Sensitive to large scale variations and occlusions**.
 
----
-
-## Applications
-
-* **Pedestrian detection** 🏃
-
-* **Human detection** 👤
-
-* **Face recognition** 🤖
-
-* **Object recognition** 📷
-
----
-
-## Summary
+# Summary
 
 HOG is a **powerful feature descriptor** for object detection. It captures **gradient orientations** in small image regions, normalizes them, and produces a feature vector used for machine learning.
