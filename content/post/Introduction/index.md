@@ -131,7 +131,7 @@ $$f(x; w) = w^T \phi(x).$$
 
 Expressing this in full:
 
-$$\begin{split}f(x; w) = w_0 + w_1 I(x_1 = S) + w_2 I(x_1 = T) + w_3 I(x_1 = F) + \\ w_4 I(x_2 = U) + w_5 I(x_2 = J) + w_6 I(x_1 = S, x_2 = U) \\ + w_7 I(x_1 = T, x_2 = U) + w_8 I(x_1 = F, x_2 = U) \\ + w_9 I(x_1 = S, x_2 = J) + w_{10} I(x_1 = T, x_2 = J) + w_{11} I(x_1 = F, x_2 = J).\end{split}$$
+$$\begin{split}f(x; w) = w_0 + w_1 I(x_1 = S) + w_2 I(x_1 = T) + w_3 I(x_1 = F) \\ + w_4 I(x_2 = U) + w_5 I(x_2 = J) + w_6 I(x_1 = S, x_2 = U) \\ + w_7 I(x_1 = T, x_2 = U) + w_8 I(x_1 = F, x_2 = U) \\ + w_9 I(x_1 = S, x_2 = J) + w_{10} I(x_1 = T, x_2 = J) + w_{11} I(x_1 = F, x_2 = J).\end{split}$$
 
 ## Summary
 
