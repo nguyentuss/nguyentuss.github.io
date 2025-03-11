@@ -42,7 +42,7 @@ $$Pr(A,B|C)=Pr(A|C)Pr(B|C).$$
 
 Be careful, we say ${X_1, X_2, X_3}$ are mutually independent if the following conditions hold:
 
-$$\begin{split} p(X_1,X_2,X_3)=p(X_1)p(X_2)p(X_3),\, p(X_1,X_2)=p(X_1)p(X_2),\, p(X_1,X_3)=p(X_1)p(X_3),\, p(X_2,X_3)=p(X_2)p(X_3) \end{split}.$$
+$$\begin{split} p(X_1,X_2,X_3)=p(X_1)p(X_2)p(X_3),\\, p(X_1,X_2)=p(X_1)p(X_2),\\, p(X_1,X_3)=p(X_1)p(X_3),\\, p(X_2,X_3)=p(X_2)p(X_3) \end{split}.$$
 
 ## Random Variables
 
@@ -85,7 +85,7 @@ $$p(x) \triangleq \frac{d}{dx}P(x).$$
 
 As the size of the interval gets smaller, we can write:
 
-$$Pr(x<X<x+dx) \approx p(x)dx.$$
+$$ Pr(x < X < x + dx) \approx p(x)dx $$
 
 ### Quantiles
 
@@ -402,7 +402,7 @@ with ${\theta=(\mathbf{W},b,\sigma^2)}$. If the variance depends on the input (h
 
 $$p(y\mid\mathbf{x},\theta)=\mathcal{N}\Bigl(y\mid\mathbf{W}_{\mu}^T\mathbf{x}+b,\sigma_+\bigl(\mathbf{W}_\sigma^T\mathbf{x}\bigr)^2\Bigr)$$
 
-with ${\theta=(\mathbf{W}_{\mu},\mathbf{W}_\sigma)}$, and ${\sigma_+(x)}$ being the softplus function mapping ${\mathbb{R}}$ to ${\mathbb{R}_+}$.
+with $$\theta=(\mathbf{W}_\mu,\mathbf{W}_\sigma)$$, and $\sigma_+(x)$ being the softplus function mapping ${\mathbb{R}}$ to ${\mathbb{R}_+}$.
 
 When the variance approaches 0, the Gaussian becomes infinitely narrow:
 
