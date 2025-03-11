@@ -396,11 +396,11 @@ where ${f_{\mu}(\mathbf{x};\theta)\in \mathbb{R}}$ predicts the mean and ${f_{\s
 
 Assuming fixed variance independent of the input (homoscedastic regression) and a linear mean, we have:
 
-$$p(y\mid\mathbf{x},\theta)=\mathcal{N}\Bigl(y\mid \mathbf{W}^T\mathbf{x}+b,\,\sigma^2\Bigr),$$
+$$p(y\mid\mathbf{x},\theta)=\mathcal{N}\Bigl(y\mid \mathbf{W}^T\mathbf{x}+b,\,\sigma^2\Bigr)$$
 
 with ${\theta=(\mathbf{W},b,\sigma^2)}$. If the variance depends on the input (heteroskedastic regression), then:
 
-$$p(y\mid\mathbf{x},\theta)=\mathcal{N}\Bigl(y\mid \mathbf{W}_{\mu}^T\mathbf{x}+b,\,\sigma_+\bigl(\mathbf{W}_\sigma^T\mathbf{x}\bigr)^2\Bigr),$$
+$$p(y\mid\mathbf{x},\theta)=\mathcal{N}\Bigl(y\mid \mathbf{W}_{\mu}^T\mathbf{x}+b,\,\sigma_+\bigl(\mathbf{W}_\sigma^T\mathbf{x}\bigr)^2\Bigr)$$
 
 with ${\theta=(\mathbf{W}_{\mu},\mathbf{W}_\sigma)}$, and ${\sigma_+(x)}$ being the softplus function mapping ${\mathbb{R}}$ to ${\mathbb{R}_+}$.
 
