@@ -121,7 +121,7 @@ else:
     plt.show()
 ````
 
-![](img/Pasted%20image%2020250311234133.png)
+![](img/output1.png)
 
 ### Step 2: Compute the gradient
 
@@ -203,7 +203,7 @@ plt.imshow(theta)
 plt.show()
 ````
 
-![](img/Pasted%20image%2020250311234206.png)
+![](img/output2.png)
 
 ### Step 3: Calculate Histogram of Gradients in $8\times8$ cells
 
