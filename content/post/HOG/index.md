@@ -770,6 +770,7 @@ cv2.destroyAllWindows()
 <div style="text-align: center;">
 	<img src="img/detect-people-video.png" width="400">
 </div>
+
 ## Summary
 
 In image processing, the Histogram of Oriented Gradients (HOG) algorithm is one of the powerful feature descriptors that encodes an image into a feature vector with a sufficiently large number of dimensions to effectively classify images. The algorithm works based on representing a histogram vector of gradient magnitudes according to bins of gradient directions applied to local image regions. Normalization methods are applied to make the aggregated histogram vector invariant to changes in image intensity, ensuring consistency for images with the same content but different brightness levels.
@@ -777,3 +778,10 @@ In image processing, the Histogram of Oriented Gradients (HOG) algorithm is one 
 In object detection, the HOG algorithm proves to be highly effective, particularly in detecting people at various scales. Additionally, in some image classification cases where the dataset is small, large neural networks such as CNNs may not perform accurately due to the training set not covering all possible variations. In such situations, applying classical feature extraction methods like HOG can yield surprisingly good results while requiring fewer computational resources and lower costs.
 
 This demonstrates that although HOG is an older method, it remains highly effective in many applications. Depending on the specific scenario, we may choose to use the HOG algorithm instead of necessarily applying a deep learning model with millions of parameters to achieve high accuracy.
+
+## Reference
+
+1. https://phamdinhkhanh.github.io/2019/11/22/HOG.html
+1. [Object Detection for Dummies Part 1: Gradient Vector, HOG, and SS | Lil'Log](https://lilianweng.github.io/posts/2017-10-29-object-recognition-part-1/)
+1. [Histogram of Oriented Gradients explained using OpenCV](https://learnopencv.com/histogram-of-oriented-gradients/)
+1. https://github.com/nguyentuss/CV (full code and data put in here)
