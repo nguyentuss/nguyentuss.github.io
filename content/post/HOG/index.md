@@ -309,7 +309,7 @@ n_cell (79, 49)
 hog feature (48, 78, 2, 2, 9)
 ````
 
-\*\*Note: ** Don't like the order of the .shape, opencv use the order width x height (instead height x width).  
+**Note:** Don't like the order of the .shape, opencv use the order width x height (instead height x width).  
 We can visualize HOG distribution
 
 ````py
