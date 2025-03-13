@@ -648,10 +648,14 @@ for file in pos_im_listing_test:
                     if (model.decision_function(fds) > 0.5): # add threshold
                         back_to_original = down_scale ** scale # When we use pyramid to shrink the image, we will give the detection window back to original size
                         detections.append((x*back_to_original , y*back_to_original
-                                           , int(window_size[0]*back_to_original), int(window_size[1]*back_to_original)))
+                                           , int(window_size[0]*back_to_original), int(window_size[1]*back_to_original),model.decision_function(fds)))
             scale += 1 # increase the scale 
+        clone = img.copy()
+        rects = np.array([[x,y,x + w , y + h] for (x,y,w,h,_) in detections])
+        sc = [score[0] for (_,_,_,_,score) in detections]
+        sc = np.array(sc)
         # Apply Non-Maximum Suppression (NMS) if detections exist
-        final_detections = non_max_suppression(np.array(detections), probs=None, overlapThresh=0.65) if detections else []
+        final_detections = non_max_suppression(rects, probs=sc, overlapThresh=0.35)
 
         #Draw bouding boxes
         for (x , y , w , h) in final_detections:
@@ -669,8 +673,16 @@ for file in pos_im_listing_test:
     
 ````
 
+Before using NMS
+
 <div style="text-align: center;">
 	<img src="img/detect-people-image.png" width="400">
+</div>
+
+After using NMS
+
+<div style="text-align: center;">
+	<img src="img/detect-people-image-NMS.png" width="400">
 </div>
 
 ### Detect people on video
@@ -712,10 +724,8 @@ while True:
     
     img = cv2.resize(frame, (512,512))
     detections = []
-    scores = []
     scale = 0
-
-    #Apply image pyramid
+    # Using pyramid to detect the larger or smaller object (scaled the image purpose sliding window will detect different object with original cell)
     for resized in pyramid_gaussian(img, downscale=down_scale, channel_axis = -1):
         # pyramid_gaussian convert the image into [0, 1]
         # So we need to convert back to unit8 
@@ -738,20 +748,19 @@ while True:
                 if (model.decision_function(fds) > 0.5): # add threshold
                     back_to_original = down_scale ** scale # When we use pyramid to shrink the image, we will give the detection window back to original size
                     detections.append((x*back_to_original , y*back_to_original
-                                        , int(window_size[0]*back_to_original), int(window_size[1]*back_to_original)))
-                    scores.append(model.decision_function(fds))
+                                        , int(window_size[0]*back_to_original), int(window_size[1]*back_to_original),model.decision_function(fds)))
         scale += 1 # increase the scale 
-
+    clone = img.copy()
+    rects = np.array([[x,y,x + w , y + h] for (x,y,w,h,_) in detections])
+    sc = [score[0] for (_,_,_,_,score) in detections]
+    sc = np.array(sc)
     # Apply Non-Maximum Suppression (NMS) if detections exist
-    final_detections = non_max_suppression(np.array(detections), probs=None, overlapThresh=0.65) if detections else []
+    final_detections = non_max_suppression(rects, probs=sc, overlapThresh=0.35)
 
     #Draw bouding boxes
-    index = 0 
-    scores = np.array(scores, dtype=np.float32)
     for (x , y , w , h) in final_detections:
         cv2.rectangle(img, (x , y), (x + w, y + h), (0, 255, 0), 2)
-        cv2.putText(img, f'Person: {float(scores[index]):.2f}', (x - 2, y - 2), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
-        index += 1
+        cv2.putText(img, 'Person: {:.2f}'.format(np.max(sc)), (x - 2, y - 2), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
     
     # Convert BGR to RGB for display in matplotlib
     img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -782,6 +791,6 @@ This demonstrates that although HOG is an older method, it remains highly effect
 ## Reference
 
 1. https://phamdinhkhanh.github.io/2019/11/22/HOG.html
-2. [Object Detection for Dummies Part 1: Gradient Vector, HOG, and SS | Lil'Log](https://lilianweng.github.io/posts/2017-10-29-object-recognition-part-1/)
-3. [Histogram of Oriented Gradients explained using OpenCV](https://learnopencv.com/histogram-of-oriented-gradients/)
-4. https://github.com/nguyentuss/CV (full code and data put in here)
+1. [Object Detection for Dummies Part 1: Gradient Vector, HOG, and SS | Lil'Log](https://lilianweng.github.io/posts/2017-10-29-object-recognition-part-1/)
+1. [Histogram of Oriented Gradients explained using OpenCV](https://learnopencv.com/histogram-of-oriented-gradients/)
+1. https://github.com/nguyentuss/CV (full code and data put in here)
