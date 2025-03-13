@@ -62,8 +62,9 @@ Before diving into the HOG algorithm, I will first explain the terms used:
 
 The key point in the working principle of HOG is that the local shape of an object can be described using two matrices: the **gradient magnitude matrix** and the **gradient direction matrix**.
 First, the image is divided into a **grid of square cells**, where many adjacent or overlapping **local regions** are identified. These regions are similar to the **local image regions** used in convolutional operations in CNNs.
+The main purpose of HOG feature extraction is to capture the local shape and edge information of an image. It works by computing the gradients (i.e., the changes in intensity) and then building histograms of these gradients over small, localized regions. This process allows the algorithm to effectively describe the appearance and structure of objects in an image, such as the contours and silhouettes of people.
 
-* A **local region** consists of multiple **local cells** (in HOG, there are **4 cells**) with a size of **8×8 pixels**.
+* A **local region** consists of multiple **local cells** (in HOG, there are **4 cells**) with a size of **8×8 pixels**
 * Then, a **histogram of gradient magnitudes** is computed for each **local cell**.
 * The **HOG descriptor** is formed by **concatenating** the four histogram vectors corresponding to each cell into a single combined vector.
 * To improve accuracy, each value in the **histogram vector of a local region** is **normalized** using either **L2-norm** or **L1-norm**.
@@ -83,7 +84,7 @@ The HOG descriptor has several key advantages over other feature descriptors:
 
 ### Step 1: Preprocessing
 
-In every image processing algorithm, the first step is preprocessing image. As mentioned earlier HOG feature descriptor used for pedestrian detection is calculated on a $64×128$ patch of an image. Of course, an image may be of any size. Typically patches at multiple scales are analyzed at many image locations. The only constraint is that the patches being analyzed have a fixed aspect ratio. In our case, the patches need to have an aspect ratio of $1:2$. For example, they can be $100×200$, $128×256$, or $1000×2000$ but not $101×205$.
+In every image processing algorithm, the first step is preprocessing image. As mentioned earlier HOG feature descriptor used for pedestrian detection is calculated on a $64×128$ patch of an image. Of course, an image may be of any size. Typically, patches at multiple scales are analyzed at many image locations. The only constraint is that the patches being analyzed have a fixed aspect ratio. In our case, the patches need to have an aspect ratio of $1:2$. For example, they can be $100×200$, $128×256$, or $1000×2000$ but not $101×205$.
 
 <div style="text-align: center;">
 	<img src="img/pic4.png" width="600">
@@ -266,3 +267,97 @@ The HOG descriptor of an image patch is usually visualized by plotting the 9×1 
 		<img src="img/hog-visualization.png" width="300">
 </div>
 
+## Practice
+
+We will use opencv to calculate the HOG features
+
+````py
+print("Original {}".format(img.shape))
+
+cell_size = (8,8) # h x w pixels
+block_size = (2,2) # h x w cells
+nbins = 9 # number of bins in Histogram
+
+# winSize = the size of the image region (or window) that will be used by the HOG (Histogram of Oriented Gradients) descriptor
+winSize = (img.shape[1]// cell_size[1] * cell_size[1], img.shape[0] // cell_size[0] * cell_size[0])
+# blockSize = the size compute in pixels
+blockSize = (block_size[1] * cell_size[1], block_size[0] * cell_size[0])
+# blockStride = how far (in pixels) the detection window moves from one block to the next.
+blockStride = cell_size
+print("winSize",winSize)
+print("blockSize",block_size)
+print("blockStride",blockStride)
+
+hog = cv2.HOGDescriptor(_winSize=winSize,_blockSize=blockSize,_blockStride=blockStride,_cellSize=cell_size,_nbins=9)
+
+# size of cell grid (from pixel -> cell)
+n_cell = (winSize[0]//cell_size[0],winSize[1]//cell_size[1])
+print("n_cell",n_cell)
+hog_feature = hog.compute(img).reshape(n_cell[0] - block_size[0] + 1,n_cell[1] - block_size[1] + 1
+                                       ,block_size[0],block_size[1],nbins).transpose(1, 0, 2 , 3 , 4)
+print("hog feature", hog_feature.shape)
+````
+
+and the results
+
+````
+Original (395, 634, 3)
+winSize (632, 392)
+blockSize (2, 2)
+blockStride (8, 8)
+n_cell (79, 49)
+hog feature (48, 78, 2, 2, 9)
+````
+
+\*\*Note: ** Don't like the order of the .shape, opencv use the order width x height (instead height x width).  
+We can visualize HOG distribution
+
+````py
+from skimage import exposure
+from skimage import feature
+import cv2
+import matplotlib.pyplot as plt
+ 
+(H, hogImage) = feature.hog(gray, orientations=9, pixels_per_cell=(8, 8),
+    cells_per_block=(2, 2), transform_sqrt=True, block_norm="L2",
+    visualize=True)
+
+hogImage = exposure.rescale_intensity(hogImage, out_range=(0, 255))
+hogImage = hogImage.astype("uint8")
+ 
+plt.imshow(hogImage)
+````
+
+<div style="text-align: center;">
+		<img src="img/hog-visualize.png" width="500">
+</div>
+
+## Application in HOG
+
+### Human Detection
+
+To detect human in image or also video, we can use a pre-trained SVM (Support Vector Machine) model that makes predictions based on features extracted by the HOG (Histogram of Oriented Gradients) algorithm.
+
+### Import lib
+
+````py
+from skimage.feature import hog
+from skimage.transform import pyramid_gaussian
+from skimage.io import imread
+import joblib
+from sklearn.preprocessing import LabelEncoder
+from sklearn.svm import LinearSVC
+from sklearn.metrics import classification_report, accuracy_score
+from sklearn.model_selection import train_test_split
+from skimage import color
+from imutils.object_detection import non_max_suppression
+import imutils
+import numpy as np
+import cv2 
+import argparse
+import cv2
+import os
+import glob
+from PIL import Image # This will be used to read/modify images (can be done via OpenCV too)
+from numpy import *
+````
