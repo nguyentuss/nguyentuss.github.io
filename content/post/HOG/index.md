@@ -782,6 +782,6 @@ This demonstrates that although HOG is an older method, it remains highly effect
 ## Reference
 
 1. https://phamdinhkhanh.github.io/2019/11/22/HOG.html
-1. [Object Detection for Dummies Part 1: Gradient Vector, HOG, and SS | Lil'Log](https://lilianweng.github.io/posts/2017-10-29-object-recognition-part-1/)
-1. [Histogram of Oriented Gradients explained using OpenCV](https://learnopencv.com/histogram-of-oriented-gradients/)
-1. https://github.com/nguyentuss/CV (full code and data put in here)
+2. [Object Detection for Dummies Part 1: Gradient Vector, HOG, and SS | Lil'Log](https://lilianweng.github.io/posts/2017-10-29-object-recognition-part-1/)
+3. [Histogram of Oriented Gradients explained using OpenCV](https://learnopencv.com/histogram-of-oriented-gradients/)
+4. https://github.com/nguyentuss/CV (full code and data put in here)
