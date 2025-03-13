@@ -82,7 +82,7 @@ The HOG descriptor has several key advantages over other feature descriptors:
 
 ## How HOG Works (Step-by-step)
 
-### Step 1: Preprocessing
+### Preprocessing
 
 In every image processing algorithm, the first step is preprocessing image. As mentioned earlier HOG feature descriptor used for pedestrian detection is calculated on a $64×128$ patch of an image. Of course, an image may be of any size. Typically, patches at multiple scales are analyzed at many image locations. The only constraint is that the patches being analyzed have a fixed aspect ratio. In our case, the patches need to have an aspect ratio of $1:2$. For example, they can be $100×200$, $128×256$, or $1000×2000$ but not $101×205$.
 
@@ -124,7 +124,7 @@ else:
 
 ![](img/output1.png)
 
-### Step 2: Compute the gradient
+### Compute the gradient
 
 To calculate a HOG descriptor, we need to first calculate the horizontal and vertical gradients, the common way to compute is using the **Sobel operator**
 
@@ -206,7 +206,7 @@ plt.show()
 
 ![](img/output2.png)
 
-### Step 3: Calculate Histogram of Gradients in $8\times8$ cells
+### Calculate Histogram of Gradients in 8 x 8 cells
 
 In this step, the image is divided into $8\times8$ cells and a histogram of gradients is calculated for each $8\times8$. One of the important reasons to use a feature description to describe a patch of an image is that it provided a compact representation. An $8\times8$ patch contain $8\times8\times3=192$ pixels. The gradient of this patch contains $2$ values (magnitude and direction) per pixel which adds up to $8\times8\times2 = 128$ numbers include $64$ values of gradient magnitude and $64$ values of gradient direction.
 By the end of this section we will see how these $128$ numbers are represented using a **9-bin histogram** which can be stored as an array of $9$ numbers. Not only is the representation more compact, calculating a histogram over a patch makes this representation more robust to noise. Individual gradients may have noise, but a histogram over $8\times8$ patch makes the representation much less sensitive to noise.
@@ -237,7 +237,7 @@ Take a sum of each gradient magnitude belong in one bins from vector bins and we
 	<img src="img/histogram-8x8-cell.png" width="500">
 </div>
 
-### Step 4: 16×16 Block Normalization
+### 16×16 Block Normalization
 
 In the previous step, we created a histogram based on the gradient of the image. Gradients of an image are sensitive to overall lighting. If you make the image darker by dividing all pixel values by 2, the gradient magnitude will change by half, and therefore the histogram values will change by half.
 
@@ -329,7 +329,7 @@ plt.imshow(hogImage)
 ````
 
 <div style="text-align: center;">
-		<img src="img/hog-visualize.png" width="500">
+	<img src="img/hog-visual.png" width="500">
 </div>
 
 ## Application in HOG
@@ -402,7 +402,7 @@ data = []
 labels = []
 ````
 
-## Compute the HOG features and label them
+### Compute the HOG features and label them
 
 ````py
 # Putting label into positive image
@@ -770,3 +770,4 @@ cv2.destroyAllWindows()
 <div style="text-align: center;">
 	<img src="img/detect-people-video.png" width="400">
 </div>
+
