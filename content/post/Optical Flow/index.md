@@ -145,13 +145,13 @@ Back to the equation **OCFE**, this gives you one equation but find two unknowns
 ### Lucas-Kanade Optical Flow (Local Estimation)
 
 * Finds $(u,v)$ in small patches (instead of a single pixel).
-* Assumes motion is ** constant within a small neighborhood \*\*.
+* Assumes motion is  **constant within a small neighborhood**.
 * Uses **least-squares optimization** to find $(u,v)$ for the whole patch.
 
 ### Horn-Schunck Optical Flow (Global Estimation)
 
 * Finds $(u,v)$ for every pixel across the entire image.
-* Uses a **smoothness constraint** so that neighboring pixels have similar motion\*\*.
+* Uses a **smoothness constraint** so that neighboring pixels have similar motion.
 * Solves $(u,v)$ as a global optimization problem.
   [Click this link to see more information](https://www.ipol.im/pub/art/2013/20/article_lr.pdf)and [this](https://www.cs.cmu.edu/~16385/s17/Slides/14.3_OF__HornSchunck.pdf)
 
@@ -159,6 +159,8 @@ Back to the equation **OCFE**, this gives you one equation but find two unknowns
 
 * Use **more complex constraints** (e.g., gradient constancy, deep learning models).
 * Improve accuracy for **large and complex motions**
+
+# Practice
 
 # Reference
 
