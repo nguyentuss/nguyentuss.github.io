@@ -67,7 +67,7 @@ where $\nabla I(\vec{x},t)=(I_x,I_y)$, which $I_x,I_y$ show how brightness chang
 Ignoring the high-order Taylor series, substitute with equation $(1)$, we obtain
 
 $$\nabla I(\vec{x},t)\vec{u}+I_t(\vec{x},t)=0 \tag{6}$$
-This equation relates the velocity to the space-time image derivatives at one image location, and is often called the *gradient constraint equation*. If one has access to only two frames, or cannot estimate $I_t$, it is straight-forward to derive a closely related gradient constraint, in which $I_t(\vec{x},t)$ is replaced by $\delta I(\vec{x},t) \triangleq I(\vec{x},t+1)-I(\vec{x},t)$
+This equation relates the velocity to the space-time image derivatives at one image location, and is often called the *gradient constraint equation* or **Optical flow constraint equation(OFCE)**. If one has access to only two frames, or cannot estimate $I_t$, it is straight-forward to derive a closely related gradient constraint, in which $I_t(\vec{x},t)$ is replaced by $\delta I(\vec{x},t) \triangleq I(\vec{x},t+1)-I(\vec{x},t)$
 
 ### Intensity Conversation
 
@@ -127,7 +127,7 @@ $$
 E(\mathbf{u}) \;=\; \sum_{\vec{x}} g(\vec{x}) 
 \Bigl[\;\vec{u} \,\cdot\, \nabla I(\vec{x}, t) \;+\; I_t(\vec{x}, t)\Bigr]^{2}
 $$
-where $g(\vec{x})$ is a weighting function that determines the *support* of the estimator (the region within which we combine constraints). It is common to let $g(\vec{x})$ be Gaussian in order to weight constraints in the center of the neighborhood more highly, giving them more influence. The 2D velocity $\vec{u}$ that minimizes $E(\vec{u})$ is the least squares flow estimate.
+where $g(\vec{x})$ is a weighting function that determines the *support* of the estimator (the region within which we combine constraints). It is common to let $g(\vec{x})$ be Gaussian in order to weight constraints in the center of the neighborhood more highly, giving them more influence. The 2D velocity $\hat{u}$ that minimizes $E(\vec{u})$ is the least squares flow estimate.
 The minimum of $E(\vec{u})$ can be found from its critical points, where its derivatives with respect to $\vec{u}$ are zero; i.e.,
 $$
 \frac{\partial E(u_1, u_2)}{\partial u_1}=\sum_{\vec{x}} g(\tilde{x})\Bigl[u_1 \,I_x^2+ u_2 \, I_x \, I_y+ I_t \, I_x\Bigr]= 0
@@ -138,8 +138,31 @@ $$
 =\sum_{\vec{x}} g(\vec{x})\Bigl[u_1 \, I_xI_y + u_2 \, I_y^2+ I_t \, I_y\Bigr]= 0
 $$
 
+# Find root
+
+Back to the equation **OCFE**, this gives you one equation but find two unknowns $(u,v)$, this means the solution cannot be determined uniquely with a single constraint (a single pixel), We **need more information** to determine the correct motion for each pixel. So there are different methods handle this problem in different ways
+
+### Lucas-Kanade Optical Flow (Local Estimation)
+
+* Finds $(u,v)$ in small patches (instead of a single pixel).
+* Assumes motion is ** constant within a small neighborhood \*\*.
+* Uses **least-squares optimization** to find $(u,v)$ for the whole patch.
+
+### Horn-Schunck Optical Flow (Global Estimation)
+
+* Finds $(u,v)$ for every pixel across the entire image.
+* Uses a **smoothness constraint** so that neighboring pixels have similar motion\*\*.
+* Solves $(u,v)$ as a global optimization problem.
+  [Click this link to see more information](https://www.ipol.im/pub/art/2013/20/article_lr.pdf)and [this](https://www.cs.cmu.edu/~16385/s17/Slides/14.3_OF__HornSchunck.pdf)
+
+### Brox Optical Flow & Deep Learning-Based Methods
+
+* Use **more complex constraints** (e.g., gradient constancy, deep learning models).
+* Improve accuracy for **large and complex motions**
+
 # Reference
 
 1. [Video Analysis Algorithms in Computer Vision](https://www.thinkautonomous.ai/blog/computer-vision-from-image-to-video-analysis/)
 1. [Thuật toán phân tích video trong thị giác máy tính – VinBigdata Product](https://product.vinbigdata.org/thuat-toan-phan-tich-video-trong-thi-giac-may-tinh/)
 1. [Optical Flow Estimation | Papers With Code](https://paperswithcode.com/task/optical-flow-estimation#task-home) (recommend)
+1. [14.3 OF - HornSchunck](https://www.cs.cmu.edu/~16385/s17/Slides/14.3_OF__HornSchunck.pdf)
