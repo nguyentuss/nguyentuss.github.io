@@ -253,7 +253,7 @@ Now consider another vector in which the elements are twice the value of the fir
 
 The normalization will be processed in a block size $2\times 2$ cell (each cell size $8\times8$ pixel). So we will have 4 vector histogram size $1\times9$, concatenate vectors and we will have one vector histogram size $1\times36$ and then normalized in this vector. Sliding the window will process the same as convolution in CNN with step_size = 8 pixels.
 
-### Step 5: Compute HOG features vector
+### Compute HOG features vector
 
 After normalizing the histogram vectors, we then concatenate these $1×36$ vectors into a single large vector. This becomes the HOG vector representing the entire image.
 
