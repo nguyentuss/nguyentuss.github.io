@@ -16,7 +16,7 @@ math: true
 Optical flow quantifies the motion of objects between consecutive frames captured by a camera. These algorithms attempt to capture the apparent motion of brightness patterns in the image. It is an important subfield of computer vision, enabling machines to understand scene dynamics and movement.
 ![](img/pic1.png)
 
-# What is brightness
+## What is brightness
 
 Lets break down the definition of brightness. In an image, **brightness** refers to the intensity of light at each pixel. It determines how **light or dark** a pixel appears.
 
@@ -34,7 +34,7 @@ Lets break down the definition of brightness. In an image, **brightness** refers
 * Each channel has values from **0 to 255**.
 * **Brightness is the combined intensity of all three channels**.
 
-### How to Measure Brightness?
+#### How to Measure Brightness?
 
 * **For grayscale images:** Brightness is just the pixel value.
 * **For color images:** A common way to measure brightness is:
@@ -42,7 +42,7 @@ Lets break down the definition of brightness. In an image, **brightness** refers
 brightness = \frac{R+B+G}{3}
 $$
 
-# Basic Gradient-Based Estimation
+## Basic Gradient-Based Estimation
 
 A common starting point for optical flow estimation is to assume that pixel intensities are translated from one frame to next
 $$ I(\vec{x},t)=I(\vec{x}+\vec{u},t+1) \tag{1}$$
@@ -69,7 +69,7 @@ Ignoring the high-order Taylor series, substitute with equation $(1)$, we obtain
 $$\nabla I(\vec{x},t)\vec{u}+I_t(\vec{x},t)=0 \tag{6}$$
 This equation relates the velocity to the space-time image derivatives at one image location, and is often called the *gradient constraint equation* or **Optical flow constraint equation(OFCE)**. If one has access to only two frames, or cannot estimate $I_t$, it is straight-forward to derive a closely related gradient constraint, in which $I_t(\vec{x},t)$ is replaced by $\delta I(\vec{x},t) \triangleq I(\vec{x},t+1)-I(\vec{x},t)$
 
-### Intensity Conversation
+## Intensity Conversation
 
 <div style="text-align: center;">
 	<img src="img/moving_ball.gif" width="340">
@@ -95,7 +95,7 @@ $$
 $$
   where the path derivative it just the optical flow $\vec{u} \triangleq (dx/dt,dy/dt)^T$. Combine $(8),(9)$ we have *gradient constraint equation*.
 
-### Least-Squares Estimation
+## Least-Squares Estimation
 
 Once cannot recover u from one gradient constraint since $(6)$ is one equation with two unknown, $u_1$ and $u_2$. The intensity gradient constrains the flow to a one parameter family of velocities along a line in *velocity space*.
 Two vectors are perpendicular if their dot product is zero:
@@ -138,7 +138,7 @@ $$
 =\sum_{\vec{x}} g(\vec{x})\Bigl[u_1 \, I_xI_y + u_2 \, I_y^2+ I_t \, I_y\Bigr]= 0
 $$
 
-# Find root
+## Find root
 
 Back to the equation **OCFE**, this gives you one equation but find two unknowns $(u,v)$, this means the solution cannot be determined uniquely with a single constraint (a single pixel), We **need more information** to determine the correct motion for each pixel. So there are different methods handle this problem in different ways
 
@@ -160,9 +160,9 @@ Back to the equation **OCFE**, this gives you one equation but find two unknowns
 * Use **more complex constraints** (e.g., gradient constancy, deep learning models).
 * Improve accuracy for **large and complex motions**
 
-# Practice
+## Practice
 
-# Reference
+## Reference
 
 1. [Video Analysis Algorithms in Computer Vision](https://www.thinkautonomous.ai/blog/computer-vision-from-image-to-video-analysis/)
 1. [Thuật toán phân tích video trong thị giác máy tính – VinBigdata Product](https://product.vinbigdata.org/thuat-toan-phan-tich-video-trong-thi-giac-may-tinh/)
