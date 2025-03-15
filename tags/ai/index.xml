@@ -1,0 +1,589 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>AI on nguyentuss blog</title><link>https://nguyentuss.github.io/tags/ai/</link><description>Recent content in AI on nguyentuss blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Thu, 13 Mar 2025 21:29:50 +0700</lastBuildDate><atom:link href="https://nguyentuss.github.io/tags/ai/index.xml" rel="self" type="application/rss+xml"/><item><title>Convolution Neural Network</title><link>https://nguyentuss.github.io/p/convolution-neural-network/</link><pubDate>Thu, 13 Mar 2025 21:29:50 +0700</pubDate><guid>https://nguyentuss.github.io/p/convolution-neural-network/</guid><description>&lt;img src="https://nguyentuss.github.io/p/convolution-neural-network/cover.jpg" alt="Featured image of post Convolution Neural Network" />&lt;p>Convolutional Neural Networks are very similar to ordinary Neural Networks, they are made up of neurons that have learnable weights and biases. Each neuron receives some inputs, performs a dot product and optionally follows it with a non-linearity. The whole network still expresses a single differentiable score function: from the raw image pixels on one end to class scores at the other. And they still have a loss function (e.g. SVM/Softmax) on the last (fully-connected) layer and all the tips/tricks we developed for learning regular Neural Networks still apply.&lt;/p>
+&lt;h2 id="convolution">Convolution
+&lt;/h2>&lt;h3 id="definition">Definition
+&lt;/h3>&lt;p>Convolution is a concept in digital signal processing that &lt;strong>transforms&lt;/strong> the input information through the &lt;strong>convolution operation&lt;/strong> with &lt;strong>a filter&lt;/strong> to yield an output in a form of a new signal. This signal will &lt;strong>reduces the features&lt;/strong> that the filter is not concerned and just &lt;strong>keep the main features&lt;/strong>. Each filter have their main purpose. There are many convolution n-dimension, I will talk about the &lt;strong>2D convolution&lt;/strong> because it is the easiest to visualize and also the most common convolution.&lt;/p>
+&lt;p>The two-dimensional convolution applied to the &lt;strong>2D input matrix&lt;/strong> and the &lt;strong>2D filter matrix&lt;/strong>. The convolution of an input matrix $X \in \mathbb{R}^{W\times H \times d}$ with a filter $F \in \mathbb{R}^{w\times h \times d}$ produces an output matrix $Y \in \mathbb{R}^{W\times H}$. The steps are follows:&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Compute the convolution at the single point&lt;/strong>: Position the filter at the top-left corner of the input matrix, resulting in a submatrix $X_{sub}$ whose size matches the filter&amp;rsquo;s dimension. The first value, $y_{11}$ is the convolution of $X_{sub}$ with $F$, such as
+$$
+y_{11} = \sum_{}^{w}\sum_{}^{h}\sum_{}^{d} x_{sub}[i,j,u] \times f[i,j,u]
+$$&lt;/li>
+&lt;li>&lt;strong>Slide the window:&lt;/strong> Next, slide the filter window across the input matrix from left to right, and then from top to bottom, using the specified stride. For each position, compute the corresponding output value. Once you have traversed the entire input, you obtain the complete output matrix $Y$. (&lt;a class="link" href="https://usaco.guide/gold/sliding-window?lang=cpp" target="_blank" rel="noopener"
+>Click this link to futher more information about this technique&lt;/a>)&lt;/li>
+&lt;/ul>
+&lt;div style="text-align: center;">
+&lt;img src="img/convlayer_detailedview_demo.gif" width="600">
+&lt;/div>
+&lt;p>In a convolutional neural network (CNN), each subsequent layer takes the output from the layer immediately before it. Therefore, to keep the network design manageable, we need to determine the output size for each layer. This means that given the input (matrix) size $(W_1,H_1)$, a filter of size $(F,F)$, and a stride $S$, we can determine the output matrix $(W_2,H_2)$.
+Consider the process sliding with size $1\times W_1$&lt;/p>
+&lt;div style="text-align: center;">
+&lt;img src="img/stride_convo.png" width="600">
+&lt;/div>
+$$
+W_2=\frac{W_1-F}{S}+1
+$$$$
+W_2=\lfloor \frac{W_1-F}{S}\rfloor +1
+$$&lt;p>
+However, we can also make it in the perfect circumstance if we add extra padding on the both edge bound with size $P$ so that the division will divisible by $S$&lt;/p>
+&lt;div style="text-align: center;">
+&lt;img src="img/conv_padding.png" width="600">
+&lt;/div>
+$$
+W_2=\frac{W_1-F+2P}{S}+1
+$$$$
+H_2=\frac{H_1-F+2P}{S}+1
+$$&lt;h2 id="practice">Practice
+&lt;/h2>&lt;p>We need to set up such as import lib and load images&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-py" data-lang="py">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="nn">numpy&lt;/span> &lt;span class="k">as&lt;/span> &lt;span class="nn">np&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="nn">os&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="nn">cv2&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">from&lt;/span> &lt;span class="nn">Convolution&lt;/span> &lt;span class="kn">import&lt;/span> &lt;span class="n">conv2d&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="nn">matplotlib.pyplot&lt;/span> &lt;span class="k">as&lt;/span> &lt;span class="nn">plt&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">data_path&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s2">&amp;#34;data/&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="ow">not&lt;/span> &lt;span class="n">os&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">path&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">exists&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">data_path&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sa">f&lt;/span>&lt;span class="s2">&amp;#34;Error: Path does not exist - &lt;/span>&lt;span class="si">{&lt;/span>&lt;span class="n">os&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">path&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">abspath&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">data_path&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">data_list&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">os&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">listdir&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">data_path&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">%&lt;/span>&lt;span class="n">load_ext&lt;/span> &lt;span class="n">autoreload&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">%&lt;/span>&lt;span class="n">autoreload&lt;/span> &lt;span class="mi">2&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Compute the convolution in 2D&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-py" data-lang="py">&lt;span class="line">&lt;span class="cl">&lt;span class="k">def&lt;/span> &lt;span class="nf">conv2d&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">X&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">F&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">s&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">p&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="s2">&amp;#34;&amp;#34;&amp;#34;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2">    X: matrix input
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2">    F: filter
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2">    s: step jump
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2">    p: padding
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2">    &amp;#34;&amp;#34;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="p">(&lt;/span>&lt;span class="n">W&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">H&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">X&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">shape&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">f&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">F&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">shape&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="c1"># Output dimensions&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">w&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">W&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">f&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">2&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">p&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">//&lt;/span> &lt;span class="n">s&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">h&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">H&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">f&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">2&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">p&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">//&lt;/span> &lt;span class="n">s&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">X_pad&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">pad&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">X&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">pad_width&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">((&lt;/span>&lt;span class="n">p&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">p&lt;/span>&lt;span class="p">),(&lt;/span>&lt;span class="n">p&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">p&lt;/span>&lt;span class="p">)),&lt;/span> &lt;span class="n">mode&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;constant&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">constant_values&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="c1"># print(w,h)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">Y&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">zeros&lt;/span>&lt;span class="p">((&lt;/span>&lt;span class="n">w&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">h&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="k">for&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="nb">range&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">w&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">        &lt;span class="k">for&lt;/span> &lt;span class="n">j&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="nb">range&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">h&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">            &lt;span class="n">x&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">s&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">            &lt;span class="n">y&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">j&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">s&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">            &lt;span class="n">Y&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">][&lt;/span>&lt;span class="n">j&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">sum&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">X_pad&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">:(&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="n">f&lt;/span>&lt;span class="p">),&lt;/span>&lt;span class="n">y&lt;/span>&lt;span class="p">:(&lt;/span>&lt;span class="n">y&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="n">f&lt;/span>&lt;span class="p">)]&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="n">F&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="k">return&lt;/span> &lt;span class="n">Y&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>In this example, I will use emboss filter and calculate the convolution on each image&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-py" data-lang="py">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># emboss filter&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">filter&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">array&lt;/span>&lt;span class="p">([[&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">,[&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">,[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">]])&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">for&lt;/span> &lt;span class="n">file&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">data_list&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">img_path&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">os&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">path&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">join&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">data_path&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">file&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">img&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">cv2&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">imread&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">img_path&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">#Convert to grey&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">img&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">cv2&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">cvtColor&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">img&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">cv2&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">COLOR_RGB2GRAY&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">plt&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">figure&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">figsize&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">8&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mi">6&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">plt&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">subplot&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">plt&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">imshow&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">img&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">#Change to np array&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">img&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">array&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">img&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">blur_img&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">conv2d&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">img&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nb">filter&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">s&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">p&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">5&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">plt&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">subplot&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">plt&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">imshow&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">blur_img&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">plt&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">show&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="convolution-neural-network">Convolution Neural Network
+&lt;/h2>&lt;h3 id="definition-1">Definition
+&lt;/h3>&lt;p>In machine learning, a classifier assigns a class label to a data point. For example, an &lt;em>image classifier&lt;/em> produces a class label (e.g, bird, plane) for what objects exist within an image. A &lt;em>convolutional neural network&lt;/em>, or CNN for short, is a type of classifier, which excels at solving this problem!
+A CNN is a neural network: an algorithm used to recognize patterns in data. Neural Networks in general are composed of a collection of neurons that are organized in layers, each with their own learnable weights and biases. Let’s break down a CNN into its basic building blocks.&lt;/p>
+&lt;ol>
+&lt;li>A &lt;strong>tensor&lt;/strong> can be thought of as an n-dimensional matrix. In CNN above, tensors will be 3-dimensional with the exception of the output layer.&lt;/li>
+&lt;li>A &lt;strong>neuron&lt;/strong> can be thought of as a function that takes in multiple inputs and yields as a single output. The outputs of neurons are represented above as the &lt;strong>activation map&lt;/strong>.&lt;/li>
+&lt;li>A &lt;strong>layer&lt;/strong> are the collection of the neurons in the same operations&lt;/li>
+&lt;li>&lt;strong>Kernel and weights and bias&lt;/strong>, while unique to each neuron, are tuned during the training phase, and allow the classifier to adapt to the problem and dataset provided.&lt;/li>
+&lt;li>A CNN conveys a &lt;strong>differentiable score function&lt;/strong>, which is represented as a &lt;strong>class score&lt;/strong> in the visualization on the output layers.&lt;/li>
+&lt;/ol>
+&lt;p>Before we start, I will talk some terminology in this blog and you can also see in every lessons or blogs&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Unit&lt;/strong>: A unit represents the value of a specific point in the tensor at each layer of a CNN (Convolutional Neural Network).&lt;/li>
+&lt;li>&lt;strong>Receptive Field&lt;/strong>: This is a region in the input image that a filter (kernel) processes during convolution. It determines which portion of the input image contributes to a particular unit in the next layer. For example, suppose that the input volume has size \[32x32x3\], (e.g. an RGB CIFAR-10 image). If the receptive field (or the filter size) is 5x5, then each neuron in the Conv Layer will have weights to a \[5x5x3\] region in the input volume, for a total of 5x5x3 = 75 weights (and +1 bias parameter). Notice that the extent of the connectivity along the depth axis must be 3, since this is the depth of the input volume.&lt;/li>
+&lt;li>&lt;strong>Local Region&lt;/strong>: In a broader sense, it can include the receptive field. It refers to a specific region in the tensor at different layers of a CNN.&lt;/li>
+&lt;li>&lt;strong>Feature Map&lt;/strong>: This is the output matrix obtained after applying convolution operations between a filter and the receptive fields by sliding from left to right and top to bottom.&lt;/li>
+&lt;li>&lt;strong>Activation Map&lt;/strong>: The output of the feature map after applying an activation function to introduce non-linearity.&lt;/li>
+&lt;/ul>
+&lt;h2 id="architecture-view">Architecture view
+&lt;/h2>&lt;p>&lt;strong>Regular Neural Nets&lt;/strong>: Neural Networks receive an input (a single vector), and transform it through a series &lt;em>hidden layer&lt;/em>. Each hidden layer is made up of a set of neurons, where each neuron is fully connected to all neurons in the previous layer, and where neurons in a single layer function completely independently and do not share any connections. The last fully-connected layer is called the “output layer” and in classification settings it represents the class scores.&lt;/p>
+&lt;p>&lt;strong>Regular Neural Nets&lt;/strong> don’t scale well to full images. In CIFAR-10, images are only of size $32\times 32\times 3$ (32 wide, 32 high, 3 color channels), so a single fully-connected neuron in a first hidden layer of a regular Neural Network would have $32\times 32\times 3 =3072$ weights. This amount still seems manageable, but clearly this fully-connected structure does not scale to larger images. For example, an image of more respectable size, e.g. $200 \times 200 \times 3$, would lead to neurons that have $200\times 200\times 3 = 120000$ weights. Moreover, we would almost certainly want to have several such neurons, so the parameters would add up quickly! Clearly, this full connectivity is wasteful and the huge number of parameters would quickly lead to overfitting.
+&lt;img src="https://nguyentuss.github.io/p/convolution-neural-network/img/ANN.png"
+width="791"
+height="388"
+srcset="https://nguyentuss.github.io/p/convolution-neural-network/img/ANN_hu_cc0f8906699e68c6.png 480w, https://nguyentuss.github.io/p/convolution-neural-network/img/ANN_hu_46c6e01982eedf91.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="203"
+data-flex-basis="489px"
+>&lt;/p>
+&lt;p>&lt;strong>3D volumes of neurons&lt;/strong>. Convolutional Neural Networks take advantage of the fact that the input consists of images and they constrain the architecture in a more sensible way. In particular, unlike a regular Neural Network, the layers of a ConvNet have neurons arranged in 3 dimensions: &lt;strong>width, height, depth&lt;/strong>. (Note that the word &lt;em>depth&lt;/em> here refers to the third dimension of an activation volume, not to the depth of a full Neural Network, which can refer to the total number of layers in a network). For example, the input images in CIFAR-10 are an input volume of activations, and the volume has dimensions $32\times 32\times 3$ (width, height, depth respectively). As we will soon see, the neurons in a layer will only be connected to a small region of the layer before it, instead of all of the neurons in a fully-connected manner. Moreover, the final output layer would for CIFAR-10 have dimensions $1\times 1\times 10$, because by the end of the ConvNet architecture we will reduce the full image into a single vector of class scores, arranged along the depth dimension.
+&lt;img src="https://nguyentuss.github.io/p/convolution-neural-network/img/ConvNet.png"
+width="1187"
+height="591"
+srcset="https://nguyentuss.github.io/p/convolution-neural-network/img/ConvNet_hu_15dafcf74e52b85e.png 480w, https://nguyentuss.github.io/p/convolution-neural-network/img/ConvNet_hu_c16aeb72b766f3a0.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="200"
+data-flex-basis="482px"
+>&lt;/p>
+&lt;h2 id="layers-used-to-build-convnets">Layers used to build ConvNets
+&lt;/h2>&lt;p>A simple ConvNet is a sequence of layers, and every layers of a ConvNet transforms one volume of activations to another through a differentiable function. We use three main types of layers to build ConvNet architectures: &lt;strong>Convolutional Layers,Pooling Layer&lt;/strong> and &lt;strong>Fully-Connected Layers&lt;/strong> (same as the ANN).
+We will go into more deeply, but a simple ConvNet for CIFAR-10 classification could have the architecture, INPUT $\rightarrow$ CONV $\rightarrow$ RELU $\rightarrow$ POOL $\rightarrow$ FC&lt;/p>
+&lt;ul>
+&lt;li>INPUT \[32x32x3\] will hold the raw pixel values of the image, in this case an image of width 32, height 32, and three color RGB&lt;/li>
+&lt;li>CONV layer will compute the output of neurons that are connected to local regions in the input, each computing a dot product between their weights and a small region they are connected to in the input volume. This may result in volume such as \[32x32x12\] if we decided to use 12 filters.&lt;/li>
+&lt;li>RELU layer will apply an elementwise activation function, such as the $max(0,x)$ thresholding at zero. This leaves the size of the volume unchanged (\[32x32x12\]).&lt;/li>
+&lt;li>POOL layer will perform a downsampling operation along the spatial dimensions (width, height), resulting in volume such as \[16x16x12\].&lt;/li>
+&lt;li>FC (i.e. fully-connected) layer will compute the class scores, resulting in volume of size \[1x1x10\], where each of the 10 numbers correspond to a class score, such as among the 10 categories of CIFAR-10. As with ordinary Neural Networks and as the name implies, each neuron in this layer will be connected to all the numbers in the previous volume.
+In this way, ConvNets transform the original image layer by layer from the original pixel values to the final class scores. Note that some layers contain parameters and other don’t. In particular, the CONV/FC layers perform transformations that are a function of not only the activations in the input volume, but also of the parameters (the weights and biases of the neurons). On the other hand, the RELU/POOL layers will implement a fixed function. The parameters in the CONV/FC layers will be trained with gradient descent so that the class scores that the ConvNet computes are consistent with the labels in the training set for each image.
+&lt;img src="https://nguyentuss.github.io/p/convolution-neural-network/img/Conv_example.png"
+width="1255"
+height="601"
+srcset="https://nguyentuss.github.io/p/convolution-neural-network/img/Conv_example_hu_d598391dc29b15d6.png 480w, https://nguyentuss.github.io/p/convolution-neural-network/img/Conv_example_hu_8badbe6992bd9033.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="208"
+data-flex-basis="501px"
+>&lt;/li>
+&lt;/ul>
+&lt;h2 id="convolutional-layer">Convolutional Layer
+&lt;/h2>&lt;p>The Conv layer is the core building block of a Convolutional Network that does most of the computational heavy lifting.
+&lt;strong>Let’s first discuss what the CONV layer computes without brain/neuron analogies&lt;/strong>. The CONV layer&amp;rsquo;s parameters consist of a set of learnable filters. Every filters is a small spatially(along width and height) but extends through the full depthof the input volume.&lt;/p>
+&lt;div style="text-align: center;">
+&lt;img src="img/first_conv_layer.gif" width="600">
+&lt;/div>
+&lt;p>For example, lets look at the first convolutional layer have $3\times3\times3$ (3 pixels width and height, and 3 color channels), also have padding. During the forward pass, we slide (convolve) each filter across the width and height of the input volume and compute the dot products between entries of filter and the input at any position. As we slide the filter over the width and height of the input volume, we will produce 2-dimensional &lt;strong>activation map&lt;/strong> that gives the responses of that filter at every spatial position. Intuitively, the network will learn filters that activate when they see some type of visual features such as an edge of some orientation or a blotch (patch) of some color on the first layer, or eventually entire &lt;a class="link" href="https://www.google.com/search?q=honeycomb" target="_blank" rel="noopener"
+>honeycomb&lt;/a> on higher layers of the network. Now we will have an entire set of filters in each CONV layer (e.g. 12 filters), and each of them will produce a separated 2-dimensional activation map. We will stack these activation maps along the depth dimension and produce the output volume. Furthermore, every entry in 3D output volume &lt;strong>can also be interpreted an output of a neuron&lt;/strong> that look at only a small region in the input and shares the parameters will all neurons to the left and right.&lt;/p>
+&lt;h3 id="local-connectivity">Local connectivity
+&lt;/h3>&lt;p>When dealing with high-dimensional inputs such as images,&lt;/p>
+&lt;h2 id="reference">Reference
+&lt;/h2>&lt;ol>
+&lt;li>&lt;a class="link" href="https://poloclub.github.io/cnn-explainer/" target="_blank" rel="noopener"
+>CNN Explainer&lt;/a>(CNN visualization)&lt;/li>
+&lt;li>&lt;a class="link" href="https://setosa.io/ev/image-kernels/" target="_blank" rel="noopener"
+>Image Kernels explained visually&lt;/a>(Convolution visualization)&lt;/li>
+&lt;li>&lt;a class="link" href="https://cs231n.github.io/convolutional-networks/" target="_blank" rel="noopener"
+>CS231n Convolutional Neural Networks for Visual Recognition&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://phamdinhkhanh.github.io/2019/08/22/convolutional-neural-network.html" target="_blank" rel="noopener"
+>Khoa học dữ liệu&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://probml.github.io/pml-book/book1.html" target="_blank" rel="noopener"
+>probml.github.io/pml-book/book1.html&lt;/a>(book)&lt;/li>
+&lt;/ol></description></item><item><title>Introduction</title><link>https://nguyentuss.github.io/p/introduction/</link><pubDate>Tue, 11 Mar 2025 10:17:26 +0700</pubDate><guid>https://nguyentuss.github.io/p/introduction/</guid><description>&lt;img src="https://nguyentuss.github.io/p/introduction/cover.jpg" alt="Featured image of post Introduction" />&lt;hr>
+&lt;h2 id="supervised-learning">Supervised Learning
+&lt;/h2>&lt;p>The task $T$ is to learn a mapping $f$ from $x \in X$ to $y \in Y$. The $x$ are also called the $\mathbf{features}$. The output $y$ is called the $\mathbf{label}$. The experience $E$ is given in the form of a set of $N$ input-output pairs $\mathcal{D} = {(x_n,y_n)},; n = 1 \rightarrow N$ called the $\textbf{training set}$ (with $N$ as the $\textbf{sample size}$). The performance $P$ depends on the type of output we want to predict.&lt;/p>
+&lt;h2 id="classification">Classification
+&lt;/h2>&lt;p>In a classification problem, the output space is a set of $C$ labels called $\textbf{classes}$, $Y = {1,2,&amp;hellip;,C}$. The problem of predicting the class label given an input is called $\textbf{pattern recognition}$. The goal of supervised learning in a classification problem is to predict the label. A common way to measure performance on this task is by the $\textbf{misclassification rate}$.&lt;/p>
+$$\mathcal{L}(\boldsymbol{\theta}) \triangleq \frac{1}{N} \sum_{n=1}^{N} \mathbb{I}\left(y_n \neq f(x_n; \boldsymbol{\theta})\right).$$&lt;p>Here, $\mathbb{I}(e)$ is the indicator function that returns 1 if the condition is true and 0 otherwise. We can also use the notation $\textbf{loss function}$ $l(y,\hat{y})$:&lt;/p>
+$$\mathcal{L}(\boldsymbol{\theta}) \triangleq \frac{1}{N} \sum_{n=1}^{N} \ell\left(y_n, f(x_n; \boldsymbol{\theta})\right).$$&lt;h2 id="regression">Regression
+&lt;/h2>&lt;p>In regression, the output $y \in \mathbb{R}$ is a real value instead of a discrete label $y \in {1,&amp;hellip;,C}$. A common choice for the loss function is the quadratic loss, or $\ell_2$ loss:&lt;/p>
+$$\ell_2(y,\hat{y}) = (y - \hat{y})^2.$$&lt;p>This penalizes large residuals $y-\hat{y}$. The empirical risk when using quadratic loss is equal to the $\textbf{Mean Squared Error (MSE)}$:&lt;/p>
+$$MSE(\boldsymbol{\theta})=\frac{1}{N} \sum_{n=1}^{N}(y_n-f(x_n;\boldsymbol{\theta}))^2.$$&lt;p>&lt;img src="https://nguyentuss.github.io/p/introduction/img/linear_regression.png"
+width="882"
+height="299"
+srcset="https://nguyentuss.github.io/p/introduction/img/linear_regression_hu_6394807ef491723.png 480w, https://nguyentuss.github.io/p/introduction/img/linear_regression_hu_b19082dc95d2f3eb.png 1024w"
+loading="lazy"
+alt="image"
+class="gallery-image"
+data-flex-grow="294"
+data-flex-basis="707px"
+>&lt;/p>
+&lt;p>An example of a regression model for 1D data is the $\textbf{linear regression}$ model:&lt;/p>
+$$f(x;\boldsymbol{\theta})=b+wx.$$&lt;p>For multiple input features, we can write:&lt;/p>
+$$f(\mathbf{x};\boldsymbol{\theta})=b+w_1x_1+\cdots+w_Dx_D=b+\mathbf{w}^T\mathbf{x}.$$&lt;p>&lt;img src="https://nguyentuss.github.io/p/introduction/img/polynomial_regression.png"
+width="857"
+height="352"
+srcset="https://nguyentuss.github.io/p/introduction/img/polynomial_regression_hu_ac41b49c274d13cb.png 480w, https://nguyentuss.github.io/p/introduction/img/polynomial_regression_hu_a9f085260998c629.png 1024w"
+loading="lazy"
+alt="image"
+class="gallery-image"
+data-flex-grow="243"
+data-flex-basis="584px"
+>&lt;/p>
+&lt;p>We can improve the fit by using a $\textbf{Polynomial regression}$ model with degree $\mathcal{D}$:&lt;/p>
+$$f(x;\mathbf{w})=\mathbf{w}^T\phi(x),$$&lt;p>where $\phi(x)=[1,x,x^2,\dots,x^D]$ is the feature vector derived from the input.&lt;/p>
+&lt;h2 id="overfitting">Overfitting
+&lt;/h2>&lt;p>The empirical risk (training loss function) is given by:&lt;/p>
+$$\mathcal{L}(\boldsymbol{\theta}; \mathcal{D}_{\text{train}}) = \frac{1}{|\mathcal{D}_{\text{train}}|} \sum_{(\mathbf{x,y}) \in \mathcal{D}_{\text{train}}} \ell(y, f(x; \boldsymbol{\theta})).$$&lt;p>The difference $\mathcal{L}( \boldsymbol{\theta};p^&lt;em>)-\mathcal{L}(\boldsymbol{\theta};\mathcal{D}_{\text{train}})$ is called the $\textbf{generalization gap}$. If a model has a large generalization gap (i.e., low empirical risk but high population risk), it is a sign that it is overfitting. In practice we do not know $p^&lt;/em>$, so we partition the data into a training set and a $\textbf{test set}$ to approximate the population risk using the $\textbf{test risk}$:&lt;/p>
+$$\mathcal{L}(\boldsymbol{\theta}; \mathcal{D}_{\text{test}}) = \frac{1}{|\mathcal{D}_{\text{test}}|} \sum_{(\mathbf{x,y}) \in \mathcal{D}_{\text{test}}} \ell(y, f(x; \boldsymbol{\theta})).$$&lt;p>&lt;img src="https://nguyentuss.github.io/p/introduction/img/overfitting.png"
+width="1117"
+height="703"
+srcset="https://nguyentuss.github.io/p/introduction/img/overfitting_hu_a0e60c3810732399.png 480w, https://nguyentuss.github.io/p/introduction/img/overfitting_hu_ceae27871fea2cdc.png 1024w"
+loading="lazy"
+alt="image"
+class="gallery-image"
+data-flex-grow="158"
+data-flex-basis="381px"
+>&lt;/p>
+&lt;p>We can drive the training loss function to zero by increasing the degree $\mathcal{D}$, but this may increase the testing loss function. A model that fits the training data too closely is said to be $\textbf{overfitting}$, while a model that is too simple and does not capture the underlying structure is said to be $\textbf{underfitting}$.&lt;/p>
+&lt;h2 id="unsupervised-learning">Unsupervised Learning
+&lt;/h2>&lt;p>In supervised learning, we assume that each input $x$ in the training set has a corresponding target $y$, and our goal is to learn the input-output mapping. In contrast, unsupervised learning deals with data that has no output labels; the dataset is simply $\mathcal{D} = {x_n : n = 1,\dots,N}$. Unsupervised learning focuses on modeling the underlying structure of the data by fitting an unconditional model $p(x)$, rather than a conditional model $p(y|x)$.&lt;/p>
+&lt;p>Unsupervised learning avoids the need for large labeled datasets, which can be time-consuming and expensive to collect, and instead finds patterns, structures, or groupings in the data based on inherent similarities or relationships.&lt;/p>
+&lt;h2 id="clustering">Clustering
+&lt;/h2>&lt;p>&lt;img src="https://nguyentuss.github.io/p/introduction/img/clustering.png"
+width="1020"
+height="364"
+srcset="https://nguyentuss.github.io/p/introduction/img/clustering_hu_9e2e09ba17158310.png 480w, https://nguyentuss.github.io/p/introduction/img/clustering_hu_255aa7c52fab58d9.png 1024w"
+loading="lazy"
+alt="image"
+class="gallery-image"
+data-flex-grow="280"
+data-flex-basis="672px"
+>&lt;/p>
+&lt;p>A simple example of unsupervised learning is clustering, where the goal is to partition the input data into regions that contain similar points.&lt;/p>
+&lt;h2 id="self-supervised-learning">Self-supervised Learning
+&lt;/h2>&lt;p>$\textbf{Self-supervised learning}$ automatically generates $\textbf{labels}$ from $\textbf{unlabeled data}$. For example, one may learn to predict a color image from its grayscale version, or mask out words in a sentence and predict them from the surrounding context. In this setting, a predictor such as&lt;/p>
+$$\hat{x}_1 = f(x_2;\boldsymbol{\theta})$$&lt;p>(where $x_2$ is the observed input and $\hat{x}_1$ is the predicted output) learns useful features from the data that can be leveraged in standard supervised tasks.&lt;/p>
+&lt;h2 id="reinforcement-learning">Reinforcement Learning
+&lt;/h2>&lt;p>In reinforcement learning, an agent learns how to interact with its environment. For example, a bot playing Mario learns to interact with the game world by moving left or right and jumping when encountering obstacles. (&lt;a class="link" href="https://pytorch.org/tutorials/intermediate/mario_rl_tutorial.html" target="_blank" rel="noopener"
+>Click to see the detail&lt;/a>)&lt;/p>
+&lt;p>&lt;img src="https://nguyentuss.github.io/p/introduction/img/3typeML.png"
+width="710"
+height="373"
+srcset="https://nguyentuss.github.io/p/introduction/img/3typeML_hu_c0903f8afc5d319d.png 480w, https://nguyentuss.github.io/p/introduction/img/3typeML_hu_6827f0660496c8d9.png 1024w"
+loading="lazy"
+alt="image"
+class="gallery-image"
+data-flex-grow="190"
+data-flex-basis="456px"
+>&lt;/p>
+&lt;h2 id="preprocessing-discrete-input-data">Preprocessing Discrete Input Data
+&lt;/h2>&lt;h3 id="one-hot-encoding">One-hot Encoding
+&lt;/h3>&lt;p>For categorical features, we often convert them into numerical values using $\textbf{one-hot encoding}$. For a categorical variable $x$ with $K$ possible values, one-hot encoding is defined as:&lt;/p>
+$$\text{one-hot}(x) = [\mathbb{I}(x=1), \dots, \mathbb{I}(x=K)].$$&lt;p>For example, if $x$ represents one of three colors (red, green, blue), then:&lt;/p>
+&lt;ul>
+&lt;li>one-hot(red) = $[1,0,0]$&lt;/li>
+&lt;li>one-hot(green) = $[0,1,0]$&lt;/li>
+&lt;li>one-hot(blue) = $[0,0,1]$.&lt;/li>
+&lt;/ul>
+&lt;h3 id="feature-crosses">Feature Crosses
+&lt;/h3>&lt;p>To capture interactions between categorical features, we often create composite features. Suppose we want to predict the fuel efficiency of a vehicle based on two categorical variables:&lt;/p>
+&lt;ul>
+&lt;li>$x_1$: The type of car (SUV, Truck, Family car).&lt;/li>
+&lt;li>$x_2$: The country of origin (USA, Japan).&lt;/li>
+&lt;/ul>
+&lt;p>Using one-hot encoding, we represent these variables as:&lt;/p>
+$$\phi(x) = [1, I(x_1 = S), I(x_1 = T), I(x_1 = F), I(x_2 = U), I(x_2 = J)].$$&lt;p>However, this encoding does not capture interactions. To capture interactions between car type and country, we define composite features:&lt;/p>
+$$\text{(Car type, Country)} = \{(S, U), (T, U), (F, U), (S, J), (T, J), (F, J)\}.$$&lt;p>The new model becomes:&lt;/p>
+$$f(x; w) = w^T \phi(x).$$&lt;p>Expressing this in full:&lt;/p>
+$$\begin{split}f(x; w) = w_0 + w_1 I(x_1 = S) + w_2 I(x_1 = T) + w_3 I(x_1 = F) \\ + w_4 I(x_2 = U) + w_5 I(x_2 = J) + w_6 I(x_1 = S, x_2 = U) \\ + w_7 I(x_1 = T, x_2 = U) + w_8 I(x_1 = F, x_2 = U) \\ + w_9 I(x_1 = S, x_2 = J) + w_{10} I(x_1 = T, x_2 = J) + w_{11} I(x_1 = F, x_2 = J).\end{split}$$&lt;h2 id="summary">Summary
+&lt;/h2>&lt;p>This post introduces key concepts in machine learning—from supervised learning (both classification and regression) to unsupervised, self-supervised, and reinforcement learning. It also covers preprocessing techniques for categorical data such as one-hot encoding and feature crosses. The provided equations are formatted in a single-line style for consistency in this Markdown document.&lt;/p></description></item><item><title>Univariate Models</title><link>https://nguyentuss.github.io/p/univariate-models/</link><pubDate>Mon, 10 Mar 2025 21:50:35 +0700</pubDate><guid>https://nguyentuss.github.io/p/univariate-models/</guid><description>&lt;img src="https://nguyentuss.github.io/p/univariate-models/cover.jpg" alt="Featured image of post Univariate Models" />&lt;h2 id="introduction">Introduction
+&lt;/h2>&lt;p>Calling &lt;strong>sample space&lt;/strong> ${\mathcal{X}}$ are all possible experiences, and an &lt;strong>event&lt;/strong> will be a subset of the sample space.&lt;/p>
+&lt;h3 id="union">Union
+&lt;/h3>$$Pr(A \land B)=Pr(A,B).$$&lt;p>If independent events,&lt;/p>
+$$Pr(A \land B)=Pr(A)Pr(B).$$&lt;p>We say a set of variables ${X_1, \dots, X_n}$ is (mutually) independent if the joint can be written as a product of marginals for all subsets ${{X_1,\dots, X_m} \subseteq {X_1,\dots,X_n}}$,&lt;/p>
+$$p(X_1,X_2,\dots,X_n)=\prod_{i=1}^{m}p(X_i).$$&lt;h3 id="disjoint">Disjoint
+&lt;/h3>$$Pr(A \vee B)=Pr(A)+Pr(B)-Pr(A\land B).$$&lt;h3 id="conditional-probability">Conditional Probability
+&lt;/h3>$$Pr(B|A)\triangleq \frac{Pr(A,B)}{Pr(A)}.$$&lt;p>If events ${A}$ and ${B}$ are conditionally independent given event ${C}$,&lt;/p>
+$$Pr(A,B|C)=Pr(A|C)Pr(B|C).$$&lt;p>Be careful, we say ${X_1, X_2, X_3}$ are mutually independent if the following conditions hold:&lt;/p>
+$$\begin{split} p(X_1,X_2,X_3)=p(X_1)p(X_2)p(X_3),\\, p(X_1,X_2)=p(X_1)p(X_2),\\, p(X_1,X_3)=p(X_1)p(X_3),\\, p(X_2,X_3)=p(X_2)p(X_3) \end{split}.$$&lt;h2 id="random-variables">Random Variables
+&lt;/h2>&lt;p>&lt;img src="https://nguyentuss.github.io/p/univariate-models/img/rv.png"
+width="990"
+height="645"
+srcset="https://nguyentuss.github.io/p/univariate-models/img/rv_hu_be95ce602307d2c5.png 480w, https://nguyentuss.github.io/p/univariate-models/img/rv_hu_7df468e0df3ace26.png 1024w"
+loading="lazy"
+alt="image"
+class="gallery-image"
+data-flex-grow="153"
+data-flex-basis="368px"
+>
+Given an experiment with sample space ${\mathbb{S}}$, a random variable (r.v.) is a function mapping from ${\mathbb{S}}$ to ${\mathbb{R}}$.&lt;/p>
+&lt;h3 id="discrete-random-variables">Discrete Random Variables
+&lt;/h3>&lt;p>If the sample space ${\mathbb{S}}$ is finite or countable, it is called a discrete r.v. Denote the probability of events in ${\mathbb{S}}$ having value ${x}$ by ${Pr(X=x)}$. This is called the probability mass function (pmf):&lt;/p>
+$$p(x)\triangleq Pr(X=x).$$&lt;p>The pmf satisfies ${0\leq p(x) \leq 1}$ and ${\sum_{x\in \mathcal{X}}p(x)=1}$.&lt;/p>
+&lt;h3 id="continuous-random-variables">Continuous Random Variables
+&lt;/h3>&lt;p>If ${X \in \mathbb{R}}$, it is called a continuous r.v. The values no longer create a finite set of distinct possible values.&lt;/p>
+&lt;h3 id="cumulative-distribution-function-cdf">Cumulative Distribution Function (cdf)
+&lt;/h3>$$P(x) \triangleq Pr(X\leq x).$$&lt;p>We can compute the probability of any interval:&lt;/p>
+$$P(a\leq x \leq b) = P(b)-P(a-1).$$&lt;p>In discrete r.v, the cdf will compute:&lt;/p>
+$$P(x)=\sum_{x\in \mathcal{X}}p(x).$$&lt;p>In continuous r.v, the cdf will compute:&lt;/p>
+$$P(x)=\int_{x\in \mathcal{X}}p(x).$$&lt;h3 id="probability-density-function-pdf">Probability Density Function (pdf)
+&lt;/h3>&lt;p>Define the pdf as the derivative of the cdf:&lt;/p>
+$$p(x) \triangleq \frac{d}{dx}P(x).$$&lt;p>As the size of the interval gets smaller, we can write:&lt;/p>
+$$ Pr(x &lt; X &lt; x + dx) \approx p(x)dx $$&lt;h3 id="quantiles">Quantiles
+&lt;/h3>&lt;p>If the cdf ${P}$ is monotonically increasing, it has an inverse called the &lt;strong>inverse cdf&lt;/strong>. If ${P}$ is the cdf of ${X}$, then ${P^{-1}(q)}$ is the value ${x_q}$ such that ${Pr(X\leq x_q)=q}$; this is called the q&amp;rsquo;th quantile of ${P}$.&lt;/p>
+&lt;h3 id="sets-of-related-random-variables">Sets of Related Random Variables
+&lt;/h3>&lt;p>Suppose we have two r.v. ${X}$ and ${Y}$. We can define the joint distribution:&lt;/p>
+$$p(x,y)=Pr(X=x,Y=y),$$&lt;p>for all possible values of ${x}$ and ${y}$. We can represent all possible values by a 2D table. For example:&lt;/p>
+$$\begin{array}{c|cc} p(X,Y) &amp; Y = 0 &amp; Y = 1 \\ \hline X = 0 &amp; 0.2 &amp; 0.3 \\ X = 1 &amp; 0.3 &amp; 0.2 \end{array}.$$&lt;p>Here, ${Pr(X=0,Y=1)=0.3}$, and&lt;/p>
+$$\sum_{x \in \mathcal{X},y \in \mathcal{Y}}p(x,y)=1.$$&lt;h3 id="moments-of-a-distribution">Moments of a Distribution
+&lt;/h3>&lt;p>The &lt;strong>mean&lt;/strong> (or expected value) for a continuous r.v. is defined as:&lt;/p>
+$$\mathbb{E}[X]=\int_{x\in \mathcal{X}}x\,p(x)dx.$$&lt;p>For discrete r.v, the mean is:&lt;/p>
+$$\mathbb{E}[X]=\sum_{x\in \mathcal{X}}x\,p(x).$$&lt;p>Since the mean is linear, we have the &lt;strong>linearity of expectation&lt;/strong>:&lt;/p>
+$$\mathbb{E}[aX+b]=a\,\mathbb{E}[X]+b.$$&lt;p>For ${n}$ random variables, the sum of expectations is:&lt;/p>
+$$\mathbb{E}\Bigl[\sum X_i\Bigr]=\sum \mathbb{E}[X_i].$$&lt;p>If they are independent, the expectation of the product is:&lt;/p>
+$$\mathbb{E}\Bigl[\prod X_i\Bigr]=\prod \mathbb{E}[X_i].$$&lt;p>When dealing with two or more dependent r.v&amp;rsquo;s, we can compute the moment of one given the others:&lt;/p>
+$$\mathbb{E}[X]=\mathbb{E}_Y\Bigl[\mathbb{E}[X|Y]\Bigr].$$&lt;p>A similar formula exists for the variance:&lt;/p>
+$$\mathbb{V}[X]=\mathbb{E}_Y\Bigl[\mathbb{V}[X|Y]\Bigr] +\mathbb{V}_Y\Bigl[\mathbb{E}[X|Y]\Bigr].$$&lt;p>The &lt;strong>variance&lt;/strong> is a measure of how &amp;ldquo;spread out&amp;rdquo; the distribution is, denoted as ${\sigma^2}$ and defined as:&lt;/p>
+$$\mathbb{V}[X] \triangleq \mathbb{E}[(X- \mu)^2] =\int (x-\mu)^2p(x)dx =\mathbb{E}[X^2]-\mu^2.$$&lt;p>&lt;img src="https://nguyentuss.github.io/p/univariate-models/img/Variance.png"
+width="757"
+height="396"
+srcset="https://nguyentuss.github.io/p/univariate-models/img/Variance_hu_f89639711b3acab3.png 480w, https://nguyentuss.github.io/p/univariate-models/img/Variance_hu_bdafc5702fe5fcac.png 1024w"
+loading="lazy"
+alt="image"
+class="gallery-image"
+data-flex-grow="191"
+data-flex-basis="458px"
+>
+The &lt;strong>standard deviation&lt;/strong> is given by:&lt;/p>
+$$std[X]=\sqrt{\mathbb{V}[X]}=\sigma.$$&lt;p>Lower deviation means the distribution is closer to the mean; higher deviation means it is further away.&lt;/p>
+&lt;p>The variance of a shifted and scaled version of a random variable is:&lt;/p>
+$$\mathbb{V}[aX+b]=a^2\mathbb{V}[X].$$&lt;p>For ${n}$ independent random variables, the variance of their sum is:&lt;/p>
+$$\mathbb{V}\Bigl[\sum X_i\Bigr]=\sum \mathbb{V}[X_i].$$&lt;p>The variance of their product is:&lt;/p>
+$$\mathbb{V}\Bigl[\prod X_i\Bigr]= \prod\Bigl(\sigma_i^2 + \mu_i^2\Bigr)-\prod \mu_i^2.$$&lt;p>&lt;strong>Mode of a Distribution&lt;/strong>&lt;/p>
+&lt;p>The &lt;strong>mode&lt;/strong> of a distribution is the value with the highest probability mass or density:&lt;/p>
+$$\mathbf{x^*}= \arg \max_{\mathbf{x}} p(\mathbf{x}).$$&lt;p>For multimodal distributions, the mode may not be unique.&lt;/p>
+&lt;h2 id="bayes-rule">Bayes&amp;rsquo; Rule
+&lt;/h2>&lt;h3 id="bayes-rule-and-with-extra-conditioning">Bayes&amp;rsquo; Rule, and with Extra Conditioning
+&lt;/h3>$$P({ A=a}|{ B=b}) = \frac{P({ B=a}|{ A=b})P({ A=a})}{P({ B=b})}.$$$$P({ A=a}|{ B=b}, { C=c}) = \frac{P({ B=b}|{ A=a}, { C=c})P({ A=a} \mid { C=c})}{P({ B=b} \mid { C=c})}.$$&lt;p>The term ${p(A)}$ represents what we know about the possible values of ${A}$ before observing any data; this is the &lt;strong>prior distribution&lt;/strong>. (If ${A}$ has ${K}$ possible values, then ${p(A)}$ is a vector of ${K}$ probabilities summing to ${1}$.) The term ${p(B \mid A = a)}$ represents the distribution over possible outcomes of ${B}$ if ${A = a}$; this is the &lt;strong>observation distribution&lt;/strong>. Evaluated at the observed ${b}$, the function ${p(B = b \mid A = a)}$ is called the &lt;strong>likelihood&lt;/strong>.&lt;/p>
+&lt;p>Multiplying the prior ${p(A = a)}$ by the likelihood ${p(B = b \mid A = a)}$ for each ${a}$ gives the unnormalized joint distribution ${p(A = a, B = b)}$. Normalizing by dividing by ${p(B = b)}$ (the &lt;strong>marginal likelihood&lt;/strong>) gives:&lt;/p>
+$$p(B = b) = \sum_{a' \in \mathcal{A}} p(A = a') p(B = b \mid A = a') = \sum_{a' \in \mathcal{A}} p(A = a', B = b).$$&lt;p>&lt;strong>Odds Form of Bayes&amp;rsquo; Rule&lt;/strong>&lt;/p>
+$$\frac{P({ A}| { B})}{P({ A^c}| { B})} = \frac{P({ B}|{ A})}{P({ B}| { A^c})}\frac{P({ A})}{P({ A^c})}.$$&lt;p>The &lt;em>posterior odds&lt;/em> of ${A}$ equal the &lt;em>likelihood ratio&lt;/em> times the &lt;em>prior odds&lt;/em>.&lt;/p>
+&lt;h2 id="bernoulli-and-binomial-distributions">Bernoulli and Binomial Distributions
+&lt;/h2>&lt;p>For an experiment tossing a coin with head probability ${0\leq\theta \leq 1}$, let ${Y = 1}$ denote heads and ${Y = 0}$ denote tails. So, ${p(Y=1)=\theta}$ and ${p(Y=0)=1-\theta}$. This is the &lt;strong>Bernoulli distribution&lt;/strong>, written as:&lt;/p>
+$$Y \sim Ber(\theta).$$&lt;p>The pmf is defined as:&lt;/p>
+$$\text{Ber}(y \mid \theta) = \begin{cases} 1 - \theta &amp; \text{if } y = 0, \\ \theta &amp; \text{if } y = 1 \end{cases}.$$&lt;p>It can also be written as:&lt;/p>
+$$\text{Ber}(y \mid \theta) \triangleq \theta^y(1-\theta)^{1-y}.$$&lt;p>A Bernoulli trial is a special case of the &lt;strong>Binomial distribution&lt;/strong>. Tossing a coin ${N}$ times gives a set of ${N}$ Bernoulli trials, denoted ${y_n \sim Ber(\cdot\mid\theta)}$. Let ${s = \sum_{n=1}^{N}\mathbb{I}(y_n = 1)}$ be the number of heads. Then, ${s}$ follows a binomial distribution:&lt;/p>
+$$Bin(s \mid\theta,N) \triangleq \binom{N}{s}\theta^s(1-\theta)^{N-s}.$$&lt;p>When predicting a binary variable ${y \in {0, 1}}$ given inputs ${x \in X}$, we use a conditional distribution of the form:&lt;/p>
+$$p(y|\mathbf{x},\theta) = Ber(y\mid f(\mathbf{x};\theta)).$$&lt;p>To ensure ${0\leq f(\mathbf{x};\theta)\leq1}$, we often write:&lt;/p>
+$$p(y|\mathbf{x},\theta) = Ber(y\mid \sigma (f(\mathbf{x};\theta))).$$&lt;p>where ${\sigma(\cdot)}$ is the &lt;strong>sigmoid&lt;/strong> (or logistic) function, defined as:&lt;/p>
+$$\sigma(a) \triangleq \frac{1}{1+e^{-a}}= \frac{e^a}{1 + e^a}.$$&lt;p>Its inverse is the &lt;strong>logit function&lt;/strong>:&lt;/p>
+$$a = logit(p) =\sigma^{-1}(p) \triangleq \log\frac{p}{1-p}.$$&lt;p>Thus, the sigmoid transforms a function from ${\mathbb{R}}$ into a probability in ${[0,1]}$, while the logit transforms a probability into a real number.&lt;/p>
+&lt;p>Some useful properties of these functions:&lt;/p>
+$$\sigma(x) \triangleq \frac{1}{1 + e^{-x}} = \frac{e^x}{1 + e^x}.$$$$\frac{d}{dx} \sigma(x) = \sigma(x)(1 - \sigma(x)).$$$$1 - \sigma(x) = \sigma(-x).$$$$\sigma_+(x) \triangleq \log(1 + e^x) \triangleq \text{softplus}(x).$$$$\frac{d}{dx} \sigma_+(x) = \sigma(x).$$&lt;p>In particular, note an issue often encountered with activation functions: obtaining zero (or near zero) gradient during backpropagation.&lt;/p>
+&lt;p>When ${x = 0}$:&lt;/p>
+$$f(0) = \frac{1}{1 + e^0} = \frac{1}{2},$$$$f'(0) = \frac{1}{2} \cdot \Bigl(1 - \frac{1}{2}\Bigr) = \frac{1}{4} = 0.25.$$&lt;p>When ${x \gg 0}$ (large positive):&lt;/p>
+$$f(x) \to 1, \quad f'(x) = 1 \cdot (1 - 1) = 0.$$&lt;p>&lt;strong>Gradient approaches 0.&lt;/strong>&lt;/p>
+&lt;p>When ${x \ll 0}$ (large negative):&lt;/p>
+$$f(x) \to 0, \quad f'(x) = 0 \cdot (1 - 0) = 0.$$&lt;p>&lt;strong>Gradient also approaches 0.&lt;/strong>&lt;/p>
+&lt;h2 id="categorical-and-multinomial-distributions">Categorical and Multinomial Distributions
+&lt;/h2>&lt;p>For more than 2 classes, the &lt;strong>categorical distribution&lt;/strong> represents a distribution over a finite set of labels ${y \in {1,\dots,C}}$, generalizing the Bernoulli to ${C &amp;gt; 2}$. Its pmf is:&lt;/p>
+$$\text{Cat}(y \mid \theta) \triangleq \prod_{c=1}^{C} \theta_c^{\mathbb{I}(y=c)}.$$&lt;p>In other words, ${p(y=c \mid \theta)=\theta_c}$, where the parameters are constrained so that ${0\leq\theta_c\leq1}$.&lt;/p>
+&lt;p>By converting ${y}$ into a &lt;strong>one-hot vector&lt;/strong> with ${C}$ elements (e.g. for ${C=3}$, the classes are encoded as ${ (1,0,0) }$, ${ (0,1,0) }$, and ${ (0,0,1) }$), we can view a fair 6-sided die with outcomes:&lt;/p>
+$$y \in \{1, 2, 3, 4, 5, 6\},$$&lt;p>with each face having equal probability:&lt;/p>
+$$\theta = \bigl(\tfrac{1}{6}, \tfrac{1}{6}, \tfrac{1}{6}, \tfrac{1}{6}, \tfrac{1}{6}, \tfrac{1}{6}\bigr).$$&lt;p>If we roll a 3, the one-hot encoding is:&lt;/p>
+$$(0, 0, 1, 0, 0, 0),$$&lt;p>and&lt;/p>
+$$P(y = 3 \mid \theta) = \theta_3 = \tfrac{1}{6}.$$&lt;p>For a biased die with:&lt;/p>
+$$\theta = (0.10, 0.15, 0.30, 0.20, 0.15, 0.10),$$&lt;p>the probability of rolling a 3 becomes:&lt;/p>
+$$P(y = 3 \mid \theta) = \theta_3 = 0.30.$$&lt;p>The categorical distribution is a special case of the &lt;strong>multinomial distribution&lt;/strong>. If we observe ${N}$ categorical trials, ${y_n \sim Cat(\cdot\mid\theta)}$ for ${n = 1,\dots,N}$, and define ${y_c = \sum_{n=1}^{N}\mathbb{I}(y_n = c)}$, then the vector ${\mathbf{y}}$ follows:&lt;/p>
+$$\mathcal{M}(\mathbf{y} \mid N, \theta) \triangleq \binom{N}{y_1 \dots y_C} \prod_{c=1}^{C} \theta_c^{y_c}.$$&lt;p>In the conditional case, we can define:&lt;/p>
+$$p(y \mid x, \theta) = \text{Cat}(y \mid f(x; \theta)),$$&lt;p>or equivalently:&lt;/p>
+$$p(y \mid x, \theta) = \mathcal{M}(y \mid 1, f(x; \theta)),$$&lt;p>requiring that ${0 \leq f_c(x; \theta) \leq 1}$ and ${\sum_{c=1}^{C} f_c(x; \theta) = 1}$.&lt;/p>
+&lt;p>To avoid forcing ${f}$ to directly predict a probability vector, it is common to pass its output into the &lt;strong>softmax&lt;/strong> function (or &lt;strong>multinomial logit&lt;/strong>), defined as:&lt;/p>
+$$softmax(\mathbf{a})\triangleq \begin{bmatrix} \frac{e^{a_1}}{\sum_{c'=1}^{C}e^{a_{c'}}}, \dots, \frac{e^{a_C}}{\sum_{c'=1}^{C}e^{a_{c'}}} \end{bmatrix}.$$&lt;p>This converts ${\mathbb{R}^C}$ into a probability vector in ${[0,1]^C}$. One weakness is that if&lt;/p>
+$$p_c=\frac{e^{a_c}}{Z(\mathbf{a})}=\frac{e^{a_c}}{\sum_{c'=1}^{C}e^{a_{c'}}},$$&lt;p>for logits ${\mathbf{a}=f(\mathbf{x},\theta)}$, then for extreme values like ${\mathbf{a}=(1000,1000,1000)}$ or ${\mathbf{a}=(-1000,-1000,-1000)}$, numerical issues (overflow or underflow) occur. To avoid this, we use the trick:&lt;/p>
+$$\log\sum_{c'=1}^{C}e^{a_{c'}} = m +\log\sum_{c'=1}^{C}e^{a_{c'}-m},$$&lt;p>with ${m=\max_c a_c}$.&lt;/p>
+&lt;p>Thus, we have:&lt;/p>
+$$\begin{aligned} p(y=c|\mathbf{x}) &amp;= \frac{\exp(a_c-m)}{\sum_{c'} \exp(a_{c'}-m)} \\ &amp;=e^{a_c-lse(\mathbf{a})}. \end{aligned}$$&lt;p>The loss for the softmax function is given by:&lt;/p>
+$$J(\mathbf{W}; \mathbf{x}, \mathbf{y}) = - \sum_{i=1}^{N} \sum_{j=1}^{C} y_{ji} \log (a_{ji}),$$&lt;p>or equivalently:&lt;/p>
+$$J(\mathbf{W}; \mathbf{x}, \mathbf{y}) = - \sum_{i=1}^{N} \sum_{j=1}^{C} y_{ji} \log \Bigl( \frac{\exp(\mathbf{W}_j^T \mathbf{x}_i)}{\sum_{k=1}^{C} \exp(\mathbf{W}_k^T \mathbf{x}_i)} \Bigr).$$&lt;p>For a single data point $({\mathbf{x}_i}, {\mathbf{y}_i})$, the loss is:&lt;/p>
+$$J_i(\mathbf{W}) \triangleq J(\mathbf{W}; \mathbf{x}_i, \mathbf{y}_i) = - \sum_{j=1}^{C} y_{ji} \log \Bigl( \frac{\exp(\mathbf{W}_j^T \mathbf{x}_i)}{\sum_{k=1}^{C} \exp(\mathbf{W}_k^T \mathbf{x}_i)} \Bigr).$$&lt;p>Which can be rewritten as:&lt;/p>
+$$J_i(\mathbf{W}) = - \sum_{j=1}^{C} y_{ji}\,\mathbf{W}_j^T \mathbf{x}_i + \log \Bigl( \sum_{k=1}^{C} \exp(\mathbf{W}_k^T \mathbf{x}_i) \Bigr).$$&lt;p>The gradient for each column ${j}$ is computed as:&lt;/p>
+$$\frac{\partial J_i(\mathbf{W})}{\partial \mathbf{W}_j} = - y_{ji}\,\mathbf{x}_i + \frac{\exp(\mathbf{W}_j^T \mathbf{x}_i)\,\mathbf{x}_i}{\sum_{k=1}^{C} \exp(\mathbf{W}_k^T \mathbf{x}_i)}.$$&lt;p>This simplifies to:&lt;/p>
+$$\frac{\partial J_i(\mathbf{W})}{\partial \mathbf{W}_j} = \mathbf{x}_i\,(a_{ji} - y_{ji}),$$&lt;p>or equivalently:&lt;/p>
+$$\frac{\partial J_i(\mathbf{W})}{\partial \mathbf{W}_j} = \mathbf{x}_i\,e_{ji}, \quad \text{where } e_{ji} = a_{ji} - y_{ji}.$$&lt;p>Collecting for all columns, we have:&lt;/p>
+$$\frac{\partial J_i(\mathbf{W})}{\partial \mathbf{W}} = \mathbf{x}_i\,[e_{i1}, e_{i2}, \dots, e_{iC}] = \mathbf{x}_i\,\mathbf{e}_i^T,$$&lt;p>and thus the full gradient is:&lt;/p>
+$$\frac{\partial J(\mathbf{W})}{\partial \mathbf{W}} = \sum_{i=1}^{N} \mathbf{x}_i\,\mathbf{e}_i^T = \mathbf{x}\,\mathbf{E}^T,$$&lt;p>where ${\mathbf{E} = \mathbf{A} - \mathbf{Y}}$. This compact gradient expression is useful for &lt;strong>Batch Gradient Descent&lt;/strong>, &lt;strong>Stochastic Gradient Descent (SGD)&lt;/strong>, and &lt;strong>Mini-batch Gradient Descent&lt;/strong>.&lt;/p>
+&lt;p>Assuming SGD, the weight matrix ${\mathbf{W}}$ is updated as:&lt;/p>
+$$\mathbf{W} = \mathbf{W} + \eta\,\mathbf{x}_i\,(y_i - a_i)^T.$$&lt;h2 id="univariate-gaussian-normal-distribution">Univariate Gaussian (Normal) Distribution
+&lt;/h2>&lt;p>&lt;img src="https://nguyentuss.github.io/p/univariate-models/img/gauss_plot.png"
+width="1048"
+height="380"
+srcset="https://nguyentuss.github.io/p/univariate-models/img/gauss_plot_hu_69239beeaa7125a1.png 480w, https://nguyentuss.github.io/p/univariate-models/img/gauss_plot_hu_f35a5ceae28ac5f.png 1024w"
+loading="lazy"
+alt="image"
+class="gallery-image"
+data-flex-grow="275"
+data-flex-basis="661px"
+>&lt;/p>
+&lt;p>The cdf of the Gaussian is defined by:&lt;/p>
+$$\phi(y;\mu,\sigma^2)\triangleq\int_{-\infty}^{y}\mathcal{N}(z,\mu,\sigma^2)dz.$$&lt;p>It can be implemented using:&lt;/p>
+$$\phi(y;\mu,\sigma^2)=\tfrac{1}{2}\bigl[1+erf\bigl(\tfrac{z}{\sqrt{2}}\bigr)\bigr],$$&lt;p>where ${z=(y-\mu)/\sigma}$ and the &lt;strong>error function&lt;/strong> is defined as:&lt;/p>
+$$erf(u)\triangleq\frac{2}{\sqrt{\pi}}\int_{0}^{u}e^{-t}dt.$$&lt;p>The pdf of the Gaussian is given by:&lt;/p>
+$$\mathcal{N}(y\mid\mu,\sigma^2)=\frac{1}{\sqrt{2\pi\sigma^2}}\,\exp\!\Bigl(-\tfrac{1}{2\sigma^2}(y-\mu)^2\Bigr).$$&lt;p>The mean of the distribution is:&lt;/p>
+$$\mathbb{E}[\mathcal{N}(\cdot\mid\mu,\sigma^2)]=\mu,$$&lt;p>and the standard deviation is:&lt;/p>
+$$std[\mathcal{N}(\cdot\mid\mu,\sigma^2)]=\sigma.$$&lt;p>It is common to parameterize the Gaussian as a function of input variables to create a conditional density model of the form:&lt;/p>
+$$p(y\mid\mathbf{x},\theta)=\mathcal{N}\Bigl(y\mid f_{\mu}(\mathbf{x};\theta),\, f_{\sigma}(\mathbf{x};\theta)^2\Bigr),$$&lt;p>where ${f_{\mu}(\mathbf{x};\theta)\in \mathbb{R}}$ predicts the mean and ${f_{\sigma}(\mathbf{x};\theta)\in \mathbb{R}_+}$ predicts the variance.&lt;/p>
+&lt;p>Assuming fixed variance independent of the input (homoscedastic regression) and a linear mean, we have:&lt;/p>
+$$p(y\mid\mathbf{x},\theta)=\mathcal{N}\Bigl(y\mid \mathbf{W}^T\mathbf{x}+b,\,\sigma^2\Bigr)$$&lt;p>with ${\theta=(\mathbf{W},b,\sigma^2)}$. If the variance depends on the input (heteroskedastic regression), then:&lt;/p>
+$$p(y\mid\mathbf{x},\theta)=\mathcal{N}\Bigl(y\mid\mathbf{W}_{\mu}^T\mathbf{x}+b,\sigma_+\bigl(\mathbf{W}_\sigma^T\mathbf{x}\bigr)^2\Bigr)$$$$\theta=(\mathbf{W}_\mu,\mathbf{W}_\sigma)$$&lt;p>, and $\sigma_+(x)$ being the softplus function mapping ${\mathbb{R}}$ to ${\mathbb{R}_+}$.&lt;/p>
+&lt;p>When the variance approaches 0, the Gaussian becomes infinitely narrow:&lt;/p>
+$$\lim_{\sigma\rightarrow0}\mathcal{N}(y\mid\mu,\sigma^2)\rightarrow\delta(y-\mu),$$&lt;p>where the Dirac delta function is defined as:&lt;/p>
+$$\delta(x) = \begin{cases} +\infty &amp; \text{if } x=0, \\ 0 &amp; \text{if } x \neq 0 \end{cases},$$&lt;p>and similarly,&lt;/p>
+$$\delta_y(x) = \begin{cases} +\infty &amp; \text{if } x=y, \\ 0 &amp; \text{if } x \neq y \end{cases},$$&lt;p>with ${\delta_y(x) = \delta(x-y)}$.&lt;/p>
+&lt;h2 id="some-common-other-univariate-distributions">Some Common Other Univariate Distributions
+&lt;/h2>&lt;p>&lt;img src="https://nguyentuss.github.io/p/univariate-models/img/common-uni-distribution.png"
+width="1104"
+height="452"
+srcset="https://nguyentuss.github.io/p/univariate-models/img/common-uni-distribution_hu_78cafa3096cea5ea.png 480w, https://nguyentuss.github.io/p/univariate-models/img/common-uni-distribution_hu_ecd50efe905c18ab.png 1024w"
+loading="lazy"
+alt="image"
+class="gallery-image"
+data-flex-grow="244"
+data-flex-basis="586px"
+>&lt;/p>
+&lt;h3 id="student-t-distribution">Student t Distribution
+&lt;/h3>$$\mathcal{T}(y \mid \mu, \sigma^2, \nu) \;\propto\; \Bigl[ 1 + \tfrac{1}{\nu} \Bigl(\tfrac{y - \mu}{\sigma}\Bigr)^2 \Bigr]^{-\tfrac{\nu + 1}{2}}.$$&lt;p>Its properties include:&lt;/p>
+$$\text{mean} = \mu,\quad \text{mode} = \mu,\quad \text{var} = \frac{\nu \sigma^2}{\nu - 2},$$&lt;p>with the mean defined if ${\nu &amp;gt; 1}$ and the variance if ${\nu &amp;gt; 2}$. For ${\nu \gg 5}$, it approaches a Gaussian. A common choice is ${\nu = 4}$.&lt;/p>
+&lt;h3 id="cauchy-distribution">Cauchy Distribution
+&lt;/h3>&lt;p>For ${\nu=1}$, the Student t distribution becomes the &lt;strong>Cauchy&lt;/strong> (or &lt;strong>Lorentz&lt;/strong>) distribution:&lt;/p>
+$$\mathcal{C}(x\mid\mu,\gamma)=\frac{1}{\pi\,\gamma} \Bigl[1+\Bigl(\tfrac{x-\mu}{\gamma}\Bigr)^2\Bigr]^{-1}.$$&lt;p>The &lt;strong>Half Cauchy&lt;/strong> distribution (with ${\mu=0}$) is defined as:&lt;/p>
+$$\mathcal{C}_+(x\mid \gamma) \;\triangleq\; \tfrac{2}{\pi\,\gamma} \Bigl[1+\Bigl(\tfrac{x}{\gamma}\Bigr)^2\Bigr]^{-1}.$$&lt;h3 id="laplace-distribution">Laplace Distribution
+&lt;/h3>&lt;p>Also known as the &lt;strong>double-sided exponential&lt;/strong> distribution, the Laplace distribution has the pdf:&lt;/p>
+$$\text{Laplace}(y \mid \mu, b) \;\triangleq\; \frac{1}{2b} \exp\Bigl(-\tfrac{|y-\mu|}{b}\Bigr),$$&lt;p>with properties:&lt;/p>
+$$\text{mean} = \mu,\quad \text{mode} = \mu,\quad \text{var} = 2b^2.$$&lt;p>&lt;img src="https://nguyentuss.github.io/p/univariate-models/img/beta-gamma-distribution.png"
+width="1041"
+height="372"
+srcset="https://nguyentuss.github.io/p/univariate-models/img/beta-gamma-distribution_hu_12fe684c8a19942e.png 480w, https://nguyentuss.github.io/p/univariate-models/img/beta-gamma-distribution_hu_e02860b1e0fcfbc.png 1024w"
+loading="lazy"
+alt="image"
+class="gallery-image"
+data-flex-grow="279"
+data-flex-basis="671px"
+>&lt;/p>
+&lt;h3 id="beta-distribution">Beta Distribution
+&lt;/h3>&lt;p>The &lt;strong>Beta distribution&lt;/strong> is supported on the interval ${[0,1]}$ and is defined as:&lt;/p>
+$$\text{Beta}(x \mid a, b) \;=\; \frac{1}{B(a, b)}\,x^{\,a-1}\,\bigl(1 - x\bigr)^{b-1},$$&lt;p>where the &lt;strong>beta function&lt;/strong> is:&lt;/p>
+$$B(a, b) \;\triangleq\; \frac{\Gamma(a)\,\Gamma(b)}{\Gamma(a + b)},$$&lt;p>and the Gamma function is defined as:&lt;/p>
+$$\Gamma(a) \;\triangleq\; \int_{0}^{\infty} x^{\,a-1}e^{-x}\,dx.$$&lt;p>For ${a = b = 1}$, this is the uniform distribution. When both ${a}$ and ${b}$ are less than 1, the distribution is bimodal with spikes at ${0}$ and ${1}$; when both are greater than 1, it is unimodal. Its properties include:&lt;/p>
+$$\text{mean} = \frac{a}{\,a+b\,}, \quad \text{mode} = \frac{a-1}{\,a+b-2\,}, \quad \text{var} = \frac{ab}{(\,a+b\,)^2(\,a+b+1\,)}.$$&lt;h2 id="transformation-of-random-variables">Transformation of Random Variables
+&lt;/h2>&lt;p>Suppose ${\mathbf{x}\sim p()}$ is a random variable, and ${\mathbf{y}=f(\mathbf{x})}$ is a transformation of it. We discuss how to compute ${p(\mathbf{y})}$.&lt;/p>
+&lt;h3 id="discrete-case">Discrete Case
+&lt;/h3>&lt;p>For discrete r.v&amp;rsquo;s, the pmf of ${\mathbf{y}}$ is obtained by summing the pmf of all ${\mathbf{x}}$ such that ${f(\mathbf{x})=\mathbf{y}}$:&lt;/p>
+$$p_{\mathbf{y}}(\mathbf{y})=\sum_{\mathbf{x}:\,f(\mathbf{x})=\mathbf{y}}p_{\mathbf{x}}(\mathbf{x}).$$&lt;p>For example, if ${f(\mathbf{x})=1}$ when ${\mathbf{x}}$ is even and ${0}$ otherwise, and ${\mathbf{x}}$ is uniformly distributed over ${{1,2,\dots,10}}$, then ${p_{\mathbf{y}}(1)=0.5}$ and ${p_{\mathbf{y}}(0)=0.5}$.&lt;/p>
+&lt;h3 id="continuous-case">Continuous Case
+&lt;/h3>&lt;p>For continuous r.v&amp;rsquo;s, we work with the cdf:&lt;/p>
+$$P_{\mathbf{y}}(\mathbf{y})=Pr(Y\leq \mathbf{y}) = Pr\Bigl(f(\mathbf{x}) \leq \mathbf{y}\Bigr)=Pr\Bigl(\mathbf{x} \in \{x \mid f(x) \leq \mathbf{y}\}\Bigr).$$&lt;p>If ${f}$ is invertible, differentiating the cdf yields the pdf; if not, Monte Carlo approximation may be used.&lt;/p>
+&lt;h3 id="invertible-transformation-bijections-or-one-to-one">Invertible Transformation (Bijections or One-to-One)
+&lt;/h3>&lt;p>&lt;img src="https://nguyentuss.github.io/p/univariate-models/img/bijection.png"
+width="943"
+height="385"
+srcset="https://nguyentuss.github.io/p/univariate-models/img/bijection_hu_9f2e7212dc16776c.png 480w, https://nguyentuss.github.io/p/univariate-models/img/bijection_hu_8b11a7e911ea604a.png 1024w"
+loading="lazy"
+alt="image"
+class="gallery-image"
+data-flex-grow="244"
+data-flex-basis="587px"
+>&lt;/p>
+&lt;p>For a monotonic (and hence invertible) function, if ${x\sim Uni(0,1)}$ and ${y=f(x)=2x+1}$, then for general ${p_x(x)}$ and any monotonic ${f:\mathbb{R}\rightarrow\mathbb{R}}$, let ${g=f^{-1}}$ with ${y=f(x)}$ and ${x=g(y)}$. Then:&lt;/p>
+$$P_y(y)=Pr\!\bigl(f(X)\leq y\bigr)=Pr\!\bigl(X\leq f^{-1}(y)\bigr)=P_x\!\bigl(f^{-1}(y)\bigr)=P_x\!\bigl(g(y)\bigr).$$&lt;p>Differentiating gives:&lt;/p>
+$$p_y(y) \triangleq \frac{d}{dy}P_y(y)=p_x\!\bigl(g(y)\bigr)\,\Bigl|\frac{dx}{dy}\Bigr|.$$&lt;p>For multivariate cases, if ${f:\mathbb{R}^n\rightarrow\mathbb{R}^n}$ is invertible with inverse ${g}$, then:&lt;/p>
+$$p_y(\mathbf{y})=p_x(\mathbf{x})\,\Bigl|\det\Bigl[\mathbf{J}_g(\mathbf{y})\Bigr]\Bigr|,$$&lt;p>where ${\mathbf{J}_g(\mathbf{y})=\frac{d\mathbf{g}(\mathbf{y})}{,d\mathbf{y}^T}}$ is the Jacobian.&lt;/p>
+&lt;h3 id="convolution-theorem">Convolution Theorem
+&lt;/h3>&lt;p>&lt;img src="https://nguyentuss.github.io/p/univariate-models/img/convolution.png"
+width="452"
+height="338"
+srcset="https://nguyentuss.github.io/p/univariate-models/img/convolution_hu_9b160f7bc067b58e.png 480w, https://nguyentuss.github.io/p/univariate-models/img/convolution_hu_f0c35b29c6380d9c.png 1024w"
+loading="lazy"
+alt="image"
+class="gallery-image"
+data-flex-grow="133"
+data-flex-basis="320px"
+>&lt;/p>
+&lt;p>For ${Y=X_1+X_2}$ with independent r.v&amp;rsquo;s ${X_1}$ and ${X_2}$, in the discrete case:&lt;/p>
+$$p(Y=y)=\sum_{x=-\infty}^{\infty}p(X_1=x)\,p(X_2=y-x).$$&lt;p>In the continuous case:&lt;/p>
+$$p(y)=\int p_1(x_1)\,p_2(y-x_1)\,dx_1.$$&lt;p>This is written as:&lt;/p>
+$$p = p_1 \circledast p_2,$$&lt;p>where ${\circledast}$ is the &lt;strong>convolution&lt;/strong> operator.&lt;/p>
+&lt;h3 id="central-limit-theorem">Central Limit Theorem
+&lt;/h3>&lt;p>&lt;img src="https://nguyentuss.github.io/p/univariate-models/img/CLT.png"
+width="1039"
+height="376"
+srcset="https://nguyentuss.github.io/p/univariate-models/img/CLT_hu_2f10b526acd4f76.png 480w, https://nguyentuss.github.io/p/univariate-models/img/CLT_hu_b28dc55a79a446f2.png 1024w"
+loading="lazy"
+alt="image"
+class="gallery-image"
+data-flex-grow="276"
+data-flex-basis="663px"
+>&lt;/p>
+&lt;p>The Central Limit Theorem states that the sum of ${N}$ independent and identically distributed (i.i.d.) random variables (regardless of their original distribution) will approximate a Gaussian distribution as ${N}$ increases.&lt;/p>
+&lt;h3 id="monte-carlo-approximation">Monte Carlo Approximation
+&lt;/h3>&lt;p>&lt;img src="https://nguyentuss.github.io/p/univariate-models/img/monte-carlo.png"
+width="969"
+height="400"
+srcset="https://nguyentuss.github.io/p/univariate-models/img/monte-carlo_hu_3823102b33d88119.png 480w, https://nguyentuss.github.io/p/univariate-models/img/monte-carlo_hu_89d13bf6293e8196.png 1024w"
+loading="lazy"
+alt="image"
+class="gallery-image"
+data-flex-grow="242"
+data-flex-basis="581px"
+>&lt;/p>
+&lt;p>Suppose ${\mathbf{x}}$ is a random variable and ${\mathbf{y}=f(\mathbf{x})}$. When computing ${p(\mathbf{y})}$ directly is difficult, one can approximate it by drawing a large number of samples from ${p(x)}$, computing ${y_s=f(x_s)}$, and forming the empirical distribution:&lt;/p>
+$$p_{\mathbf{y}}(y) \triangleq \frac{1}{N_s} \,\sum_{s=1}^{N_s} \delta\!\bigl(y - y_s\bigr).$$</description></item></channel></rss>
