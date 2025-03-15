@@ -1,5 +1,5 @@
 ---
-title: index
+title: Convolution Neural Network
 description: Convolution Neural Network
 date: 2025-03-13 21:29:50+0700
 image: cover.jpg
