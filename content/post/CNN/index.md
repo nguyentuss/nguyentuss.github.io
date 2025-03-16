@@ -46,7 +46,7 @@ If there are not in that condition, the division just take the integer, this equ
 $$
 W_2=\lfloor \frac{W_1-F}{S}\rfloor +1
 $$
-However, we can also make it in the perfect circumstance if we add extra padding on the both edge bound with size $P$ so that the division will divisible by $S$
+However, we can also make it in the perfect circumstance if we add zero-padding on the both edge bound with size $P$ so that the division will divisible by $S$
 
 <div style="text-align: center;">
 	<img src="img/conv_padding.png" width="600">
@@ -149,7 +149,7 @@ A CNN is a neural network: an algorithm used to recognize patterns in data. Neur
 Before we start, I will talk some terminology in this blog and you can also see in every lessons or blogs
 
 * **Unit**: A unit represents the value of a specific point in the tensor at each layer of a CNN (Convolutional Neural Network).
-* **Receptive Field**: This is a region in the input image that a filter (kernel) processes during convolution. It determines which portion of the input image contributes to a particular unit in the next layer. For example, suppose that the input volume has size \[32x32x3\], (e.g. an RGB CIFAR-10 image). If the receptive field (or the filter size) is 5x5, then each neuron in the Conv Layer will have weights to a \[5x5x3\] region in the input volume, for a total of 5x5x3 = 75 weights (and +1 bias parameter). Notice that the extent of the connectivity along the depth axis must be 3, since this is the depth of the input volume.
+* **Receptive Field**: This is a region in the input image that a filter (kernel) processes during convolution. It determines which portion of the input image contributes to a particular unit in the next layer.
 * **Local Region**: In a broader sense, it can include the receptive field. It refers to a specific region in the tensor at different layers of a CNN.
 * **Feature Map**: This is the output matrix obtained after applying convolution operations between a filter and the receptive fields by sliding from left to right and top to bottom.
 * **Activation Map**: The output of the feature map after applying an activation function to introduce non-linearity.
@@ -161,7 +161,7 @@ Before we start, I will talk some terminology in this blog and you can also see 
 **Regular Neural Nets** don’t scale well to full images. In CIFAR-10, images are only of size $32\times 32\times 3$ (32 wide, 32 high, 3 color channels), so a single fully-connected neuron in a first hidden layer of a regular Neural Network would have $32\times 32\times 3 =3072$ weights. This amount still seems manageable, but clearly this fully-connected structure does not scale to larger images. For example, an image of more respectable size, e.g. $200 \times 200 \times 3$, would lead to neurons that have $200\times 200\times 3 = 120000$ weights. Moreover, we would almost certainly want to have several such neurons, so the parameters would add up quickly! Clearly, this full connectivity is wasteful and the huge number of parameters would quickly lead to overfitting.
 ![](img/ANN.png)
 
-**3D volumes of neurons**. Convolutional Neural Networks take advantage of the fact that the input consists of images and they constrain the architecture in a more sensible way. In particular, unlike a regular Neural Network, the layers of a ConvNet have neurons arranged in 3 dimensions: **width, height, depth**. (Note that the word *depth* here refers to the third dimension of an activation volume, not to the depth of a full Neural Network, which can refer to the total number of layers in a network). For example, the input images in CIFAR-10 are an input volume of activations, and the volume has dimensions $32\times 32\times 3$ (width, height, depth respectively). As we will soon see, the neurons in a layer will only be connected to a small region of the layer before it, instead of all of the neurons in a fully-connected manner. Moreover, the final output layer would for CIFAR-10 have dimensions $1\times 1\times 10$, because by the end of the ConvNet architecture we will reduce the full image into a single vector of class scores, arranged along the depth dimension.
+**3D volumes of neurons**. Convolutional Neural Networks take advantage of the fact that the input consists of images and they constrain the architecture in a more sensible way. In particular, unlike a regular Neural Network, the layers of a ConvNet have neurons arranged in 3 dimensions: **width, height, depth**. (Note that the word *depth* here refers to the third dimension of an activation volume, not to the depth of a full Neural Network, which can refer to the total number of layers in a network). For example, the input images in CIFAR-10 are an input volume of activations, and the volume has dimensions $32\times 32\times 3$ (width, height, depth respectively). As we will soon see, the neurons in a layer will only be connected to a small region of the layer before it, instead of all of the neurons in a fully-connected manner. Moreover, the final output layer would for CIFAR-10 have dimensions $1\times 1\times 10$, because by the end of the ConvNet architecture we will reduce the full image into a single vector of class scores, arranged along the depth dimension. In the basic CNN, **depth,stride** and **zero-padding** are the hyperparameters control the output volume.
 ![](img/ConvNet.png)
 
 ## Layers used to build ConvNets
@@ -169,11 +169,11 @@ Before we start, I will talk some terminology in this blog and you can also see 
 A simple ConvNet is a sequence of layers, and every layers of a ConvNet transforms one volume of activations to another through a differentiable function. We use three main types of layers to build ConvNet architectures: **Convolutional Layers,Pooling Layer** and **Fully-Connected Layers** (same as the ANN).
 We will go into more deeply, but a simple ConvNet for CIFAR-10 classification could have the architecture, INPUT $\rightarrow$ CONV $\rightarrow$ RELU $\rightarrow$ POOL $\rightarrow$ FC
 
-* INPUT \[32x32x3\] will hold the raw pixel values of the image, in this case an image of width 32, height 32, and three color RGB
-* CONV layer will compute the output of neurons that are connected to local regions in the input, each computing a dot product between their weights and a small region they are connected to in the input volume. This may result in volume such as \[32x32x12\] if we decided to use 12 filters.
-* RELU layer will apply an elementwise activation function, such as the $max(0,x)$ thresholding at zero. This leaves the size of the volume unchanged (\[32x32x12\]).
-* POOL layer will perform a downsampling operation along the spatial dimensions (width, height), resulting in volume such as \[16x16x12\].
-* FC (i.e. fully-connected) layer will compute the class scores, resulting in volume of size \[1x1x10\], where each of the 10 numbers correspond to a class score, such as among the 10 categories of CIFAR-10. As with ordinary Neural Networks and as the name implies, each neuron in this layer will be connected to all the numbers in the previous volume.
+* INPUT 32x32x3 will hold the raw pixel values of the image, in this case an image of width 32, height 32, and three color RGB
+* CONV layer will compute the output of neurons that are connected to local regions in the input, each computing a dot product between their weights and a small region they are connected to in the input volume. This may result in volume such as 32x32x12 if we decided to use 12 filters.
+* RELU layer will apply an elementwise activation function, such as the $max(0,x)$ thresholding at zero. This leaves the size of the volume unchanged (32x32x12).
+* POOL layer will perform a downsampling operation along the spatial dimensions (width, height), resulting in volume such as 16x16x12.
+* FC (i.e. fully-connected) layer will compute the class scores, resulting in volume of size 1x1x10, where each of the 10 numbers correspond to a class score, such as among the 10 categories of CIFAR-10. As with ordinary Neural Networks and as the name implies, each neuron in this layer will be connected to all the numbers in the previous volume.
   In this way, ConvNets transform the original image layer by layer from the original pixel values to the final class scores. Note that some layers contain parameters and other don’t. In particular, the CONV/FC layers perform transformations that are a function of not only the activations in the input volume, but also of the parameters (the weights and biases of the neurons). On the other hand, the RELU/POOL layers will implement a fixed function. The parameters in the CONV/FC layers will be trained with gradient descent so that the class scores that the ConvNet computes are consistent with the labels in the training set for each image.
   ![](img/Conv_example.png)
 
@@ -190,7 +190,29 @@ For example, lets look at the first convolutional layer have $3\times3\times3$ (
 
 ### Local connectivity
 
-When dealing with high-dimensional inputs such as images,
+When dealing with high-dimensional inputs such as images, as we saw above it is impractical to connect neurons to all neurons in the previous volume. Instead, we will connect each neuron to only a local region of the input volume. The spatial extent of this connectivity is a hyperparameter called the **receptive field** of the neuron (equivalently this is the filter size). The extent of the connectivity along the depth axis is always equal to the depth of the input volume. It is important to emphasize again this asymmetry in how we treat the spatial dimensions (width and height) and the depth dimension: The connections are local in 2D space (along width and height), but always full along the entire depth of the input volume. For example, suppose that the input volume has size $32\times 32\times 3$, (e.g. an RGB CIFAR-10 image). If the receptive field (or the filter size) is $5\times 5$, then each neuron in the Conv Layer will have weights to a $5 \times 5\times 3$ region in the input volume, for a total of $5\times 5\times 75$ weights (and +1 bias parameter). Notice that the extent of the connectivity along the depth axis must be 3, since this is the depth of the input volume.
+
+![](img/conv_layer_padding.png)
+
+### Zero-Padding
+
+In the figure above on the left, the input dimension was 5 and the output dimension was equal, 5. This worked out because our **receptive field** were 3 and we used zero-padding of 1. If there are no zero-padding used, then the output volume would have spatial dimension only 3. In gereral, setting zero-padding to be $P=(F-1)/2$ when the stride $S=1$ to ensures that the input volume and the output volume have the same size spatially.
+
+## Strides
+
+Note again that the spatial arrangement hyperparameters have mutual constraints. For example, when the input has size $W=10$, no zero-padding is used $P=0$, and the filter size $F=3$, then it possible to use stride $S=2$, since $W_2=(W-F+2P)/S=4.5$, not an integer indicating the neurons don't fit neatly and symmetrically across the input, and a ConvNet library could thrown exception or zero pad the rest to make it fit, or crop the input to make it fit.
+
+## Carefully with choosing
+
+As I mentioned before in the **strides** part. In that example, assume you want to round the $4.5$ to $4$ or $5$ to make the $W_2$ be integer, **that's not a good idea**, when the rounding are applied, this will cause the output shape might not match expectations, can cause misalignment in the feature map, when rounded down, some neurons can be missing, when round up, extra neurons will assumed.
+
+### Real-world example
+
+The [Krizhevsky et al.](http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks) architecture that won the ImageNet challenge in 2012 accepted images of size $227\times 227\times 3$. On the first Convolutional Layer, it used neurons with receptive field size $F=11$, stride $S=4$ and no zero padding $P=0$. Since $(227 - 11)/4 + 1 = 55$, and since the Conv layer had a depth of $K=96$, the Conv layer output volume had size $55\times 55\times 96$. Each of the $55\times 55\times 96$ neurons in this volume was connected to a region of size $11\times 11\times 3$ in the input volume. Moreover, all $96$ neurons in each depth column are connected to the same $11\times 11\times 3$ region of the input, but of course with different weights.
+
+### Parameter Sharing
+
+Parameter sharing scheme is used in Convolutional Layers to control the number of parameters. Using in the the real-world example above, we see that there are $55\times 55 \times 96=290400$ neurons in the first Conv Layer, and each has the $11\times 11\times 3=363$ weight and $1$ bias. Together, this we will have $290400\times 363=105415200$ parameters
 
 ## Reference
 
