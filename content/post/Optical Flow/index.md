@@ -50,19 +50,27 @@ where $I(\vec{x},t)$ is an image intensity as a function of space $\vec{x}=(x,y)
 That equation only holds under *brightness constancy* assumption. Of course, *brightness constancy* rarely hold exactly. The underlying assumptions that surface radiance remains fixed from one frame to next. One can fabricate scenes for which this holds, the scene might be constrained to contain only [Lambertian Surface](https://www.azooptics.com/Article.aspx?ArticleID=790) (no secularities), with a distant point source (so that changing the distance to the light source has no effect), no object rotations, and no secondary illumination (shadows or inter-surface reflection). Although this is unrealistic, it is remarkable that the brightness constancy assumption works well in practice.
 ![](img/pic2.png)
 To derive an estimator for 2D velocity $\vec{u}$, we first consider the 1D case. Let $f_1(x)$ and $f_2(x)$ be 1D signals (images) at two time instants. In the figure above, suppose that $f_2(x)$ is a translated version $f_1(x)$, let $f_2(x)=f_1(x-d)$ where *d* denotes the translation. [A Taylor series expansion](https://tutorial.math.lamar.edu/classes/calcii/taylorseries.aspx) of $f_1(x-d)$ about x is given by
+
 $$
 f_1(x-d) = f_1(x) -df'_1(x) + \frac{d^2}{2!}f''_1(x)-...= \sum_{0}^{\infty}\frac{(-d)^n}{n!}f^{(n)} \tag{2}(x)
 $$
+
 With this expansion, we can rewrite the difference between two signals at location $x$
+
 $$
 f_1(x)-f_2(x) = df_1(x)-O(d^2f''_1) \tag{3}
 $$
+
 Ignoring the second- and higher-order terms, we obtain the approximation at $x$
+
 $$
 \hat{d}=\frac{f_1(x)-f_2(x)}{f'_1(x)} \tag{4}
 $$
+
 The 1D case generalizes straightforwardly to 2D. Assume that the displaced image is well approximated y the first-order Taylor series:
+
 $$ I(\vec{x}+\vec{u},t+1)\approx I(\vec{x},t)+\vec{u}\nabla I(\vec{x},t)+I_t(\vec{x},t)\tag{5}$$
+
 where $\nabla I(\vec{x},t)=(I_x,I_y)$, which $I_x,I_y$ show how brightness changes in the x and y directions and $I_t$ show how brightness changes over time of image $I(\vec{x},t)$ at time $t$. If $I_t>0$, the pixel is getting brighter and $I_t<0$ otherwise, and $\vec{u}=(u_1,u_2)^T$ is the 2D velocity.
 Ignoring the high-order Taylor series, substitute with equation $(1)$, we obtain
 

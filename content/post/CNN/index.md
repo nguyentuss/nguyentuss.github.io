@@ -202,7 +202,7 @@ In the figure above on the left, the input dimension was 5 and the output dimens
 
 Note again that the spatial arrangement hyperparameters have mutual constraints. For example, when the input has size $W=10$, no zero-padding is used $P=0$, and the filter size $F=3$, then it possible to use stride $S=2$, since $W_2=(W-F+2P)/S=4.5$, not an integer indicating the neurons don't fit neatly and symmetrically across the input, and a ConvNet library could thrown exception or zero pad the rest to make it fit, or crop the input to make it fit.
 
-## Carefully with choosing
+### Carefully with choosing
 
 As I mentioned before in the **strides** part. In that example, assume you want to round the $4.5$ to $4$ or $5$ to make the $W_2$ be integer, **that's not a good idea**, when the rounding are applied, this will cause the output shape might not match expectations, can cause misalignment in the feature map, when rounded down, some neurons can be missing, when round up, extra neurons will assumed.
 
