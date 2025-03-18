@@ -147,6 +147,25 @@ $$
 \frac{\partial E(u_1, u_2)}{\partial u_2}
 =\sum_{\vec{x}} g(\vec{x})\Bigl[u_1 \, I_xI_y + u_2 \, I_y^2+ I_t \, I_y\Bigr]= 0
 $$
+These equations can we rewritten in matrix form
+
+$$ 
+\mathbf{M}\vec{u}=\vec b
+$$
+Where $\mathbf{M}$ and $\vec{b}$ are
+$$
+\mathbf{M} = 
+\begin{bmatrix}
+\sum g I_x^2 & \sum g I_xI_y \\
+\sum gI_y^2 & \sum g I_x I_y
+\end{bmatrix}
+, \vec{b} = -
+\begin{pmatrix}
+I_tI_x \\
+I_tI_y
+\end{pmatrix}
+$$
+When $\mathbf{M}$ has rank 2, then the LS estimate is $\hat{u}=\mathbf{M}^{-1}\vec{b}$
 
 ## Find root
 
