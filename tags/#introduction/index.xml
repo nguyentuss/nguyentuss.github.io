@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>#Introduction on nguyentuss blog</title><link>https://nguyentuss.github.io/tags/%23introduction/</link><description>Recent content in #Introduction on nguyentuss blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Thu, 13 Mar 2025 21:29:50 +0700</lastBuildDate><atom:link href="https://nguyentuss.github.io/tags/%23introduction/index.xml" rel="self" type="application/rss+xml"/><item><title>Convolution Neural Network</title><link>https://nguyentuss.github.io/p/convolution-neural-network/</link><pubDate>Thu, 13 Mar 2025 21:29:50 +0700</pubDate><guid>https://nguyentuss.github.io/p/convolution-neural-network/</guid><description>&lt;img src="https://nguyentuss.github.io/p/convolution-neural-network/cover.jpg" alt="Featured image of post Convolution Neural Network" />&lt;p>Convolutional Neural Networks are very similar to ordinary Neural Networks, they are made up of neurons that have learnable weights and biases. Each neuron receives some inputs, performs a dot product and optionally follows it with a non-linearity. The whole network still expresses a single differentiable score function: from the raw image pixels on one end to class scores at the other. And they still have a loss function (e.g. SVM/Softmax) on the last (fully-connected) layer and all the tips/tricks we developed for learning regular Neural Networks still apply.&lt;/p>
+&lt;h2 id="convolution">Convolution
+&lt;/h2>&lt;h3 id="definition">Definition
+&lt;/h3>&lt;p>Convolution is a concept in digital signal processing that &lt;strong>transforms&lt;/strong> the input information through the &lt;strong>convolution operation&lt;/strong> with &lt;strong>a filter&lt;/strong> to yield an output in a form of a new signal. This signal will &lt;strong>reduces the features&lt;/strong> that the filter is not concerned and just &lt;strong>keep the main features&lt;/strong>. Each filter have their main purpose. There are many convolution n-dimension, I will talk about the &lt;strong>2D convolution&lt;/strong> because it is the easiest to visualize and also the most common convolution.&lt;/p>
+&lt;p>The two-dimensional convolution applied to the &lt;strong>2D input matrix&lt;/strong> and the &lt;strong>2D filter matrix&lt;/strong>. The convolution of an input matrix $X \in \mathbb{R}^{W\times H \times d}$ with a filter $F \in \mathbb{R}^{w\times h \times d}$ produces an output matrix $Y \in \mathbb{R}^{W\times H}$. The steps are follows:&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Compute the convolution at the single point&lt;/strong>: Position the filter at the top-left corner of the input matrix, resulting in a submatrix $X_{sub}$ whose size matches the filter&amp;rsquo;s dimension. The first value, $y_{11}$ is the convolution of $X_{sub}$ with $F$, such as
+$$
+y_{11} = \sum_{}^{w}\sum_{}^{h}\sum_{}^{d} x_{sub}[i,j,u] \times f[i,j,u]
+$$&lt;/li>
+&lt;li>&lt;strong>Slide the window:&lt;/strong> Next, slide the filter window across the input matrix from left to right, and then from top to bottom, using the specified stride. For each position, compute the corresponding output value. Once you have traversed the entire input, you obtain the complete output matrix $Y$. (&lt;a class="link" href="https://usaco.guide/gold/sliding-window?lang=cpp" target="_blank" rel="noopener"
+>Click this link to futher more information about this technique&lt;/a>)&lt;/li>
+&lt;/ul>
+&lt;div style="text-align: center;">
+&lt;img src="img/convlayer_detailedview_demo.gif" width="600">
+&lt;/div>
+&lt;p>In a convolutional neural network (CNN), each subsequent layer takes the output from the layer immediately before it. Therefore, to keep the network design manageable, we need to determine the output size for each layer. This means that given the input (matrix) size $(W_1,H_1)$, a filter of size $(F,F)$, and a stride $S$, we can determine the output matrix $(W_2,H_2)$.
+Consider the process sliding with size $1\times W_1$&lt;/p>
+&lt;div style="text-align: center;">
+&lt;img src="img/stride_convo.png" width="600">
+&lt;/div>
+$$
+W_2=\frac{W_1-F}{S}+1
+$$$$
+W_2=\lfloor \frac{W_1-F}{S}\rfloor +1
+$$&lt;p>
+However, we can also make it in the perfect circumstance if we add zero-padding on the both edge bound with size $P$ so that the division will divisible by $S$&lt;/p>
+&lt;div style="text-align: center;">
+&lt;img src="img/conv_padding.png" width="600">
+&lt;/div>
+$$
+W_2=\frac{W_1-F+2P}{S}+1
+$$$$
+H_2=\frac{H_1-F+2P}{S}+1
+$$&lt;h2 id="practice">Practice
+&lt;/h2>&lt;p>We need to set up such as import lib and load images&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-py" data-lang="py">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="nn">numpy&lt;/span> &lt;span class="k">as&lt;/span> &lt;span class="nn">np&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="nn">os&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="nn">cv2&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">from&lt;/span> &lt;span class="nn">Convolution&lt;/span> &lt;span class="kn">import&lt;/span> &lt;span class="n">conv2d&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="nn">matplotlib.pyplot&lt;/span> &lt;span class="k">as&lt;/span> &lt;span class="nn">plt&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">data_path&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s2">&amp;#34;data/&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="ow">not&lt;/span> &lt;span class="n">os&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">path&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">exists&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">data_path&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sa">f&lt;/span>&lt;span class="s2">&amp;#34;Error: Path does not exist - &lt;/span>&lt;span class="si">{&lt;/span>&lt;span class="n">os&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">path&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">abspath&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">data_path&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">data_list&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">os&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">listdir&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">data_path&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">%&lt;/span>&lt;span class="n">load_ext&lt;/span> &lt;span class="n">autoreload&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">%&lt;/span>&lt;span class="n">autoreload&lt;/span> &lt;span class="mi">2&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Compute the convolution in 2D&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-py" data-lang="py">&lt;span class="line">&lt;span class="cl">&lt;span class="k">def&lt;/span> &lt;span class="nf">conv2d&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">X&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">F&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">s&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">p&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="s2">&amp;#34;&amp;#34;&amp;#34;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2">    X: matrix input
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2">    F: filter
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2">    s: step jump
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2">    p: padding
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2">    &amp;#34;&amp;#34;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="p">(&lt;/span>&lt;span class="n">W&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">H&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">X&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">shape&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">f&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">F&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">shape&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="c1"># Output dimensions&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">w&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">W&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">f&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">2&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">p&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">//&lt;/span> &lt;span class="n">s&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">h&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">H&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">f&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">2&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">p&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">//&lt;/span> &lt;span class="n">s&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">X_pad&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">pad&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">X&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">pad_width&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">((&lt;/span>&lt;span class="n">p&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">p&lt;/span>&lt;span class="p">),(&lt;/span>&lt;span class="n">p&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">p&lt;/span>&lt;span class="p">)),&lt;/span> &lt;span class="n">mode&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;constant&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">constant_values&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="c1"># print(w,h)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">Y&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">zeros&lt;/span>&lt;span class="p">((&lt;/span>&lt;span class="n">w&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">h&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="k">for&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="nb">range&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">w&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">        &lt;span class="k">for&lt;/span> &lt;span class="n">j&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="nb">range&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">h&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">            &lt;span class="n">x&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">s&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">            &lt;span class="n">y&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">j&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">s&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">            &lt;span class="n">Y&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">][&lt;/span>&lt;span class="n">j&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">sum&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">X_pad&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">:(&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="n">f&lt;/span>&lt;span class="p">),&lt;/span>&lt;span class="n">y&lt;/span>&lt;span class="p">:(&lt;/span>&lt;span class="n">y&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="n">f&lt;/span>&lt;span class="p">)]&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="n">F&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="k">return&lt;/span> &lt;span class="n">Y&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>In this example, I will use emboss filter and calculate the convolution on each image&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-py" data-lang="py">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># emboss filter&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">filter&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">array&lt;/span>&lt;span class="p">([[&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">,[&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">,[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">]])&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">for&lt;/span> &lt;span class="n">file&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">data_list&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">img_path&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">os&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">path&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">join&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">data_path&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">file&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">img&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">cv2&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">imread&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">img_path&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">#Convert to grey&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">img&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">cv2&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">cvtColor&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">img&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">cv2&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">COLOR_RGB2GRAY&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">plt&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">figure&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">figsize&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">8&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mi">6&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">plt&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">subplot&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">plt&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">imshow&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">img&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">#Change to np array&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">img&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">array&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">img&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">blur_img&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">conv2d&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">img&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nb">filter&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">s&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">p&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">5&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">plt&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">subplot&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">plt&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">imshow&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">blur_img&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">plt&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">show&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="convolution-neural-network">Convolution Neural Network
+&lt;/h2>&lt;h3 id="definition-1">Definition
+&lt;/h3>&lt;p>In machine learning, a classifier assigns a class label to a data point. For example, an &lt;em>image classifier&lt;/em> produces a class label (e.g, bird, plane) for what objects exist within an image. A &lt;em>convolutional neural network&lt;/em>, or CNN for short, is a type of classifier, which excels at solving this problem!
+A CNN is a neural network: an algorithm used to recognize patterns in data. Neural Networks in general are composed of a collection of neurons that are organized in layers, each with their own learnable weights and biases. Let’s break down a CNN into its basic building blocks.&lt;/p>
+&lt;ol>
+&lt;li>A &lt;strong>tensor&lt;/strong> can be thought of as an n-dimensional matrix. In CNN above, tensors will be 3-dimensional with the exception of the output layer.&lt;/li>
+&lt;li>A &lt;strong>neuron&lt;/strong> can be thought of as a function that takes in multiple inputs and yields as a single output. The outputs of neurons are represented above as the &lt;strong>activation map&lt;/strong>.&lt;/li>
+&lt;li>A &lt;strong>layer&lt;/strong> are the collection of the neurons in the same operations&lt;/li>
+&lt;li>&lt;strong>Kernel and weights and bias&lt;/strong>, while unique to each neuron, are tuned during the training phase, and allow the classifier to adapt to the problem and dataset provided.&lt;/li>
+&lt;li>A CNN conveys a &lt;strong>differentiable score function&lt;/strong>, which is represented as a &lt;strong>class score&lt;/strong> in the visualization on the output layers.&lt;/li>
+&lt;/ol>
+&lt;p>Before we start, I will talk some terminology in this blog and you can also see in every lessons or blogs&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Unit&lt;/strong>: A unit represents the value of a specific point in the tensor at each layer of a CNN (Convolutional Neural Network).&lt;/li>
+&lt;li>&lt;strong>Receptive Field&lt;/strong>: This is a region in the input image that a filter (kernel) processes during convolution. It determines which portion of the input image contributes to a particular unit in the next layer.&lt;/li>
+&lt;li>&lt;strong>Local Region&lt;/strong>: In a broader sense, it can include the receptive field. It refers to a specific region in the tensor at different layers of a CNN.&lt;/li>
+&lt;li>&lt;strong>Feature Map&lt;/strong>: This is the output matrix obtained after applying convolution operations between a filter and the receptive fields by sliding from left to right and top to bottom.&lt;/li>
+&lt;li>&lt;strong>Activation Map&lt;/strong>: The output of the feature map after applying an activation function to introduce non-linearity.&lt;/li>
+&lt;/ul>
+&lt;h2 id="architecture-view">Architecture view
+&lt;/h2>&lt;p>&lt;strong>Regular Neural Nets&lt;/strong>: Neural Networks receive an input (a single vector), and transform it through a series &lt;em>hidden layer&lt;/em>. Each hidden layer is made up of a set of neurons, where each neuron is fully connected to all neurons in the previous layer, and where neurons in a single layer function completely independently and do not share any connections. The last fully-connected layer is called the “output layer” and in classification settings it represents the class scores.&lt;/p>
+&lt;p>&lt;strong>Regular Neural Nets&lt;/strong> don’t scale well to full images. In CIFAR-10, images are only of size $32\times 32\times 3$ (32 wide, 32 high, 3 color channels), so a single fully-connected neuron in a first hidden layer of a regular Neural Network would have $32\times 32\times 3 =3072$ weights. This amount still seems manageable, but clearly this fully-connected structure does not scale to larger images. For example, an image of more respectable size, e.g. $200 \times 200 \times 3$, would lead to neurons that have $200\times 200\times 3 = 120000$ weights. Moreover, we would almost certainly want to have several such neurons, so the parameters would add up quickly! Clearly, this full connectivity is wasteful and the huge number of parameters would quickly lead to overfitting.
+&lt;img src="https://nguyentuss.github.io/p/convolution-neural-network/img/ANN.png"
+width="791"
+height="388"
+srcset="https://nguyentuss.github.io/p/convolution-neural-network/img/ANN_hu_cc0f8906699e68c6.png 480w, https://nguyentuss.github.io/p/convolution-neural-network/img/ANN_hu_46c6e01982eedf91.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="203"
+data-flex-basis="489px"
+>&lt;/p>
+&lt;p>&lt;strong>3D volumes of neurons&lt;/strong>. Convolutional Neural Networks take advantage of the fact that the input consists of images and they constrain the architecture in a more sensible way. In particular, unlike a regular Neural Network, the layers of a ConvNet have neurons arranged in 3 dimensions: &lt;strong>width, height, depth&lt;/strong>. (Note that the word &lt;em>depth&lt;/em> here refers to the third dimension of an activation volume, not to the depth of a full Neural Network, which can refer to the total number of layers in a network). For example, the input images in CIFAR-10 are an input volume of activations, and the volume has dimensions $32\times 32\times 3$ (width, height, depth respectively). As we will soon see, the neurons in a layer will only be connected to a small region of the layer before it, instead of all of the neurons in a fully-connected manner. Moreover, the final output layer would for CIFAR-10 have dimensions $1\times 1\times 10$, because by the end of the ConvNet architecture we will reduce the full image into a single vector of class scores, arranged along the depth dimension. In the basic CNN, &lt;strong>depth,stride&lt;/strong> and &lt;strong>zero-padding&lt;/strong> are the hyperparameters control the output volume.
+&lt;img src="https://nguyentuss.github.io/p/convolution-neural-network/img/ConvNet.png"
+width="1187"
+height="591"
+srcset="https://nguyentuss.github.io/p/convolution-neural-network/img/ConvNet_hu_15dafcf74e52b85e.png 480w, https://nguyentuss.github.io/p/convolution-neural-network/img/ConvNet_hu_c16aeb72b766f3a0.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="200"
+data-flex-basis="482px"
+>&lt;/p>
+&lt;h2 id="layers-used-to-build-convnets">Layers used to build ConvNets
+&lt;/h2>&lt;p>A simple ConvNet is a sequence of layers, and every layers of a ConvNet transforms one volume of activations to another through a differentiable function. We use three main types of layers to build ConvNet architectures: &lt;strong>Convolutional Layers,Pooling Layer&lt;/strong> and &lt;strong>Fully-Connected Layers&lt;/strong> (same as the ANN).
+We will go into more deeply, but a simple ConvNet for CIFAR-10 classification could have the architecture, INPUT $\rightarrow$ CONV $\rightarrow$ RELU $\rightarrow$ POOL $\rightarrow$ FC&lt;/p>
+&lt;ul>
+&lt;li>INPUT 32x32x3 will hold the raw pixel values of the image, in this case an image of width 32, height 32, and three color RGB&lt;/li>
+&lt;li>CONV layer will compute the output of neurons that are connected to local regions in the input, each computing a dot product between their weights and a small region they are connected to in the input volume. This may result in volume such as 32x32x12 if we decided to use 12 filters.&lt;/li>
+&lt;li>RELU layer will apply an elementwise activation function, such as the $max(0,x)$ thresholding at zero. This leaves the size of the volume unchanged (32x32x12).&lt;/li>
+&lt;li>POOL layer will perform a downsampling operation along the spatial dimensions (width, height), resulting in volume such as 16x16x12.&lt;/li>
+&lt;li>FC (i.e. fully-connected) layer will compute the class scores, resulting in volume of size 1x1x10, where each of the 10 numbers correspond to a class score, such as among the 10 categories of CIFAR-10. As with ordinary Neural Networks and as the name implies, each neuron in this layer will be connected to all the numbers in the previous volume.
+In this way, ConvNets transform the original image layer by layer from the original pixel values to the final class scores. Note that some layers contain parameters and other don’t. In particular, the CONV/FC layers perform transformations that are a function of not only the activations in the input volume, but also of the parameters (the weights and biases of the neurons). On the other hand, the RELU/POOL layers will implement a fixed function. The parameters in the CONV/FC layers will be trained with gradient descent so that the class scores that the ConvNet computes are consistent with the labels in the training set for each image.
+&lt;img src="https://nguyentuss.github.io/p/convolution-neural-network/img/Conv_example.png"
+width="1255"
+height="601"
+srcset="https://nguyentuss.github.io/p/convolution-neural-network/img/Conv_example_hu_d598391dc29b15d6.png 480w, https://nguyentuss.github.io/p/convolution-neural-network/img/Conv_example_hu_8badbe6992bd9033.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="208"
+data-flex-basis="501px"
+>&lt;/li>
+&lt;/ul>
+&lt;h2 id="convolutional-layer">Convolutional Layer
+&lt;/h2>&lt;p>The Conv layer is the core building block of a Convolutional Network that does most of the computational heavy lifting.
+&lt;strong>Let’s first discuss what the CONV layer computes without brain/neuron analogies&lt;/strong>. The CONV layer&amp;rsquo;s parameters consist of a set of learnable filters. Every filters is a small spatially(along width and height) but extends through the full depthof the input volume.&lt;/p>
+&lt;div style="text-align: center;">
+&lt;img src="img/first_conv_layer.gif" width="600">
+&lt;/div>
+&lt;p>For example, lets look at the first convolutional layer have $3\times3\times3$ (3 pixels width and height, and 3 color channels), also have padding. During the forward pass, we slide (convolve) each filter across the width and height of the input volume and compute the dot products between entries of filter and the input at any position. As we slide the filter over the width and height of the input volume, we will produce 2-dimensional &lt;strong>activation map&lt;/strong> that gives the responses of that filter at every spatial position. Intuitively, the network will learn filters that activate when they see some type of visual features such as an edge of some orientation or a blotch (patch) of some color on the first layer, or eventually entire &lt;a class="link" href="https://www.google.com/search?q=honeycomb" target="_blank" rel="noopener"
+>honeycomb&lt;/a> on higher layers of the network. Now we will have an entire set of filters in each CONV layer (e.g. 12 filters), and each of them will produce a separated 2-dimensional activation map. We will stack these activation maps along the depth dimension and produce the output volume. Furthermore, every entry in 3D output volume &lt;strong>can also be interpreted an output of a neuron&lt;/strong> that look at only a small region in the input and shares the parameters will all neurons to the left and right.&lt;/p>
+&lt;h3 id="local-connectivity">Local connectivity
+&lt;/h3>&lt;p>When dealing with high-dimensional inputs such as images, as we saw above it is impractical to connect neurons to all neurons in the previous volume. Instead, we will connect each neuron to only a local region of the input volume. The spatial extent of this connectivity is a hyperparameter called the &lt;strong>receptive field&lt;/strong> of the neuron (equivalently this is the filter size). The extent of the connectivity along the depth axis is always equal to the depth of the input volume. It is important to emphasize again this asymmetry in how we treat the spatial dimensions (width and height) and the depth dimension: The connections are local in 2D space (along width and height), but always full along the entire depth of the input volume. For example, suppose that the input volume has size $32\times 32\times 3$, (e.g. an RGB CIFAR-10 image). If the receptive field (or the filter size) is $5\times 5$, then each neuron in the Conv Layer will have weights to a $5 \times 5\times 3$ region in the input volume, for a total of $5\times 5\times 75$ weights (and +1 bias parameter). Notice that the extent of the connectivity along the depth axis must be 3, since this is the depth of the input volume.&lt;/p>
+&lt;p>&lt;img src="https://nguyentuss.github.io/p/convolution-neural-network/img/conv_layer_padding.png"
+width="861"
+height="172"
+srcset="https://nguyentuss.github.io/p/convolution-neural-network/img/conv_layer_padding_hu_5f454540d926262a.png 480w, https://nguyentuss.github.io/p/convolution-neural-network/img/conv_layer_padding_hu_9b5342efb7a8d66a.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="500"
+data-flex-basis="1201px"
+>&lt;/p>
+&lt;h3 id="zero-padding">Zero-Padding
+&lt;/h3>&lt;p>In the figure above on the left, the input dimension was 5 and the output dimension was equal, 5. This worked out because our &lt;strong>receptive field&lt;/strong> were 3 and we used zero-padding of 1. If there are no zero-padding used, then the output volume would have spatial dimension only 3. In gereral, setting zero-padding to be $P=(F-1)/2$ when the stride $S=1$ to ensures that the input volume and the output volume have the same size spatially.&lt;/p>
+&lt;h2 id="strides">Strides
+&lt;/h2>&lt;p>Note again that the spatial arrangement hyperparameters have mutual constraints. For example, when the input has size $W=10$, no zero-padding is used $P=0$, and the filter size $F=3$, then it possible to use stride $S=2$, since $W_2=(W-F+2P)/S=4.5$, not an integer indicating the neurons don&amp;rsquo;t fit neatly and symmetrically across the input, and a ConvNet library could thrown exception or zero pad the rest to make it fit, or crop the input to make it fit.&lt;/p>
+&lt;h3 id="carefully-with-choosing">Carefully with choosing
+&lt;/h3>&lt;p>As I mentioned before in the &lt;strong>strides&lt;/strong> part. In that example, assume you want to round the $4.5$ to $4$ or $5$ to make the $W_2$ be integer, &lt;strong>that&amp;rsquo;s not a good idea&lt;/strong>, when the rounding are applied, this will cause the output shape might not match expectations, can cause misalignment in the feature map, when rounded down, some neurons can be missing, when round up, extra neurons will assumed.&lt;/p>
+&lt;h3 id="real-world-example">Real-world example
+&lt;/h3>&lt;p>The &lt;a class="link" href="http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks" target="_blank" rel="noopener"
+>Krizhevsky et al.&lt;/a> architecture that won the ImageNet challenge in 2012 accepted images of size $227\times 227\times 3$. On the first Convolutional Layer, it used neurons with receptive field size $F=11$, stride $S=4$ and no zero padding $P=0$. Since $(227 - 11)/4 + 1 = 55$, and since the Conv layer had a depth of $K=96$, the Conv layer output volume had size $55\times 55\times 96$. Each of the $55\times 55\times 96$ neurons in this volume was connected to a region of size $11\times 11\times 3$ in the input volume. Moreover, all $96$ neurons in each depth column are connected to the same $11\times 11\times 3$ region of the input, but of course with different weights.&lt;/p>
+&lt;h3 id="parameter-sharing">Parameter Sharing
+&lt;/h3>&lt;p>Parameter sharing scheme is used in Convolutional Layers to control the number of parameters. Using in the the real-world example above, we see that there are $55\times 55 \times 96=290400$ neurons in the first Conv Layer, and each has the $11\times 11\times 3=363$ weight and $1$ bias. Together, this we will have $290400\times 363=105415200$ parameters&lt;/p>
+&lt;h2 id="reference">Reference
+&lt;/h2>&lt;ol>
+&lt;li>&lt;a class="link" href="https://poloclub.github.io/cnn-explainer/" target="_blank" rel="noopener"
+>CNN Explainer&lt;/a>(CNN visualization)&lt;/li>
+&lt;li>&lt;a class="link" href="https://setosa.io/ev/image-kernels/" target="_blank" rel="noopener"
+>Image Kernels explained visually&lt;/a>(Convolution visualization)&lt;/li>
+&lt;li>&lt;a class="link" href="https://cs231n.github.io/convolutional-networks/" target="_blank" rel="noopener"
+>CS231n Convolutional Neural Networks for Visual Recognition&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://phamdinhkhanh.github.io/2019/08/22/convolutional-neural-network.html" target="_blank" rel="noopener"
+>Khoa học dữ liệu&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://probml.github.io/pml-book/book1.html" target="_blank" rel="noopener"
+>probml.github.io/pml-book/book1.html&lt;/a>(book)&lt;/li>
+&lt;/ol></description></item><item><title>Introduction</title><link>https://nguyentuss.github.io/p/introduction/</link><pubDate>Tue, 11 Mar 2025 10:17:26 +0700</pubDate><guid>https://nguyentuss.github.io/p/introduction/</guid><description>&lt;img src="https://nguyentuss.github.io/p/introduction/cover.jpg" alt="Featured image of post Introduction" />&lt;hr>
+&lt;h2 id="supervised-learning">Supervised Learning
+&lt;/h2>&lt;p>The task $T$ is to learn a mapping $f$ from $x \in X$ to $y \in Y$. The $x$ are also called the $\mathbf{features}$. The output $y$ is called the $\mathbf{label}$. The experience $E$ is given in the form of a set of $N$ input-output pairs $\mathcal{D} = {(x_n,y_n)},; n = 1 \rightarrow N$ called the $\textbf{training set}$ (with $N$ as the $\textbf{sample size}$). The performance $P$ depends on the type of output we want to predict.&lt;/p>
+&lt;h2 id="classification">Classification
+&lt;/h2>&lt;p>In a classification problem, the output space is a set of $C$ labels called $\textbf{classes}$, $Y = {1,2,&amp;hellip;,C}$. The problem of predicting the class label given an input is called $\textbf{pattern recognition}$. The goal of supervised learning in a classification problem is to predict the label. A common way to measure performance on this task is by the $\textbf{misclassification rate}$.&lt;/p>
+$$\mathcal{L}(\boldsymbol{\theta}) \triangleq \frac{1}{N} \sum_{n=1}^{N} \mathbb{I}\left(y_n \neq f(x_n; \boldsymbol{\theta})\right).$$&lt;p>Here, $\mathbb{I}(e)$ is the indicator function that returns 1 if the condition is true and 0 otherwise. We can also use the notation $\textbf{loss function}$ $l(y,\hat{y})$:&lt;/p>
+$$\mathcal{L}(\boldsymbol{\theta}) \triangleq \frac{1}{N} \sum_{n=1}^{N} \ell\left(y_n, f(x_n; \boldsymbol{\theta})\right).$$&lt;h2 id="regression">Regression
+&lt;/h2>&lt;p>In regression, the output $y \in \mathbb{R}$ is a real value instead of a discrete label $y \in {1,&amp;hellip;,C}$. A common choice for the loss function is the quadratic loss, or $\ell_2$ loss:&lt;/p>
+$$\ell_2(y,\hat{y}) = (y - \hat{y})^2.$$&lt;p>This penalizes large residuals $y-\hat{y}$. The empirical risk when using quadratic loss is equal to the $\textbf{Mean Squared Error (MSE)}$:&lt;/p>
+$$MSE(\boldsymbol{\theta})=\frac{1}{N} \sum_{n=1}^{N}(y_n-f(x_n;\boldsymbol{\theta}))^2.$$&lt;p>&lt;img src="https://nguyentuss.github.io/p/introduction/img/linear_regression.png"
+width="882"
+height="299"
+srcset="https://nguyentuss.github.io/p/introduction/img/linear_regression_hu_6394807ef491723.png 480w, https://nguyentuss.github.io/p/introduction/img/linear_regression_hu_b19082dc95d2f3eb.png 1024w"
+loading="lazy"
+alt="image"
+class="gallery-image"
+data-flex-grow="294"
+data-flex-basis="707px"
+>&lt;/p>
+&lt;p>An example of a regression model for 1D data is the $\textbf{linear regression}$ model:&lt;/p>
+$$f(x;\boldsymbol{\theta})=b+wx.$$&lt;p>For multiple input features, we can write:&lt;/p>
+$$f(\mathbf{x};\boldsymbol{\theta})=b+w_1x_1+\cdots+w_Dx_D=b+\mathbf{w}^T\mathbf{x}.$$&lt;p>&lt;img src="https://nguyentuss.github.io/p/introduction/img/polynomial_regression.png"
+width="857"
+height="352"
+srcset="https://nguyentuss.github.io/p/introduction/img/polynomial_regression_hu_ac41b49c274d13cb.png 480w, https://nguyentuss.github.io/p/introduction/img/polynomial_regression_hu_a9f085260998c629.png 1024w"
+loading="lazy"
+alt="image"
+class="gallery-image"
+data-flex-grow="243"
+data-flex-basis="584px"
+>&lt;/p>
+&lt;p>We can improve the fit by using a $\textbf{Polynomial regression}$ model with degree $\mathcal{D}$:&lt;/p>
+$$f(x;\mathbf{w})=\mathbf{w}^T\phi(x),$$&lt;p>where $\phi(x)=[1,x,x^2,\dots,x^D]$ is the feature vector derived from the input.&lt;/p>
+&lt;h2 id="overfitting">Overfitting
+&lt;/h2>&lt;p>The empirical risk (training loss function) is given by:&lt;/p>
+$$\mathcal{L}(\boldsymbol{\theta}; \mathcal{D}_{\text{train}}) = \frac{1}{|\mathcal{D}_{\text{train}}|} \sum_{(\mathbf{x,y}) \in \mathcal{D}_{\text{train}}} \ell(y, f(x; \boldsymbol{\theta})).$$&lt;p>The difference $\mathcal{L}( \boldsymbol{\theta};p^&lt;em>)-\mathcal{L}(\boldsymbol{\theta};\mathcal{D}_{\text{train}})$ is called the $\textbf{generalization gap}$. If a model has a large generalization gap (i.e., low empirical risk but high population risk), it is a sign that it is overfitting. In practice we do not know $p^&lt;/em>$, so we partition the data into a training set and a $\textbf{test set}$ to approximate the population risk using the $\textbf{test risk}$:&lt;/p>
+$$\mathcal{L}(\boldsymbol{\theta}; \mathcal{D}_{\text{test}}) = \frac{1}{|\mathcal{D}_{\text{test}}|} \sum_{(\mathbf{x,y}) \in \mathcal{D}_{\text{test}}} \ell(y, f(x; \boldsymbol{\theta})).$$&lt;p>&lt;img src="https://nguyentuss.github.io/p/introduction/img/overfitting.png"
+width="1117"
+height="703"
+srcset="https://nguyentuss.github.io/p/introduction/img/overfitting_hu_a0e60c3810732399.png 480w, https://nguyentuss.github.io/p/introduction/img/overfitting_hu_ceae27871fea2cdc.png 1024w"
+loading="lazy"
+alt="image"
+class="gallery-image"
+data-flex-grow="158"
+data-flex-basis="381px"
+>&lt;/p>
+&lt;p>We can drive the training loss function to zero by increasing the degree $\mathcal{D}$, but this may increase the testing loss function. A model that fits the training data too closely is said to be $\textbf{overfitting}$, while a model that is too simple and does not capture the underlying structure is said to be $\textbf{underfitting}$.&lt;/p>
+&lt;h2 id="unsupervised-learning">Unsupervised Learning
+&lt;/h2>&lt;p>In supervised learning, we assume that each input $x$ in the training set has a corresponding target $y$, and our goal is to learn the input-output mapping. In contrast, unsupervised learning deals with data that has no output labels; the dataset is simply $\mathcal{D} = {x_n : n = 1,\dots,N}$. Unsupervised learning focuses on modeling the underlying structure of the data by fitting an unconditional model $p(x)$, rather than a conditional model $p(y|x)$.&lt;/p>
+&lt;p>Unsupervised learning avoids the need for large labeled datasets, which can be time-consuming and expensive to collect, and instead finds patterns, structures, or groupings in the data based on inherent similarities or relationships.&lt;/p>
+&lt;h2 id="clustering">Clustering
+&lt;/h2>&lt;p>&lt;img src="https://nguyentuss.github.io/p/introduction/img/clustering.png"
+width="1020"
+height="364"
+srcset="https://nguyentuss.github.io/p/introduction/img/clustering_hu_9e2e09ba17158310.png 480w, https://nguyentuss.github.io/p/introduction/img/clustering_hu_255aa7c52fab58d9.png 1024w"
+loading="lazy"
+alt="image"
+class="gallery-image"
+data-flex-grow="280"
+data-flex-basis="672px"
+>&lt;/p>
+&lt;p>A simple example of unsupervised learning is clustering, where the goal is to partition the input data into regions that contain similar points.&lt;/p>
+&lt;h2 id="self-supervised-learning">Self-supervised Learning
+&lt;/h2>&lt;p>$\textbf{Self-supervised learning}$ automatically generates $\textbf{labels}$ from $\textbf{unlabeled data}$. For example, one may learn to predict a color image from its grayscale version, or mask out words in a sentence and predict them from the surrounding context. In this setting, a predictor such as&lt;/p>
+$$\hat{x}_1 = f(x_2;\boldsymbol{\theta})$$&lt;p>(where $x_2$ is the observed input and $\hat{x}_1$ is the predicted output) learns useful features from the data that can be leveraged in standard supervised tasks.&lt;/p>
+&lt;h2 id="reinforcement-learning">Reinforcement Learning
+&lt;/h2>&lt;p>In reinforcement learning, an agent learns how to interact with its environment. For example, a bot playing Mario learns to interact with the game world by moving left or right and jumping when encountering obstacles. (&lt;a class="link" href="https://pytorch.org/tutorials/intermediate/mario_rl_tutorial.html" target="_blank" rel="noopener"
+>Click to see the detail&lt;/a>)&lt;/p>
+&lt;p>&lt;img src="https://nguyentuss.github.io/p/introduction/img/3typeML.png"
+width="710"
+height="373"
+srcset="https://nguyentuss.github.io/p/introduction/img/3typeML_hu_c0903f8afc5d319d.png 480w, https://nguyentuss.github.io/p/introduction/img/3typeML_hu_6827f0660496c8d9.png 1024w"
+loading="lazy"
+alt="image"
+class="gallery-image"
+data-flex-grow="190"
+data-flex-basis="456px"
+>&lt;/p>
+&lt;h2 id="preprocessing-discrete-input-data">Preprocessing Discrete Input Data
+&lt;/h2>&lt;h3 id="one-hot-encoding">One-hot Encoding
+&lt;/h3>&lt;p>For categorical features, we often convert them into numerical values using $\textbf{one-hot encoding}$. For a categorical variable $x$ with $K$ possible values, one-hot encoding is defined as:&lt;/p>
+$$\text{one-hot}(x) = [\mathbb{I}(x=1), \dots, \mathbb{I}(x=K)].$$&lt;p>For example, if $x$ represents one of three colors (red, green, blue), then:&lt;/p>
+&lt;ul>
+&lt;li>one-hot(red) = $[1,0,0]$&lt;/li>
+&lt;li>one-hot(green) = $[0,1,0]$&lt;/li>
+&lt;li>one-hot(blue) = $[0,0,1]$.&lt;/li>
+&lt;/ul>
+&lt;h3 id="feature-crosses">Feature Crosses
+&lt;/h3>&lt;p>To capture interactions between categorical features, we often create composite features. Suppose we want to predict the fuel efficiency of a vehicle based on two categorical variables:&lt;/p>
+&lt;ul>
+&lt;li>$x_1$: The type of car (SUV, Truck, Family car).&lt;/li>
+&lt;li>$x_2$: The country of origin (USA, Japan).&lt;/li>
+&lt;/ul>
+&lt;p>Using one-hot encoding, we represent these variables as:&lt;/p>
+$$\phi(x) = [1, I(x_1 = S), I(x_1 = T), I(x_1 = F), I(x_2 = U), I(x_2 = J)].$$&lt;p>However, this encoding does not capture interactions. To capture interactions between car type and country, we define composite features:&lt;/p>
+$$\text{(Car type, Country)} = \{(S, U), (T, U), (F, U), (S, J), (T, J), (F, J)\}.$$&lt;p>The new model becomes:&lt;/p>
+$$f(x; w) = w^T \phi(x).$$&lt;p>Expressing this in full:&lt;/p>
+$$\begin{split}f(x; w) = w_0 + w_1 I(x_1 = S) + w_2 I(x_1 = T) + w_3 I(x_1 = F) \\ + w_4 I(x_2 = U) + w_5 I(x_2 = J) + w_6 I(x_1 = S, x_2 = U) \\ + w_7 I(x_1 = T, x_2 = U) + w_8 I(x_1 = F, x_2 = U) \\ + w_9 I(x_1 = S, x_2 = J) + w_{10} I(x_1 = T, x_2 = J) + w_{11} I(x_1 = F, x_2 = J).\end{split}$$&lt;h2 id="summary">Summary
+&lt;/h2>&lt;p>This post introduces key concepts in machine learning—from supervised learning (both classification and regression) to unsupervised, self-supervised, and reinforcement learning. It also covers preprocessing techniques for categorical data such as one-hot encoding and feature crosses. The provided equations are formatted in a single-line style for consistency in this Markdown document.&lt;/p></description></item></channel></rss>

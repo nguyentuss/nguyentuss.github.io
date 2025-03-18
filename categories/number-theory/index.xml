@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Number Theory on nguyentuss blog</title><link>https://nguyentuss.github.io/categories/number-theory/</link><description>Recent content in Number Theory on nguyentuss blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Mon, 17 Mar 2025 13:18:12 +0700</lastBuildDate><atom:link href="https://nguyentuss.github.io/categories/number-theory/index.xml" rel="self" type="application/rss+xml"/><item><title>Numerical Method</title><link>https://nguyentuss.github.io/p/numerical-method/</link><pubDate>Mon, 17 Mar 2025 13:18:12 +0700</pubDate><guid>https://nguyentuss.github.io/p/numerical-method/</guid><description>&lt;img src="https://nguyentuss.github.io/cover.jpg" alt="Featured image of post Numerical Method" />&lt;h2 id="truncation-errors-and-the-taylor-series">Truncation Errors and the Taylor Series
+&lt;/h2>$$ \frac{dv}{dt} \approx \frac{\Delta v}{\Delta t} = \frac{v(t_{i+1})-v(t_i)}{t_{i+1}-t_i}$$&lt;p>
+A truncation error was introduced into the numerical solution because the difference equation only approximates the true value of the derivative. In order to gain insight into the properties of such errors, we now turn to a mathematical formulation that is used widely in numerical methods to express functions in an approximate fashion— the Taylor series.&lt;/p>
+&lt;h3 id="the-taylor-series">The Taylor Series
+&lt;/h3>$$
+f(x_{i+1} \approx f(x_i))
+$$&lt;p>
+This relationship, called the zero-order approximation, indicates that the value of $f$ at the new point is the same as its value at the old point. This result make intuitive sense because if $x_i$ and $x_{i+1}$ are close to each other, it is likely that the new value is probably similar to the old value.&lt;/p>
+&lt;h3 id="taylors-theorem">Taylor&amp;rsquo;s theorem
+&lt;/h3>$$
+f(x) = f(a) +f'(a)(x-a)+\frac{f''(a)}{2!}(x-a)^2+...+\frac{f^{(n)}(a)}{n!}(x-a)^n + R_n
+$$$$
+R_n = \int_{a}^{x} \frac{(x-t)^{(n+1)}}{(n+1)!}f^{n+1}
+$$$$
+\begin{align}
+f(x_{i+1}) = f(x_i) +f'(x_i)(x_{i+1}-x_i)+\frac{f''}{2!}(x_{i+1}-x_i)^2+...\\ +\frac{f^{(n)}}{n!}(x_{i+1}-x_i)^n + R_n
+\end{align}
+$$&lt;p>
+where $(x_{i+1}-x_i)=h$ (step size)&lt;/p>
+&lt;h4 id="example-taylor-series-approximation-of-a-polynomial">Example: Taylor Series Approximation of a Polynomial
+&lt;/h4>$$ f(x)= -0.1x^4-0.15x^3-0.5x^2-0.25x+1.2$$&lt;p>
+from $x_i=0$ with $h=1$. That is, the predict function&amp;rsquo;s value at $x_{i+1}=1$.
+&lt;img src="https://nguyentuss.github.io/img/example-taylor-1.png"
+loading="lazy"
+>
+&lt;strong>Solution&lt;/strong>: Because we are dealing with a known function, we can compute values for $f(x)$ between $0$ and $1$. The results in the figure indicate that the function starts at $f(0)=1.2$ and the curves downward to $f(1)=0.2$. Thus the true value we w to predict is 0.2.&lt;/p>
+$$ f(x_{i+1}) \approx 1.2 $$&lt;p>Thus, as in the zero-order approximation is a constant. Using this formulation results in a truncation error of&lt;/p>
+$$
+E_t = 0.2 - 1.2 = -1.0
+$$&lt;p>at $x = 1$.&lt;/p>
+&lt;p>For $n = 1$, the first derivative must be determined and evaluated at $x = 0$:&lt;/p>
+$$
+f'(0) = -0.4(0.0)^3 - 0.45(0.0)^2 - 1.0(0.0) - 0.25 = -0.25
+$$&lt;p>Therefore, the first-order approximation is&lt;/p>
+$$
+f(x_{i+1}) \approx 1.2 - 0.25h
+$$&lt;p>which can be used to compute $f(1) = 0.95$. Consequently, the approximation begins to capture the downward trajectory of the function in the form of a sloping straight line. This results in a reduction of the truncation error to&lt;/p>
+$$
+E_t = 0.2 - 0.95 = -0.75
+$$&lt;p>For $n = 2$, the second derivative is evaluated at $x = 0$:&lt;/p>
+$$
+f''(0) = -1.2(0.0)^2 - 0.9(0.0) - 1.0 = -1.0
+$$&lt;p>Therefore, according to,&lt;/p>
+$$
+f(x_{i+1}) \approx 1.2 - 0.25h - 0.5h^2
+$$&lt;p>and substituting $h = 1$, $f(1) = 0.45$. The inclusion of the second derivative now adds some downward curvature resulting in an improved estimate, as seen in. The truncation error is reduced further to&lt;/p>
+$$
+0.2 - 0.45 = -0.25.
+$$&lt;p>&lt;strong>Maclaurin Series&lt;/strong> is the special case of Taylor series where $a=0$&lt;/p></description></item></channel></rss>
