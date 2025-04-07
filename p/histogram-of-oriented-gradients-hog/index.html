@@ -1,0 +1,1037 @@
+<!doctype html><html lang=en-us dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content=" There are many different methods in computer vision. When it comes to image classification, we can apply families of CNN models such as Inception Net, MobileNet, ResNet, DenseNet, AlexNet, U-Net, and so on. For object detection, models like YOLO, SSD, Faster R-CNN, Fast R-CNN, and Mask R-CNN are commonly used. All the above algorithms belong to the deep learning category. However, before the deep learning boom, what algorithms were typically used in image processing? Today, we will explore a classic yet highly effective algorithm in image processing: HOG (Histogram of Oriented Gradients). This algorithm generates features description for the purpose of object detection. From an image, two key matrices are extracted to store essential information: gradient magnitude and gradient orientation. By combining these two pieces of information into a histogram distribution—where the gradient magnitude is counted in bins according to gradient orientation—we obtain a HOG feature vector that represents the histogram. This is the basic concept, but in practice, the algorithm is more complex. The HOG vector is computed over local regions, similar to how CNNs operate, followed by local normalization to standardize measurements. Finally, the overall HOG vector is aggregated from all local vectors.\n"><title>Histogram of Oriented Gradients (HOG)</title>
+<link rel=canonical href=https://nguyentuss.github.io/p/histogram-of-oriented-gradients-hog/><link rel=stylesheet href=/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css><meta property='og:title' content="Histogram of Oriented Gradients (HOG)"><meta property='og:description' content=" There are many different methods in computer vision. When it comes to image classification, we can apply families of CNN models such as Inception Net, MobileNet, ResNet, DenseNet, AlexNet, U-Net, and so on. For object detection, models like YOLO, SSD, Faster R-CNN, Fast R-CNN, and Mask R-CNN are commonly used. All the above algorithms belong to the deep learning category. However, before the deep learning boom, what algorithms were typically used in image processing? Today, we will explore a classic yet highly effective algorithm in image processing: HOG (Histogram of Oriented Gradients). This algorithm generates features description for the purpose of object detection. From an image, two key matrices are extracted to store essential information: gradient magnitude and gradient orientation. By combining these two pieces of information into a histogram distribution—where the gradient magnitude is counted in bins according to gradient orientation—we obtain a HOG feature vector that represents the histogram. This is the basic concept, but in practice, the algorithm is more complex. The HOG vector is computed over local regions, similar to how CNNs operate, followed by local normalization to standardize measurements. Finally, the overall HOG vector is aggregated from all local vectors.\n"><meta property='og:url' content='https://nguyentuss.github.io/p/histogram-of-oriented-gradients-hog/'><meta property='og:site_name' content='nguyentuss blog'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='#CV'><meta property='article:tag' content='#Machine_Learning'><meta property='article:tag' content='#extract_image'><meta property='article:published_time' content='2025-03-11T10:49:42+07:00'><meta property='article:modified_time' content='2025-03-11T10:49:42+07:00'><meta property='og:image' content='https://nguyentuss.github.io/p/histogram-of-oriented-gradients-hog/cover.jpg'><meta name=twitter:title content="Histogram of Oriented Gradients (HOG)"><meta name=twitter:description content=" There are many different methods in computer vision. When it comes to image classification, we can apply families of CNN models such as Inception Net, MobileNet, ResNet, DenseNet, AlexNet, U-Net, and so on. For object detection, models like YOLO, SSD, Faster R-CNN, Fast R-CNN, and Mask R-CNN are commonly used. All the above algorithms belong to the deep learning category. However, before the deep learning boom, what algorithms were typically used in image processing? Today, we will explore a classic yet highly effective algorithm in image processing: HOG (Histogram of Oriented Gradients). This algorithm generates features description for the purpose of object detection. From an image, two key matrices are extracted to store essential information: gradient magnitude and gradient orientation. By combining these two pieces of information into a histogram distribution—where the gradient magnitude is counted in bins according to gradient orientation—we obtain a HOG feature vector that represents the histogram. This is the basic concept, but in practice, the algorithm is more complex. The HOG vector is computed over local regions, similar to how CNNs operate, followed by local normalization to standardize measurements. Finally, the overall HOG vector is aggregated from all local vectors.\n"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content='https://nguyentuss.github.io/p/histogram-of-oriented-gradients-hog/cover.jpg'><link rel="shortcut icon" href=/favicon.png></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label="Toggle Menu">
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu_f7acfab092c9c46.jpg width=300 height=300 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>🍥</span></figure><div class=site-meta><h1 class=site-name><a href=/>nguyentuss blog</a></h1><h2 class=site-description>This is my blog, where I document what I've learned from my studies and experiences in life and technology.</h2></div></header><ol class=menu-social><li><a href=https://github.com/nguyentuss target=_blank title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li><li><a href=https://twitter.com target=_blank title=Twitter rel=me><svg class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M22 4.01c-1 .49-1.98.689-3 .99-1.121-1.265-2.783-1.335-4.38-.737S11.977 6.323 12 8v1c-3.245.083-6.135-1.395-8-4 0 0-4.182 7.433 4 11-1.872 1.247-3.739 2.088-6 2 3.308 1.803 6.913 2.423 10.034 1.517 3.58-1.04 6.522-3.723 7.651-7.742a13.84 13.84.0 00.497-3.753C20.18 7.773 21.692 5.25 22 4.009z"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>Home</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>Archives</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>Search</span></a></li><li><a href=/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>Links</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>Dark Mode</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">Table of contents</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#hog-application>HOG Application</a></li><li><a href=#terminology>Terminology</a></li><li><a href=#definition>Definition</a></li><li><a href=#how-hog-works-step-by-step>How HOG Works (Step-by-step)</a><ol><li><a href=#preprocessing>Preprocessing</a></li><li><a href=#compute-the-gradient>Compute the gradient</a></li><li><a href=#calculate-histogram-of-gradients-in-8-x-8-cells>Calculate Histogram of Gradients in 8 x 8 cells</a></li><li><a href=#1616-block-normalization>16×16 Block Normalization</a></li><li><a href=#compute-hog-features-vector>Compute HOG features vector</a></li></ol></li><li><a href=#visualizing-histogram-of-oriented-gradients>Visualizing Histogram of Oriented Gradients</a></li><li><a href=#practice>Practice</a></li><li><a href=#application-in-hog>Application in HOG</a><ol><li><a href=#human-detection>Human Detection</a></li><li><a href=#import-lib>Import lib</a></li><li><a href=#define-path-to-image>Define path to image</a></li><li><a href=#compute-the-hog-features-and-label-them>Compute the HOG features and label them</a></li><li><a href=#model-testing>Model testing</a></li><li><a href=#load-model>Load model</a></li><li><a href=#sliding-window>Sliding window</a></li><li><a href=#detect-people-on-image>Detect people on image</a></li><li><a href=#detect-people-on-video>Detect people on video</a></li></ol></li><li><a href=#summary>Summary</a></li><li><a href=#reference>Reference</a></li></ol></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/p/histogram-of-oriented-gradients-hog/><img src=/p/histogram-of-oriented-gradients-hog/cover_hu_c86b681f3fee94ff.jpg srcset="/p/histogram-of-oriented-gradients-hog/cover_hu_c86b681f3fee94ff.jpg 800w, /p/histogram-of-oriented-gradients-hog/cover_hu_bea442a1395058f4.jpg 1600w" width=800 height=534 loading=lazy alt="Featured image of post Histogram of Oriented Gradients (HOG)"></a></div><div class=article-details><header class=article-category><a href=/categories/computer-vision/>Computer Vision</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/histogram-of-oriented-gradients-hog/>Histogram of Oriented Gradients (HOG)</a></h2></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published>Mar 11, 2025</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>24 minute read</time></div></footer></div></header><section class=article-content><hr><p>There are many different methods in computer vision. When it comes to image classification, we can apply families of CNN models such as Inception Net, MobileNet, ResNet, DenseNet, AlexNet, U-Net, and so on. For object detection, models like YOLO, SSD, Faster R-CNN, Fast R-CNN, and Mask R-CNN are commonly used.
+All the above algorithms belong to the deep learning category. However, before the deep learning boom, what algorithms were typically used in image processing? Today, we will explore a classic yet highly effective algorithm in image processing: <strong>HOG (Histogram of Oriented Gradients).</strong>
+This algorithm generates <strong>features description</strong> for the purpose of <strong>object detection</strong>. From an image, two key matrices are extracted to store essential information: <strong>gradient magnitude</strong> and <strong>gradient orientation</strong>. By combining these two pieces of information into a histogram distribution—where the gradient magnitude is counted in bins according to gradient orientation—we obtain a <strong>HOG feature vector</strong> that represents the histogram. This is the basic concept, but in practice, the algorithm is more complex. The <strong>HOG vector</strong> is computed over <strong>local regions</strong>, similar to how CNNs operate, followed by <strong>local normalization</strong> to standardize measurements. Finally, the overall <strong>HOG vector</strong> is aggregated from all local vectors.</p><h2 id=hog-application>HOG Application</h2><p>There are some applications using HOG and which have high accuracy.</p><ul><li><p><strong>Human detection</strong>: This application first represents in <a class=link href=https://lear.inrialpes.fr/people/triggs/pubs/Dalal-cvpr05.pdf target=_blank rel=noopener>Histogram of Orient Gradients for Human Detection</a>). HOG can detect one or more people walking on a street in an image.<div style=text-align:center><img src=img/pic1.jpg width=300></p></div>We will practice training model human detection base on HOG.</li><li><p><strong>Face detection</strong>: HOG is a good algorithm on this problem. It has the ability to represent the main contours of the face based on the direction and gradient magnitude through vectors for each cell as shown bellow<div style=text-align:center><img src=img/pic2.png width=400></p></div></li><li><p><strong>Recognizing Various Objects:</strong> In addition, there are many cases of object recognition in static images, such as vehicles, traffic signals, animals, or even moving images extracted from videos.</p></li><li><p><strong>Creating Features for Image Classification Tasks:</strong> Many image classification tasks are built on small-sized datasets, where using deep learning networks may not always be effective and can lead to overfitting. The reason is that a small amount of data is often insufficient for training a model to accurately recognize object features. In such cases, using HOG (Histogram of Oriented Gradients) for feature extraction can yield better results. Specifically, I will also demonstrate an example at the end.</p></li></ul><h2 id=terminology>Terminology</h2><p>Before diving into the HOG algorithm, I will first explain the terms used:</p><ul><li><p><strong>Feature Descriptor:</strong> A feature descriptor is a representation of an image or an image patch that simplifies the image by extracting useful information and throwing away extraneous information.</p></li><li><p><strong>Histogram:</strong> A histogram is a graphical representation of the distribution of color intensities across different value ranges.</p></li><li><p><strong>Gradient:</strong> The derivative or vector of color intensity changes that helps detect movement directions of objects in an image.</p></li><li><p><strong>Local cell:</strong> A local cell is a small region in an image. In the HOG algorithm, an image is divided into multiple cells based on a square grid. Each cell is called a local cell.</p></li><li><p><strong>Local portion:</strong> A local region is a section of the image where feature extraction is performed. In the algorithm, this local region is referred to as a &ldquo;block.&rdquo;</p></li><li><p><strong>Local normalization:</strong> Normalization is performed within a local region. It is usually divided by either L2 norm or L1 norm. The purpose of normalization is to standardize color intensity values, making the distribution more consistent. This will be explained in more detail in the algorithm section.</p></li><li><p><strong>Gradient direction:</strong> The gradient direction represents the angle between the gradient vector components $x$ and $y$, which helps determine the direction of intensity change or, in other words, the direction of shading in the image. Given that $G_x$​ and $G_y$​ are the gradient values along the $x$ and $y$ axes of the image, the gradient direction is calculated as:</p>$$\theta = \arctan\left(\frac{G_y}{G_x}\right)$$</li><li><p><strong>Gradient magnitude:</strong> The magnitude of the gradient represents the length of the vector combining the gradients along the $x$ and $y$ directions. The histogram representation of this vector is used to describe the HOG features. The gradient magnitude is computed as:</p>$$∣G∣=\sqrt{G_x^2+G_y^2}$$<p>​</p></li></ul><h2 id=definition>Definition</h2><p>The key point in the working principle of HOG is that the local shape of an object can be described using two matrices: the <strong>gradient magnitude matrix</strong> and the <strong>gradient direction matrix</strong>.
+First, the image is divided into a <strong>grid of square cells</strong>, where many adjacent or overlapping <strong>local regions</strong> are identified. These regions are similar to the <strong>local image regions</strong> used in convolutional operations in CNNs.
+The main purpose of HOG feature extraction is to capture the local shape and edge information of an image. It works by computing the gradients (i.e., the changes in intensity) and then building histograms of these gradients over small, localized regions. This process allows the algorithm to effectively describe the appearance and structure of objects in an image, such as the contours and silhouettes of people.</p><ul><li>A <strong>local region</strong> consists of multiple <strong>local cells</strong> (in HOG, there are <strong>4 cells</strong>) with a size of <strong>8×8 pixels</strong></li><li>Then, a <strong>histogram of gradient magnitudes</strong> is computed for each <strong>local cell</strong>.</li><li>The <strong>HOG descriptor</strong> is formed by <strong>concatenating</strong> the four histogram vectors corresponding to each cell into a single combined vector.</li><li>To improve accuracy, each value in the <strong>histogram vector of a local region</strong> is <strong>normalized</strong> using either <strong>L2-norm</strong> or <strong>L1-norm</strong>.</li><li>This normalization aims to enhance <strong>invariance</strong> to <strong>lighting and shading changes</strong>.</li></ul><div style=text-align:center><img src=img/pic3.png width=300></div><p>The HOG descriptor has several key advantages over other feature descriptors:</p><ul><li>Since it operates on <strong>local cells</strong>, it is <strong>invariant</strong> to <strong>geometric transformations</strong> and <strong>brightness changes</strong>.</li><li>Furthermore, as <strong>Dalal and Triggs</strong> discovered, applying <strong>local region normalization</strong> allows the descriptor to ignore minor <strong>body movements</strong> in pedestrian detection, <strong>as long as the person maintains an upright posture</strong>.</li><li>This makes HOG particularly <strong>well-suited for human detection</strong> in images.</li></ul><h2 id=how-hog-works-step-by-step>How HOG Works (Step-by-step)</h2><h3 id=preprocessing>Preprocessing</h3><p>In every image processing algorithm, the first step is preprocessing image. As mentioned earlier HOG feature descriptor used for pedestrian detection is calculated on a $64×128$ patch of an image. Of course, an image may be of any size. Typically, patches at multiple scales are analyzed at many image locations. The only constraint is that the patches being analyzed have a fixed aspect ratio. In our case, the patches need to have an aspect ratio of $1:2$. For example, they can be $100×200$, $128×256$, or $1000×2000$ but not $101×205$.</p><div style=text-align:center><img src=img/pic4.png width=600></div><p>We need to adjust the image to grayscale</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=kn>import</span> <span class=nn>numpy</span> <span class=k>as</span> <span class=nn>np</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>cv2</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>matplotlib.pyplot</span> <span class=k>as</span> <span class=nn>plt</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>#Read the image</span>
+</span></span><span class=line><span class=cl><span class=n>img</span> <span class=o>=</span> <span class=n>cv2</span><span class=o>.</span><span class=n>imread</span><span class=p>(</span><span class=s2>&#34;./img/bolt.jpg&#34;</span><span class=p>)</span> <span class=c1># Load BGR format</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=n>img</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;Image not loaded. Check the file path and file integrity.&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=c1># Convert BGR to RGB for proper color display in matplotlib</span>
+</span></span><span class=line><span class=cl>    <span class=n>img_rgb</span> <span class=o>=</span> <span class=n>cv2</span><span class=o>.</span><span class=n>cvtColor</span><span class=p>(</span><span class=n>img</span><span class=p>,</span> <span class=n>cv2</span><span class=o>.</span><span class=n>COLOR_BGR2RGB</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>#Convert to grayscale</span>
+</span></span><span class=line><span class=cl>    <span class=n>gray</span> <span class=o>=</span> <span class=n>cv2</span><span class=o>.</span><span class=n>cvtColor</span><span class=p>(</span><span class=n>img</span><span class=p>,</span> <span class=n>cv2</span><span class=o>.</span><span class=n>COLOR_BGR2GRAY</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=n>img_rgb</span><span class=o>.</span><span class=n>shape</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=n>gray</span><span class=o>.</span><span class=n>shape</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>#Show the images</span>
+</span></span><span class=line><span class=cl>    <span class=n>plt</span><span class=o>.</span><span class=n>figure</span><span class=p>(</span><span class=n>figsize</span><span class=o>=</span><span class=p>(</span><span class=mi>8</span><span class=p>,</span><span class=mi>6</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    <span class=n>plt</span><span class=o>.</span><span class=n>subplot</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span><span class=mi>2</span><span class=p>,</span><span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>plt</span><span class=o>.</span><span class=n>imshow</span><span class=p>(</span><span class=n>img_rgb</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>plt</span><span class=o>.</span><span class=n>title</span><span class=p>(</span><span class=s2>&#34;Original&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>plt</span><span class=o>.</span><span class=n>subplot</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span><span class=mi>2</span><span class=p>,</span><span class=mi>2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>plt</span><span class=o>.</span><span class=n>imshow</span><span class=p>(</span><span class=n>gray</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>plt</span><span class=o>.</span><span class=n>title</span><span class=p>(</span><span class=s2>&#34;Gray Image&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>plt</span><span class=o>.</span><span class=n>show</span><span class=p>()</span>
+</span></span></code></pre></td></tr></table></div></div><p><img src=/p/histogram-of-oriented-gradients-hog/img/output1.png width=676 height=239 srcset="/p/histogram-of-oriented-gradients-hog/img/output1_hu_ec713946f7b01b80.png 480w, /p/histogram-of-oriented-gradients-hog/img/output1_hu_94d52ad54f9c5025.png 1024w" loading=lazy class=gallery-image data-flex-grow=282 data-flex-basis=678px></p><h3 id=compute-the-gradient>Compute the gradient</h3><p>To calculate a HOG descriptor, we need to first calculate the horizontal and vertical gradients, the common way to compute is using the <strong>Sobel operator</strong></p><ul><li>Horizontal gradient
+$$G_x = \begin{bmatrix}
+-1 & 0 & 2 \\
+	-2 & 0 & 2 \\ 
+	-1 & 0 & 1	
+\end{bmatrix}*\textbf{I}$$</li><li>Vertical gradient
+$$G_y = \begin{bmatrix}
+-1 & -2 & -1 \\
+		0 & 0 & 0 \\ 
+		1 & 2 & 1	
+	\end{bmatrix}*\textbf{I}$$
+Where $*$ be a convolution between a filter and an image</li><li>Gradient magnitude
+$$ G=\sqrt{G_x^2+G_y^2}$$</li><li>Gradient direction
+$$\theta=\arctan\Bigl(\frac{G_y}{G_x}\Bigl)$$</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1>#Calculate gradient gx,gy</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>gx</span> <span class=o>=</span> <span class=n>cv2</span><span class=o>.</span><span class=n>Sobel</span><span class=p>(</span><span class=n>gray</span><span class=p>,</span> <span class=n>cv2</span><span class=o>.</span><span class=n>CV_32F</span><span class=p>,</span> <span class=n>dx</span> <span class=o>=</span> <span class=mi>0</span><span class=p>,</span> <span class=n>dy</span> <span class=o>=</span> <span class=mi>1</span><span class=p>,</span> <span class=n>ksize</span><span class=o>=</span><span class=mi>3</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>gy</span> <span class=o>=</span> <span class=n>cv2</span><span class=o>.</span><span class=n>Sobel</span><span class=p>(</span><span class=n>gray</span><span class=p>,</span> <span class=n>cv2</span><span class=o>.</span><span class=n>CV_32F</span><span class=p>,</span> <span class=n>dx</span> <span class=o>=</span> <span class=mi>1</span><span class=p>,</span> <span class=n>dy</span> <span class=o>=</span> <span class=mi>0</span><span class=p>,</span> <span class=n>ksize</span><span class=o>=</span><span class=mi>3</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=s1>&#39;gray shape: </span><span class=si>{}</span><span class=s1>&#39;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=n>gray</span><span class=o>.</span><span class=n>shape</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=s1>&#39;gx shape: </span><span class=si>{}</span><span class=s1>&#39;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=n>gx</span><span class=o>.</span><span class=n>shape</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=s1>&#39;gy shape: </span><span class=si>{}</span><span class=s1>&#39;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=n>gy</span><span class=o>.</span><span class=n>shape</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Compute magnitude and direction gradient</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>g</span><span class=p>,</span> <span class=n>theta</span> <span class=o>=</span> <span class=n>cv2</span><span class=o>.</span><span class=n>cartToPolar</span><span class=p>(</span><span class=n>gx</span><span class=p>,</span> <span class=n>gy</span><span class=p>,</span> <span class=n>angleInDegrees</span><span class=o>=</span><span class=kc>True</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=s1>&#39;gradient format: </span><span class=si>{}</span><span class=s1>&#39;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=n>g</span><span class=o>.</span><span class=n>shape</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=s1>&#39;theta format: </span><span class=si>{}</span><span class=s1>&#39;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=n>theta</span><span class=o>.</span><span class=n>shape</span><span class=p>))</span>
+</span></span></code></pre></td></tr></table></div></div><p>The output</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>gray shape: (480, 640)
+</span></span><span class=line><span class=cl>gx shape: (480, 640)
+</span></span><span class=line><span class=cl>gy shape: (480, 640)
+</span></span><span class=line><span class=cl>gradient format: (480, 640)
+</span></span><span class=line><span class=cl>theta format: (480, 640)
+</span></span></code></pre></td></tr></table></div></div><p>Visualize the plot</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>figure</span><span class=p>(</span><span class=n>figsize</span><span class=o>=</span><span class=p>(</span><span class=mi>20</span><span class=p>,</span> <span class=mi>10</span><span class=p>))</span>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>subplot</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>title</span><span class=p>(</span><span class=s1>&#39;gradient of x&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>imshow</span><span class=p>(</span><span class=n>gx</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>subplot</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>title</span><span class=p>(</span><span class=s1>&#39;gradient of y&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>imshow</span><span class=p>(</span><span class=n>gy</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>subplot</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>3</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>title</span><span class=p>(</span><span class=s1>&#39;Magnitute of gradient&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>imshow</span><span class=p>(</span><span class=n>g</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>subplot</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>4</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>title</span><span class=p>(</span><span class=s1>&#39;Direction of gradient&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>imshow</span><span class=p>(</span><span class=n>theta</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>show</span><span class=p>()</span>
+</span></span></code></pre></td></tr></table></div></div><p><img src=/p/histogram-of-oriented-gradients-hog/img/output2.png width=1606 height=273 srcset="/p/histogram-of-oriented-gradients-hog/img/output2_hu_80f0f88da19898c.png 480w, /p/histogram-of-oriented-gradients-hog/img/output2_hu_202b0ba9809f5d85.png 1024w" loading=lazy class=gallery-image data-flex-grow=588 data-flex-basis=1411px></p><h3 id=calculate-histogram-of-gradients-in-8-x-8-cells>Calculate Histogram of Gradients in 8 x 8 cells</h3><p>In this step, the image is divided into $8\times8$ cells and a histogram of gradients is calculated for each $8\times8$. One of the important reasons to use a feature description to describe a patch of an image is that it provided a compact representation. An $8\times8$ patch contain $8\times8\times3=192$ pixels. The gradient of this patch contains $2$ values (magnitude and direction) per pixel which adds up to $8\times8\times2 = 128$ numbers include $64$ values of gradient magnitude and $64$ values of gradient direction.
+By the end of this section we will see how these $128$ numbers are represented using a <strong>9-bin histogram</strong> which can be stored as an array of $9$ numbers. Not only is the representation more compact, calculating a histogram over a patch makes this representation more robust to noise. Individual gradients may have noise, but a histogram over $8\times8$ patch makes the representation much less sensitive to noise.</p><p>But why $8\times8$ patch ? Why not $32\times32$ ? It is a design choice informed by the scale of features we are looking for. HOG was used for pedestrian detection initially. $8\times8$ cells in a photo of a pedestrian scaled to $64\times128$ are big enough to capture interesting features ( e.g. the face, the top of the head etc.).
+<img src=/p/histogram-of-oriented-gradients-hog/img/pic5.png width=768 height=432 srcset="/p/histogram-of-oriented-gradients-hog/img/pic5_hu_95b9662e0e3488ce.png 480w, /p/histogram-of-oriented-gradients-hog/img/pic5_hu_b5acb24cf432ad89.png 1024w" loading=lazy class=gallery-image data-flex-grow=177 data-flex-basis=426px>
+On the right, we see the raw numbers representing the gradients in the 8×8 cells with one minor difference — the angles are between $0$ and $180$ degrees instead of $0$ to $360$ degrees. These are called <strong>“unsigned” gradients</strong> because a gradient and it’s negative are represented by the same numbers. In other words, a gradient arrow and the one $180$ degrees opposite to it are considered the same. But, why not use the $0$ – $360$ degrees ?</p><p>Empirically it has been shown that unsigned gradients work better than signed gradients for pedestrian detection. Some implementations of HOG will allow you to specify if you want to use signed gradients.</p><p>The next step is to create a histogram of gradients in these $8\times8$ cells. The histogram contains 9 bins corresponding to angles $0, 20, 40 … 160$. The following figure illustrates the process. We are looking at magnitude and direction of the gradient of the same $8\times8$ patch as in the previous figure.
+A bin is selected based on the direction, and the vote (the value that goes into the bin) is selected based on the magnitude. Let’s first focus on the pixel encircled in blue. It has an angle (direction) of $80$ degrees and magnitude of $2$. So it adds $2$ to the $5^{th}$ bin. The gradient at the pixel encircled using red has an angle of $10$ degrees and magnitude of $4$. Since $10$ degrees is half way between $0$ and $20$, the vote by the pixel splits evenly into the two bins.</p><div style=text-align:center><img src=img/hog-histogram-1.png width=500></div>$$ x_{l-1}=\frac{x_1-x}{x_1-x_0}*y, x_{l}=\frac{x-x_0}{x_1-x_0}*y $$<div style=text-align:center><img src=img/hog-histogram-2.png width=500></div><p>Take a sum of each gradient magnitude belong in one bins from vector bins and we collect <strong>Histogram of Gradient</strong></p><div style=text-align:center><img src=img/histogram-8x8-cell.png width=500></div><h3 id=1616-block-normalization>16×16 Block Normalization</h3><p>In the previous step, we created a histogram based on the gradient of the image. Gradients of an image are sensitive to overall lighting. If you make the image darker by dividing all pixel values by 2, the gradient magnitude will change by half, and therefore the histogram values will change by half.</p><p>Ideally, we want our descriptor to be independent of lighting variations. In other words, we would like to “normalize” the histogram so they are not affected by lighting variations.</p><p>Let&rsquo;s say we have an RGB color vector $[128, 64, 32]$. This length of this vector is $\sqrt{128^2+64^2+32^2}\approx 146.64$. This is call L2 norm. Dividing each element of this vector give us a normalized vector $[0.87,0.43,0.22]$</p><p>Now consider another vector in which the elements are twice the value of the first vector $2 \times [ 128, 64, 32 ] = [ 256, 128, 64 ]$. You can work it out yourself to see that normalizing $[ 256, 128, 64 ]$ will result in $[0.87, 0.43, 0.22]$, which is the same as the normalized version of the original RGB vector. You can see that normalizing a vector removes the scale.</p><div style=text-align:center><img src=img/hog-16x16.gif width=200></div><p>The normalization will be processed in a block size $2\times 2$ cell (each cell size $8\times8$ pixel). So we will have 4 vector histogram size $1\times9$, concatenate vectors and we will have one vector histogram size $1\times36$ and then normalized in this vector. Sliding the window will process the same as convolution in CNN with step_size = 8 pixels.</p><h3 id=compute-hog-features-vector>Compute HOG features vector</h3><p>After normalizing the histogram vectors, we then concatenate these $1×36$ vectors into a single large vector. This becomes the HOG vector representing the entire image.</p><p>For example, suppose our image is divided into a grid of squares of size $16×8$ (each cell is $8×8$). The HOG computation moves $7$ steps horizontally and $15$ steps vertically. Thus, there are a total of $7×15 = 105$ patches, each corresponding to one $36$-dimensional histogram vector. Consequently, the final HOG vector will have $105×36 = 3780$ dimensions. This is a relatively large vector, which allows it to capture the image’s features quite effectively.</p><h2 id=visualizing-histogram-of-oriented-gradients>Visualizing Histogram of Oriented Gradients</h2><p>The HOG descriptor of an image patch is usually visualized by plotting the 9×1 normalized histograms in the 8×8 cells. See image on the side. You will notice that dominant direction of the histogram captures the shape of the person, especially around the torso and legs.</p><div style=text-align:center><img src=img/hog-visualization.png width=300></div><h2 id=practice>Practice</h2><p>We will use opencv to calculate the HOG features</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=s2>&#34;Original </span><span class=si>{}</span><span class=s2>&#34;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=n>img</span><span class=o>.</span><span class=n>shape</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>cell_size</span> <span class=o>=</span> <span class=p>(</span><span class=mi>8</span><span class=p>,</span><span class=mi>8</span><span class=p>)</span> <span class=c1># h x w pixels</span>
+</span></span><span class=line><span class=cl><span class=n>block_size</span> <span class=o>=</span> <span class=p>(</span><span class=mi>2</span><span class=p>,</span><span class=mi>2</span><span class=p>)</span> <span class=c1># h x w cells</span>
+</span></span><span class=line><span class=cl><span class=n>nbins</span> <span class=o>=</span> <span class=mi>9</span> <span class=c1># number of bins in Histogram</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># winSize = the size of the image region (or window) that will be used by the HOG (Histogram of Oriented Gradients) descriptor</span>
+</span></span><span class=line><span class=cl><span class=n>winSize</span> <span class=o>=</span> <span class=p>(</span><span class=n>img</span><span class=o>.</span><span class=n>shape</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span><span class=o>//</span> <span class=n>cell_size</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span> <span class=o>*</span> <span class=n>cell_size</span><span class=p>[</span><span class=mi>1</span><span class=p>],</span> <span class=n>img</span><span class=o>.</span><span class=n>shape</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>//</span> <span class=n>cell_size</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>*</span> <span class=n>cell_size</span><span class=p>[</span><span class=mi>0</span><span class=p>])</span>
+</span></span><span class=line><span class=cl><span class=c1># blockSize = the size compute in pixels</span>
+</span></span><span class=line><span class=cl><span class=n>blockSize</span> <span class=o>=</span> <span class=p>(</span><span class=n>block_size</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span> <span class=o>*</span> <span class=n>cell_size</span><span class=p>[</span><span class=mi>1</span><span class=p>],</span> <span class=n>block_size</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>*</span> <span class=n>cell_size</span><span class=p>[</span><span class=mi>0</span><span class=p>])</span>
+</span></span><span class=line><span class=cl><span class=c1># blockStride = how far (in pixels) the detection window moves from one block to the next.</span>
+</span></span><span class=line><span class=cl><span class=n>blockStride</span> <span class=o>=</span> <span class=n>cell_size</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=s2>&#34;winSize&#34;</span><span class=p>,</span><span class=n>winSize</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=s2>&#34;blockSize&#34;</span><span class=p>,</span><span class=n>block_size</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=s2>&#34;blockStride&#34;</span><span class=p>,</span><span class=n>blockStride</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>hog</span> <span class=o>=</span> <span class=n>cv2</span><span class=o>.</span><span class=n>HOGDescriptor</span><span class=p>(</span><span class=n>_winSize</span><span class=o>=</span><span class=n>winSize</span><span class=p>,</span><span class=n>_blockSize</span><span class=o>=</span><span class=n>blockSize</span><span class=p>,</span><span class=n>_blockStride</span><span class=o>=</span><span class=n>blockStride</span><span class=p>,</span><span class=n>_cellSize</span><span class=o>=</span><span class=n>cell_size</span><span class=p>,</span><span class=n>_nbins</span><span class=o>=</span><span class=mi>9</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># size of cell grid (from pixel -&gt; cell)</span>
+</span></span><span class=line><span class=cl><span class=n>n_cell</span> <span class=o>=</span> <span class=p>(</span><span class=n>winSize</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=o>//</span><span class=n>cell_size</span><span class=p>[</span><span class=mi>0</span><span class=p>],</span><span class=n>winSize</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span><span class=o>//</span><span class=n>cell_size</span><span class=p>[</span><span class=mi>1</span><span class=p>])</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=s2>&#34;n_cell&#34;</span><span class=p>,</span><span class=n>n_cell</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>hog_feature</span> <span class=o>=</span> <span class=n>hog</span><span class=o>.</span><span class=n>compute</span><span class=p>(</span><span class=n>img</span><span class=p>)</span><span class=o>.</span><span class=n>reshape</span><span class=p>(</span><span class=n>n_cell</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>-</span> <span class=n>block_size</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>+</span> <span class=mi>1</span><span class=p>,</span><span class=n>n_cell</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span> <span class=o>-</span> <span class=n>block_size</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span> <span class=o>+</span> <span class=mi>1</span>
+</span></span><span class=line><span class=cl>                                       <span class=p>,</span><span class=n>block_size</span><span class=p>[</span><span class=mi>0</span><span class=p>],</span><span class=n>block_size</span><span class=p>[</span><span class=mi>1</span><span class=p>],</span><span class=n>nbins</span><span class=p>)</span><span class=o>.</span><span class=n>transpose</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>2</span> <span class=p>,</span> <span class=mi>3</span> <span class=p>,</span> <span class=mi>4</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=s2>&#34;hog feature&#34;</span><span class=p>,</span> <span class=n>hog_feature</span><span class=o>.</span><span class=n>shape</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>and the results</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>Original (395, 634, 3)
+</span></span><span class=line><span class=cl>winSize (632, 392)
+</span></span><span class=line><span class=cl>blockSize (2, 2)
+</span></span><span class=line><span class=cl>blockStride (8, 8)
+</span></span><span class=line><span class=cl>n_cell (79, 49)
+</span></span><span class=line><span class=cl>hog feature (48, 78, 2, 2, 9)
+</span></span></code></pre></td></tr></table></div></div><p><strong>Note:</strong> Don&rsquo;t like the order of the .shape, opencv use the order width x height (instead height x width).<br>We can visualize HOG distribution</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=kn>from</span> <span class=nn>skimage</span> <span class=kn>import</span> <span class=n>exposure</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>skimage</span> <span class=kn>import</span> <span class=n>feature</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>cv2</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>matplotlib.pyplot</span> <span class=k>as</span> <span class=nn>plt</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl><span class=p>(</span><span class=n>H</span><span class=p>,</span> <span class=n>hogImage</span><span class=p>)</span> <span class=o>=</span> <span class=n>feature</span><span class=o>.</span><span class=n>hog</span><span class=p>(</span><span class=n>gray</span><span class=p>,</span> <span class=n>orientations</span><span class=o>=</span><span class=mi>9</span><span class=p>,</span> <span class=n>pixels_per_cell</span><span class=o>=</span><span class=p>(</span><span class=mi>8</span><span class=p>,</span> <span class=mi>8</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>    <span class=n>cells_per_block</span><span class=o>=</span><span class=p>(</span><span class=mi>2</span><span class=p>,</span> <span class=mi>2</span><span class=p>),</span> <span class=n>transform_sqrt</span><span class=o>=</span><span class=kc>True</span><span class=p>,</span> <span class=n>block_norm</span><span class=o>=</span><span class=s2>&#34;L2&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=n>visualize</span><span class=o>=</span><span class=kc>True</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>hogImage</span> <span class=o>=</span> <span class=n>exposure</span><span class=o>.</span><span class=n>rescale_intensity</span><span class=p>(</span><span class=n>hogImage</span><span class=p>,</span> <span class=n>out_range</span><span class=o>=</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=mi>255</span><span class=p>))</span>
+</span></span><span class=line><span class=cl><span class=n>hogImage</span> <span class=o>=</span> <span class=n>hogImage</span><span class=o>.</span><span class=n>astype</span><span class=p>(</span><span class=s2>&#34;uint8&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>imshow</span><span class=p>(</span><span class=n>hogImage</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><div style=text-align:center><img src=img/hog-visual.png width=500></div><h2 id=application-in-hog>Application in HOG</h2><h3 id=human-detection>Human Detection</h3><p>To detect human in image or also video, we can use a pre-trained SVM (Support Vector Machine) model that makes predictions based on features extracted by the HOG (Histogram of Oriented Gradients) algorithm.</p><h3 id=import-lib>Import lib</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=kn>from</span> <span class=nn>skimage.feature</span> <span class=kn>import</span> <span class=n>hog</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>skimage.transform</span> <span class=kn>import</span> <span class=n>pyramid_gaussian</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>skimage.io</span> <span class=kn>import</span> <span class=n>imread</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>joblib</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>sklearn.preprocessing</span> <span class=kn>import</span> <span class=n>LabelEncoder</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>sklearn.svm</span> <span class=kn>import</span> <span class=n>LinearSVC</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>sklearn.metrics</span> <span class=kn>import</span> <span class=n>classification_report</span><span class=p>,</span> <span class=n>accuracy_score</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>sklearn.model_selection</span> <span class=kn>import</span> <span class=n>train_test_split</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>skimage</span> <span class=kn>import</span> <span class=n>color</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>imutils.object_detection</span> <span class=kn>import</span> <span class=n>non_max_suppression</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>imutils</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>numpy</span> <span class=k>as</span> <span class=nn>np</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>cv2</span> 
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>argparse</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>cv2</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>os</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>glob</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>PIL</span> <span class=kn>import</span> <span class=n>Image</span> <span class=c1># This will be used to read/modify images (can be done via OpenCV too)</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>numpy</span> <span class=kn>import</span> <span class=o>*</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=define-path-to-image>Define path to image</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=n>base_path_test</span> <span class=o>=</span> <span class=s2>&#34;../data/human-and-non-human/test_set/test_set&#34;</span> <span class=c1># path for test</span>
+</span></span><span class=line><span class=cl><span class=n>base_path_train</span> <span class=o>=</span> <span class=s2>&#34;../data/dataset&#34;</span> <span class=c1># path for train</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># join the path</span>
+</span></span><span class=line><span class=cl><span class=n>pos_im_path</span> <span class=o>=</span> <span class=n>os</span><span class=o>.</span><span class=n>path</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=n>base_path_train</span><span class=p>,</span> <span class=s2>&#34;positive&#34;</span><span class=p>)</span> 
+</span></span><span class=line><span class=cl><span class=n>neg_im_path</span> <span class=o>=</span> <span class=n>os</span><span class=o>.</span><span class=n>path</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=n>base_path_train</span><span class=p>,</span> <span class=s2>&#34;negative&#34;</span><span class=p>)</span> <span class=c1>#define negative image for SVM training</span>
+</span></span><span class=line><span class=cl><span class=n>pos_im_path_test</span> <span class=o>=</span> <span class=n>os</span><span class=o>.</span><span class=n>path</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=n>base_path_test</span><span class=p>,</span> <span class=s2>&#34;humans&#34;</span><span class=p>)</span> <span class=c1># for test data</span>
+</span></span><span class=line><span class=cl><span class=n>neg_im_path_test</span> <span class=o>=</span> <span class=n>os</span><span class=o>.</span><span class=n>path</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=n>base_path_test</span><span class=p>,</span> <span class=s2>&#34;non-humans&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Check if there not exist path</span>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=ow>not</span> <span class=n>os</span><span class=o>.</span><span class=n>path</span><span class=o>.</span><span class=n>exists</span><span class=p>(</span><span class=n>pos_im_path</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Error: Path does not exist - </span><span class=si>{</span><span class=n>os</span><span class=o>.</span><span class=n>path</span><span class=o>.</span><span class=n>abspath</span><span class=p>(</span><span class=n>pos_im_path</span><span class=p>)</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=ow>not</span> <span class=n>os</span><span class=o>.</span><span class=n>path</span><span class=o>.</span><span class=n>exists</span><span class=p>(</span><span class=n>neg_im_path</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Error: Path does not exist - </span><span class=si>{</span><span class=n>os</span><span class=o>.</span><span class=n>path</span><span class=o>.</span><span class=n>abspath</span><span class=p>(</span><span class=n>neg_im_path</span><span class=p>)</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=ow>not</span> <span class=n>os</span><span class=o>.</span><span class=n>path</span><span class=o>.</span><span class=n>exists</span><span class=p>(</span><span class=n>pos_im_path_test</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Error: Path does not exist - </span><span class=si>{</span><span class=n>os</span><span class=o>.</span><span class=n>path</span><span class=o>.</span><span class=n>abspath</span><span class=p>(</span><span class=n>pos_im_path_test</span><span class=p>)</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=ow>not</span> <span class=n>os</span><span class=o>.</span><span class=n>path</span><span class=o>.</span><span class=n>exists</span><span class=p>(</span><span class=n>neg_im_path_test</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Error: Path does not exist - </span><span class=si>{</span><span class=n>os</span><span class=o>.</span><span class=n>path</span><span class=o>.</span><span class=n>abspath</span><span class=p>(</span><span class=n>neg_im_path_test</span><span class=p>)</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Take the image in that path</span>
+</span></span><span class=line><span class=cl><span class=n>pos_im_listing</span> <span class=o>=</span> <span class=n>os</span><span class=o>.</span><span class=n>listdir</span><span class=p>(</span><span class=n>pos_im_path</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>neg_im_listing</span> <span class=o>=</span> <span class=n>os</span><span class=o>.</span><span class=n>listdir</span><span class=p>(</span><span class=n>neg_im_path</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>pos_im_listing_test</span> <span class=o>=</span> <span class=n>os</span><span class=o>.</span><span class=n>listdir</span><span class=p>(</span><span class=n>pos_im_path_test</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>neg_im_listing_test</span> <span class=o>=</span> <span class=n>os</span><span class=o>.</span><span class=n>listdir</span><span class=p>(</span><span class=n>neg_im_path_test</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>num_pos_samples</span> <span class=o>=</span> <span class=n>size</span><span class=p>(</span><span class=n>pos_im_listing</span><span class=p>)</span> <span class=c1># simply states the total no. of images</span>
+</span></span><span class=line><span class=cl><span class=n>num_neg_samples</span> <span class=o>=</span> <span class=n>size</span><span class=p>(</span><span class=n>neg_im_listing</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>num_pos_test</span> <span class=o>=</span> <span class=n>size</span><span class=p>(</span><span class=n>pos_im_listing_test</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>num_neg_test</span> <span class=o>=</span> <span class=n>size</span><span class=p>(</span><span class=n>neg_im_listing_test</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>num_pos_samples</span><span class=p>)</span> <span class=c1># prints the number value of the no.of samples in positive dataset</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>num_neg_samples</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>num_pos_test</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>num_neg_test</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>data</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl><span class=n>labels</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=compute-the-hog-features-and-label-them>Compute the HOG features and label them</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span><span class=lnt>118
+</span><span class=lnt>119
+</span><span class=lnt>120
+</span><span class=lnt>121
+</span><span class=lnt>122
+</span><span class=lnt>123
+</span><span class=lnt>124
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># Putting label into positive image</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>winSize</span> <span class=o>=</span> <span class=p>(</span><span class=mi>64</span><span class=p>,</span> <span class=mi>128</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>blockSize</span> <span class=o>=</span> <span class=p>(</span><span class=mi>16</span><span class=p>,</span> <span class=mi>16</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>blockStride</span> <span class=o>=</span> <span class=p>(</span><span class=mi>8</span><span class=p>,</span> <span class=mi>8</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>cellSize</span> <span class=o>=</span> <span class=p>(</span><span class=mi>8</span><span class=p>,</span> <span class=mi>8</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>nbins</span> <span class=o>=</span> <span class=mi>9</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>hog</span> <span class=o>=</span> <span class=n>cv2</span><span class=o>.</span><span class=n>HOGDescriptor</span><span class=p>(</span><span class=n>winSize</span><span class=p>,</span> <span class=n>blockSize</span><span class=p>,</span> <span class=n>blockStride</span><span class=p>,</span> <span class=n>cellSize</span><span class=p>,</span> <span class=n>nbins</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=k>for</span> <span class=n>file</span> <span class=ow>in</span> <span class=n>pos_im_listing</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>img_path</span> <span class=o>=</span> <span class=n>os</span><span class=o>.</span><span class=n>path</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=n>pos_im_path</span><span class=p>,</span> <span class=n>file</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>try</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>img</span> <span class=o>=</span> <span class=n>Image</span><span class=o>.</span><span class=n>open</span><span class=p>(</span><span class=n>img_path</span><span class=p>)</span><span class=o>.</span><span class=n>convert</span><span class=p>(</span><span class=s2>&#34;RGB&#34;</span><span class=p>)</span> <span class=c1># Open the file</span>
+</span></span><span class=line><span class=cl>        <span class=c1># Convert into NumPy array</span>
+</span></span><span class=line><span class=cl>        <span class=n>img</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>array</span><span class=p>(</span><span class=n>img</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1># Convert RGB to BGR (for OpenCV compatibility) </span>
+</span></span><span class=line><span class=cl>        <span class=n>img</span> <span class=o>=</span> <span class=n>cv2</span><span class=o>.</span><span class=n>cvtColor</span><span class=p>(</span><span class=n>img</span><span class=p>,</span> <span class=n>cv2</span><span class=o>.</span><span class=n>COLOR_RGB2BGR</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1># Resize to standard HOG size (64x128) to ensure consistency</span>
+</span></span><span class=line><span class=cl>        <span class=n>img</span> <span class=o>=</span> <span class=n>cv2</span><span class=o>.</span><span class=n>resize</span><span class=p>(</span><span class=n>img</span><span class=p>,</span> <span class=p>(</span><span class=mi>64</span><span class=p>,</span> <span class=mi>128</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>#Convert to grayscale</span>
+</span></span><span class=line><span class=cl>        <span class=n>gray</span> <span class=o>=</span> <span class=n>cv2</span><span class=o>.</span><span class=n>cvtColor</span><span class=p>(</span><span class=n>img</span><span class=p>,</span> <span class=n>cv2</span><span class=o>.</span><span class=n>COLOR_BGR2GRAY</span><span class=p>)</span> 
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=n>fd</span> <span class=o>=</span> <span class=n>hog</span><span class=o>.</span><span class=n>compute</span><span class=p>(</span><span class=n>gray</span><span class=p>)</span><span class=o>.</span><span class=n>flatten</span><span class=p>()</span> <span class=c1># Must change into 1D array (because fd return a multi-dimensional vector)</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>fd</span><span class=o>.</span><span class=n>shape</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>!=</span> <span class=mi>3780</span><span class=p>:</span>  <span class=c1># Expected size for 64x128 image</span>
+</span></span><span class=line><span class=cl>            <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Skipping </span><span class=si>{</span><span class=n>file</span><span class=si>}</span><span class=s2> due to incorrect HOG feature shape: </span><span class=si>{</span><span class=n>fd</span><span class=o>.</span><span class=n>shape</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>continue</span>  <span class=c1># Skip this sample</span>
+</span></span><span class=line><span class=cl>        <span class=n>data</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>fd</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>labels</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Processed training data (positive): </span><span class=si>{</span><span class=n>file</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>except</span> <span class=ne>Exception</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Skipping </span><span class=si>{</span><span class=n>file</span><span class=si>}</span><span class=s2> (Error: </span><span class=si>{</span><span class=n>e</span><span class=si>}</span><span class=s2>)&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Putting label into negative image</span>
+</span></span><span class=line><span class=cl><span class=k>for</span> <span class=n>file</span> <span class=ow>in</span> <span class=n>neg_im_listing</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>img_path</span> <span class=o>=</span> <span class=n>os</span><span class=o>.</span><span class=n>path</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=n>neg_im_path</span><span class=p>,</span> <span class=n>file</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>try</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>img</span> <span class=o>=</span> <span class=n>Image</span><span class=o>.</span><span class=n>open</span><span class=p>(</span><span class=n>img_path</span><span class=p>)</span><span class=o>.</span><span class=n>convert</span><span class=p>(</span><span class=s2>&#34;RGB&#34;</span><span class=p>)</span> <span class=c1># Open the file</span>
+</span></span><span class=line><span class=cl>        <span class=c1># Convert into NumPy array</span>
+</span></span><span class=line><span class=cl>        <span class=n>img</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>array</span><span class=p>(</span><span class=n>img</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1># Convert RGB to BGR (for OpenCV compatibility) </span>
+</span></span><span class=line><span class=cl>        <span class=n>img</span> <span class=o>=</span> <span class=n>cv2</span><span class=o>.</span><span class=n>cvtColor</span><span class=p>(</span><span class=n>img</span><span class=p>,</span> <span class=n>cv2</span><span class=o>.</span><span class=n>COLOR_RGB2BGR</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1># Resize to standard HOG size (64x128) to ensure consistency</span>
+</span></span><span class=line><span class=cl>        <span class=n>img</span> <span class=o>=</span> <span class=n>cv2</span><span class=o>.</span><span class=n>resize</span><span class=p>(</span><span class=n>img</span><span class=p>,</span> <span class=p>(</span><span class=mi>64</span><span class=p>,</span> <span class=mi>128</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>#Convert to grayscale</span>
+</span></span><span class=line><span class=cl>        <span class=n>gray</span> <span class=o>=</span> <span class=n>cv2</span><span class=o>.</span><span class=n>cvtColor</span><span class=p>(</span><span class=n>img</span><span class=p>,</span> <span class=n>cv2</span><span class=o>.</span><span class=n>COLOR_BGR2GRAY</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=n>fd</span> <span class=o>=</span> <span class=n>hog</span><span class=o>.</span><span class=n>compute</span><span class=p>(</span><span class=n>gray</span><span class=p>)</span><span class=o>.</span><span class=n>flatten</span><span class=p>()</span> <span class=c1># Must change into 1D array (because fd return a multi-dimensional vector)</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>fd</span><span class=o>.</span><span class=n>shape</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>!=</span> <span class=mi>3780</span><span class=p>:</span>  <span class=c1># Expected size for 64x128 image</span>
+</span></span><span class=line><span class=cl>            <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Skipping </span><span class=si>{</span><span class=n>file</span><span class=si>}</span><span class=s2> due to incorrect HOG feature shape: </span><span class=si>{</span><span class=n>fd</span><span class=o>.</span><span class=n>shape</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>continue</span>  <span class=c1># Skip this sample</span>
+</span></span><span class=line><span class=cl>        <span class=n>data</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>fd</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>labels</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Processed training data (negative): </span><span class=si>{</span><span class=n>file</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>except</span> <span class=ne>Exception</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Skipping </span><span class=si>{</span><span class=n>file</span><span class=si>}</span><span class=s2> (Error: </span><span class=si>{</span><span class=n>e</span><span class=si>}</span><span class=s2>)&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>## Testing label</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>data_test</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl><span class=n>label_test</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>for</span> <span class=n>file</span> <span class=ow>in</span> <span class=n>pos_im_listing_test</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>img_path</span> <span class=o>=</span> <span class=n>os</span><span class=o>.</span><span class=n>path</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=n>pos_im_path_test</span><span class=p>,</span> <span class=n>file</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>try</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>img</span> <span class=o>=</span> <span class=n>Image</span><span class=o>.</span><span class=n>open</span><span class=p>(</span><span class=n>img_path</span><span class=p>)</span><span class=o>.</span><span class=n>convert</span><span class=p>(</span><span class=s2>&#34;RGB&#34;</span><span class=p>)</span> <span class=c1># Open the file</span>
+</span></span><span class=line><span class=cl>        <span class=c1># Convert into NumPy array</span>
+</span></span><span class=line><span class=cl>        <span class=n>img</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>array</span><span class=p>(</span><span class=n>img</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1># Convert RGB to BGR (for OpenCV compatibility) </span>
+</span></span><span class=line><span class=cl>        <span class=n>img</span> <span class=o>=</span> <span class=n>cv2</span><span class=o>.</span><span class=n>cvtColor</span><span class=p>(</span><span class=n>img</span><span class=p>,</span> <span class=n>cv2</span><span class=o>.</span><span class=n>COLOR_RGB2BGR</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1># Resize to standard HOG size (64x128) to ensure consistency</span>
+</span></span><span class=line><span class=cl>        <span class=n>img</span> <span class=o>=</span> <span class=n>cv2</span><span class=o>.</span><span class=n>resize</span><span class=p>(</span><span class=n>img</span><span class=p>,</span> <span class=p>(</span><span class=mi>64</span><span class=p>,</span> <span class=mi>128</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>#Convert to grayscale</span>
+</span></span><span class=line><span class=cl>        <span class=n>gray</span> <span class=o>=</span> <span class=n>cv2</span><span class=o>.</span><span class=n>cvtColor</span><span class=p>(</span><span class=n>img</span><span class=p>,</span> <span class=n>cv2</span><span class=o>.</span><span class=n>COLOR_BGR2GRAY</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=c1># Create a base features (if don&#39;t add any parameter, opencv will understand to take a base parameter)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=n>fd</span> <span class=o>=</span> <span class=n>hog</span><span class=o>.</span><span class=n>compute</span><span class=p>(</span><span class=n>gray</span><span class=p>)</span><span class=o>.</span><span class=n>flatten</span><span class=p>()</span> <span class=c1># Must change into 1D array (because fd return a multi-dimensional vector)</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>fd</span><span class=o>.</span><span class=n>shape</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>!=</span> <span class=mi>3780</span><span class=p>:</span>  <span class=c1># Expected size for 64x128 image</span>
+</span></span><span class=line><span class=cl>            <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Skipping </span><span class=si>{</span><span class=n>file</span><span class=si>}</span><span class=s2> due to incorrect HOG feature shape: </span><span class=si>{</span><span class=n>fd</span><span class=o>.</span><span class=n>shape</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>continue</span>  <span class=c1># Skip this sample</span>
+</span></span><span class=line><span class=cl>        <span class=n>data_test</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>fd</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>label_test</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Processed test data (positive): </span><span class=si>{</span><span class=n>file</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>except</span> <span class=ne>Exception</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Skipping </span><span class=si>{</span><span class=n>file</span><span class=si>}</span><span class=s2> (Error: </span><span class=si>{</span><span class=n>e</span><span class=si>}</span><span class=s2>)&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Putting label into negative image</span>
+</span></span><span class=line><span class=cl><span class=k>for</span> <span class=n>file</span> <span class=ow>in</span> <span class=n>neg_im_listing_test</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>img_path</span> <span class=o>=</span> <span class=n>os</span><span class=o>.</span><span class=n>path</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=n>neg_im_path_test</span><span class=p>,</span> <span class=n>file</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>try</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>img</span> <span class=o>=</span> <span class=n>Image</span><span class=o>.</span><span class=n>open</span><span class=p>(</span><span class=n>img_path</span><span class=p>)</span><span class=o>.</span><span class=n>convert</span><span class=p>(</span><span class=s2>&#34;RGB&#34;</span><span class=p>)</span> <span class=c1># Open the file</span>
+</span></span><span class=line><span class=cl>        <span class=c1># Convert into NumPy array</span>
+</span></span><span class=line><span class=cl>        <span class=n>img</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>array</span><span class=p>(</span><span class=n>img</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1># Convert RGB to BGR (for OpenCV compatibility) </span>
+</span></span><span class=line><span class=cl>        <span class=n>img</span> <span class=o>=</span> <span class=n>cv2</span><span class=o>.</span><span class=n>cvtColor</span><span class=p>(</span><span class=n>img</span><span class=p>,</span> <span class=n>cv2</span><span class=o>.</span><span class=n>COLOR_RGB2BGR</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1># Resize to standard HOG size (64x128) to ensure consistency</span>
+</span></span><span class=line><span class=cl>        <span class=n>img</span> <span class=o>=</span> <span class=n>cv2</span><span class=o>.</span><span class=n>resize</span><span class=p>(</span><span class=n>img</span><span class=p>,</span> <span class=p>(</span><span class=mi>64</span><span class=p>,</span> <span class=mi>128</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>#Convert to grayscale</span>
+</span></span><span class=line><span class=cl>        <span class=n>gray</span> <span class=o>=</span> <span class=n>cv2</span><span class=o>.</span><span class=n>cvtColor</span><span class=p>(</span><span class=n>img</span><span class=p>,</span> <span class=n>cv2</span><span class=o>.</span><span class=n>COLOR_BGR2GRAY</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=n>fd</span> <span class=o>=</span> <span class=n>hog</span><span class=o>.</span><span class=n>compute</span><span class=p>(</span><span class=n>gray</span><span class=p>)</span><span class=o>.</span><span class=n>flatten</span><span class=p>()</span> <span class=c1># Must change into 1D array (because fd return a multi-dimensional vector)</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>fd</span><span class=o>.</span><span class=n>shape</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>!=</span> <span class=mi>3780</span><span class=p>:</span>  <span class=c1># Expected size for 64x128 image</span>
+</span></span><span class=line><span class=cl>            <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Skipping </span><span class=si>{</span><span class=n>file</span><span class=si>}</span><span class=s2> due to incorrect HOG feature shape: </span><span class=si>{</span><span class=n>fd</span><span class=o>.</span><span class=n>shape</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>continue</span>  <span class=c1># Skip this sample</span>
+</span></span><span class=line><span class=cl>        <span class=n>data_test</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>fd</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>label_test</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Processed test data (negative): </span><span class=si>{</span><span class=n>file</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>except</span> <span class=ne>Exception</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Skipping </span><span class=si>{</span><span class=n>file</span><span class=si>}</span><span class=s2> (Error: </span><span class=si>{</span><span class=n>e</span><span class=si>}</span><span class=s2>)&#34;</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=model-testing>Model testing</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=s2>&#34; Constructing training/testing split...&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>data</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>array</span><span class=p>(</span><span class=n>data</span><span class=p>,</span> <span class=n>dtype</span><span class=o>=</span><span class=n>np</span><span class=o>.</span><span class=n>float32</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>labels</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>array</span><span class=p>(</span><span class=n>labels</span><span class=p>,</span> <span class=n>dtype</span><span class=o>=</span><span class=n>np</span><span class=o>.</span><span class=n>int32</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>data_test</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>array</span><span class=p>(</span><span class=n>data_test</span><span class=p>,</span> <span class=n>dtype</span><span class=o>=</span><span class=n>np</span><span class=o>.</span><span class=n>float32</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>label_test</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>array</span><span class=p>(</span><span class=n>label_test</span><span class=p>,</span> <span class=n>dtype</span><span class=o>=</span><span class=n>np</span><span class=o>.</span><span class=n>int32</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>data_test</span><span class=o>.</span><span class=n>shape</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>label_test</span><span class=o>.</span><span class=n>shape</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=p>(</span><span class=n>trainData</span><span class=p>,</span> <span class=n>testData</span><span class=p>,</span> <span class=n>trainLabels</span><span class=p>,</span> <span class=n>testLabels</span><span class=p>)</span> <span class=o>=</span> <span class=p>(</span><span class=n>data</span><span class=p>,</span> <span class=n>data_test</span><span class=p>,</span> <span class=n>labels</span><span class=p>,</span> <span class=n>label_test</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Train the linear SVM</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=s2>&#34; Training Linear SVM classifier...&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>model</span> <span class=o>=</span> <span class=n>LinearSVC</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>model</span><span class=o>.</span><span class=n>fit</span><span class=p>(</span><span class=n>trainData</span><span class=p>,</span> <span class=n>trainLabels</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=c1># Evaluate the classifier</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=s2>&#34; Evaluating classifier on test data ...&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>pred</span> <span class=o>=</span> <span class=n>model</span><span class=o>.</span><span class=n>predict</span><span class=p>(</span><span class=n>testData</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=c1># Calculate accuracy</span>
+</span></span><span class=line><span class=cl><span class=n>accuracy</span> <span class=o>=</span> <span class=n>accuracy_score</span><span class=p>(</span><span class=n>testLabels</span><span class=p>,</span> <span class=n>pred</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Accuracy: </span><span class=si>{</span><span class=n>accuracy</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=s2>&#34;Report</span><span class=se>\n</span><span class=s2>&#34;</span><span class=p>,</span><span class=n>classification_report</span><span class=p>(</span><span class=n>testLabels</span><span class=p>,</span> <span class=n>pred</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Save the model</span>
+</span></span><span class=line><span class=cl><span class=n>joblib</span><span class=o>.</span><span class=n>dump</span><span class=p>(</span><span class=n>model</span><span class=p>,</span> <span class=s1>&#39;SVM_HOG.pkl&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=s2>&#34;SVM Model save Successfully!&#34;</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>Constructing training/testing split...
+</span></span><span class=line><span class=cl>(1554, 3780)
+</span></span><span class=line><span class=cl>(1554,)
+</span></span><span class=line><span class=cl> Training Linear SVM classifier...
+</span></span><span class=line><span class=cl> Evaluating classifier on test data ...
+</span></span><span class=line><span class=cl>Accuracy: 0.8294723294723295
+</span></span><span class=line><span class=cl>Report
+</span></span><span class=line><span class=cl>               precision    recall  f1-score   support
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>           0       0.84      0.98      0.91      1309
+</span></span><span class=line><span class=cl>           1       0.00      0.00      0.00       245
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    accuracy                           0.83      1554
+</span></span><span class=line><span class=cl>   macro avg       0.42      0.49      0.45      1554
+</span></span><span class=line><span class=cl>weighted avg       0.71      0.83      0.76      1554
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>SVM Model save Successfully!
+</span></span></code></pre></td></tr></table></div></div><h3 id=load-model>Load model</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># Load the model by joblib</span>
+</span></span><span class=line><span class=cl><span class=n>model</span> <span class=o>=</span> <span class=n>joblib</span><span class=o>.</span><span class=n>load</span><span class=p>(</span><span class=s2>&#34;SVM_HOG.pkl&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=s2>&#34;SVM Model load Successfully!&#34;</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=sliding-window>Sliding window</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># Sliding window technique</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>sliding_window</span><span class=p>(</span><span class=n>image</span><span class=p>,</span> <span class=n>stepSize</span><span class=p>,</span> <span class=n>windowSize</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>y</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=n>image</span><span class=o>.</span><span class=n>shape</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>-</span> <span class=n>windowSize</span><span class=p>[</span><span class=mi>1</span><span class=p>],</span> <span class=n>stepSize</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=n>x</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=n>image</span><span class=o>.</span><span class=n>shape</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span> <span class=o>-</span> <span class=n>windowSize</span><span class=p>[</span><span class=mi>0</span><span class=p>],</span> <span class=n>stepSize</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=k>yield</span> <span class=p>(</span><span class=n>x</span><span class=p>,</span> <span class=n>y</span><span class=p>,</span> <span class=n>image</span><span class=p>[</span><span class=n>y</span><span class=p>:</span><span class=n>y</span> <span class=o>+</span> <span class=n>windowSize</span><span class=p>[</span><span class=mi>1</span><span class=p>],</span> <span class=n>x</span><span class=p>:</span><span class=n>x</span> <span class=o>+</span> <span class=n>windowSize</span><span class=p>[</span><span class=mi>0</span><span class=p>]])</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=detect-people-on-image>Detect people on image</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=n>down_scale</span><span class=o>=</span><span class=mf>1.25</span>
+</span></span><span class=line><span class=cl><span class=n>window_size</span><span class=o>=</span><span class=p>(</span><span class=mi>64</span><span class=p>,</span><span class=mi>128</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>output_folder</span> <span class=o>=</span> <span class=s1>&#39;results/&#39;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Detect</span>
+</span></span><span class=line><span class=cl><span class=k>for</span> <span class=n>file</span> <span class=ow>in</span> <span class=n>pos_im_listing_test</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>scale</span> <span class=o>=</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl>    <span class=n>img_path</span> <span class=o>=</span> <span class=n>os</span><span class=o>.</span><span class=n>path</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=n>pos_im_path_test</span><span class=p>,</span> <span class=n>file</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>try</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>img</span> <span class=o>=</span> <span class=n>Image</span><span class=o>.</span><span class=n>open</span><span class=p>(</span><span class=n>img_path</span><span class=p>)</span><span class=o>.</span><span class=n>convert</span><span class=p>(</span><span class=s2>&#34;RGB&#34;</span><span class=p>)</span> <span class=c1># Open the file</span>
+</span></span><span class=line><span class=cl>        <span class=n>img</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>array</span><span class=p>(</span><span class=n>img</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>img</span> <span class=o>=</span> <span class=n>cv2</span><span class=o>.</span><span class=n>resize</span><span class=p>(</span><span class=n>img</span><span class=p>,</span> <span class=p>(</span><span class=mi>300</span><span class=p>,</span><span class=mi>200</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1># Debug: Check the shape of the image</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>img</span><span class=o>.</span><span class=n>shape</span><span class=p>[</span><span class=mi>2</span><span class=p>]</span> <span class=o>!=</span> <span class=mi>3</span><span class=p>:</span> 
+</span></span><span class=line><span class=cl>            <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;Skip&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>continue</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=n>detections</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>        <span class=c1># Using pyramid to detect the larger or smaller object (scaled the image purpose sliding window will detect different object with original cell)</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=n>resized</span> <span class=ow>in</span> <span class=n>pyramid_gaussian</span><span class=p>(</span><span class=n>img</span><span class=p>,</span> <span class=n>downscale</span><span class=o>=</span><span class=n>down_scale</span><span class=p>,</span> <span class=n>channel_axis</span> <span class=o>=</span> <span class=o>-</span><span class=mi>1</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=c1># pyramid_gaussian convert the image into [0, 1]</span>
+</span></span><span class=line><span class=cl>            <span class=c1># So we need to convert back to unit8 </span>
+</span></span><span class=line><span class=cl>            <span class=n>resized</span> <span class=o>=</span> <span class=p>(</span><span class=n>resized</span> <span class=o>*</span> <span class=mi>255</span><span class=p>)</span><span class=o>.</span><span class=n>astype</span><span class=p>(</span><span class=n>np</span><span class=o>.</span><span class=n>uint8</span><span class=p>)</span>  <span class=c1># Convert float64 to uint8, go back [0, 255]</span>
+</span></span><span class=line><span class=cl>            <span class=k>for</span> <span class=p>(</span><span class=n>x</span> <span class=p>,</span> <span class=n>y</span> <span class=p>,</span> <span class=n>window</span><span class=p>)</span> <span class=ow>in</span> <span class=n>sliding_window</span><span class=p>(</span><span class=n>resized</span><span class=p>,</span> <span class=n>stepSize</span> <span class=o>=</span> <span class=mi>8</span><span class=p>,</span> <span class=n>windowSize</span> <span class=o>=</span> <span class=n>window_size</span><span class=p>):</span> <span class=c1># You can adjust the stepsize</span>
+</span></span><span class=line><span class=cl>                <span class=c1># validation the window size</span>
+</span></span><span class=line><span class=cl>                <span class=k>if</span> <span class=p>(</span><span class=n>window</span><span class=o>.</span><span class=n>shape</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span> <span class=o>!=</span> <span class=n>window_size</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=ow>or</span> <span class=n>window</span><span class=o>.</span><span class=n>shape</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>!=</span> <span class=n>window_size</span><span class=p>[</span><span class=mi>1</span><span class=p>]):</span>
+</span></span><span class=line><span class=cl>                    <span class=k>continue</span>
+</span></span><span class=line><span class=cl>                    
+</span></span><span class=line><span class=cl>                <span class=c1># change the window to gray, easily compute HOG                    </span>
+</span></span><span class=line><span class=cl>                <span class=n>window</span> <span class=o>=</span> <span class=n>cv2</span><span class=o>.</span><span class=n>cvtColor</span><span class=p>(</span><span class=n>window</span><span class=p>,</span> <span class=n>cv2</span><span class=o>.</span><span class=n>COLOR_RGB2GRAY</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=c1>#Extract HOG features</span>
+</span></span><span class=line><span class=cl>                <span class=n>fds</span> <span class=o>=</span> <span class=n>hog</span><span class=o>.</span><span class=n>compute</span><span class=p>(</span><span class=n>window</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=n>fds</span> <span class=o>=</span> <span class=n>fds</span><span class=o>.</span><span class=n>reshape</span><span class=p>(</span><span class=mi>1</span> <span class=p>,</span> <span class=o>-</span><span class=mi>1</span><span class=p>)</span> <span class=c1># Make become 2d</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                <span class=c1>#prediction SVM</span>
+</span></span><span class=line><span class=cl>                <span class=n>pred</span> <span class=o>=</span> <span class=n>model</span><span class=o>.</span><span class=n>predict</span><span class=p>(</span><span class=n>fds</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=c1># print(pred)</span>
+</span></span><span class=line><span class=cl>                <span class=k>if</span> <span class=n>pred</span> <span class=o>==</span> <span class=mi>1</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                    <span class=k>if</span> <span class=p>(</span><span class=n>model</span><span class=o>.</span><span class=n>decision_function</span><span class=p>(</span><span class=n>fds</span><span class=p>)</span> <span class=o>&gt;</span> <span class=mf>0.5</span><span class=p>):</span> <span class=c1># add threshold</span>
+</span></span><span class=line><span class=cl>                        <span class=n>back_to_original</span> <span class=o>=</span> <span class=n>down_scale</span> <span class=o>**</span> <span class=n>scale</span> <span class=c1># When we use pyramid to shrink the image, we will give the detection window back to original size</span>
+</span></span><span class=line><span class=cl>                        <span class=n>detections</span><span class=o>.</span><span class=n>append</span><span class=p>((</span><span class=n>x</span><span class=o>*</span><span class=n>back_to_original</span> <span class=p>,</span> <span class=n>y</span><span class=o>*</span><span class=n>back_to_original</span>
+</span></span><span class=line><span class=cl>                                           <span class=p>,</span> <span class=nb>int</span><span class=p>(</span><span class=n>window_size</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=o>*</span><span class=n>back_to_original</span><span class=p>),</span> <span class=nb>int</span><span class=p>(</span><span class=n>window_size</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span><span class=o>*</span><span class=n>back_to_original</span><span class=p>),</span><span class=n>model</span><span class=o>.</span><span class=n>decision_function</span><span class=p>(</span><span class=n>fds</span><span class=p>)))</span>
+</span></span><span class=line><span class=cl>            <span class=n>scale</span> <span class=o>+=</span> <span class=mi>1</span> <span class=c1># increase the scale </span>
+</span></span><span class=line><span class=cl>        <span class=n>clone</span> <span class=o>=</span> <span class=n>img</span><span class=o>.</span><span class=n>copy</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>        <span class=n>rects</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>array</span><span class=p>([[</span><span class=n>x</span><span class=p>,</span><span class=n>y</span><span class=p>,</span><span class=n>x</span> <span class=o>+</span> <span class=n>w</span> <span class=p>,</span> <span class=n>y</span> <span class=o>+</span> <span class=n>h</span><span class=p>]</span> <span class=k>for</span> <span class=p>(</span><span class=n>x</span><span class=p>,</span><span class=n>y</span><span class=p>,</span><span class=n>w</span><span class=p>,</span><span class=n>h</span><span class=p>,</span><span class=n>_</span><span class=p>)</span> <span class=ow>in</span> <span class=n>detections</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>        <span class=n>sc</span> <span class=o>=</span> <span class=p>[</span><span class=n>score</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=k>for</span> <span class=p>(</span><span class=n>_</span><span class=p>,</span><span class=n>_</span><span class=p>,</span><span class=n>_</span><span class=p>,</span><span class=n>_</span><span class=p>,</span><span class=n>score</span><span class=p>)</span> <span class=ow>in</span> <span class=n>detections</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>        <span class=n>sc</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>array</span><span class=p>(</span><span class=n>sc</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=c1># Apply Non-Maximum Suppression (NMS) if detections exist</span>
+</span></span><span class=line><span class=cl>        <span class=n>final_detections</span> <span class=o>=</span> <span class=n>non_max_suppression</span><span class=p>(</span><span class=n>rects</span><span class=p>,</span> <span class=n>probs</span><span class=o>=</span><span class=n>sc</span><span class=p>,</span> <span class=n>overlapThresh</span><span class=o>=</span><span class=mf>0.35</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>#Draw bouding boxes</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=p>(</span><span class=n>x</span> <span class=p>,</span> <span class=n>y</span> <span class=p>,</span> <span class=n>w</span> <span class=p>,</span> <span class=n>h</span><span class=p>)</span> <span class=ow>in</span> <span class=n>final_detections</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>cv2</span><span class=o>.</span><span class=n>rectangle</span><span class=p>(</span><span class=n>img</span><span class=p>,</span> <span class=p>(</span><span class=n>x</span> <span class=p>,</span> <span class=n>y</span><span class=p>),</span> <span class=p>(</span><span class=n>x</span> <span class=o>+</span> <span class=n>w</span><span class=p>,</span> <span class=n>y</span> <span class=o>+</span> <span class=n>h</span><span class=p>),</span> <span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=mi>255</span><span class=p>,</span> <span class=mi>0</span><span class=p>),</span> <span class=mi>2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1># Convert BGR to RGB for display in matplotlib</span>
+</span></span><span class=line><span class=cl>        <span class=n>img_rgb</span> <span class=o>=</span> <span class=n>cv2</span><span class=o>.</span><span class=n>cvtColor</span><span class=p>(</span><span class=n>img</span><span class=p>,</span> <span class=n>cv2</span><span class=o>.</span><span class=n>COLOR_BGR2RGB</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=c1># write down the result</span>
+</span></span><span class=line><span class=cl>        <span class=n>output_path</span> <span class=o>=</span> <span class=n>os</span><span class=o>.</span><span class=n>path</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=n>output_folder</span><span class=p>,</span> <span class=n>file</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>cv2</span><span class=o>.</span><span class=n>imwrite</span><span class=p>(</span><span class=n>output_path</span><span class=p>,</span> <span class=n>img_rgb</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Processed </span><span class=si>{</span><span class=n>file</span><span class=si>}</span><span class=s2> successful&#34;</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>except</span> <span class=ne>Exception</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Skipping </span><span class=si>{</span><span class=n>file</span><span class=si>}</span><span class=s2> (Error: </span><span class=si>{</span><span class=n>e</span><span class=si>}</span><span class=s2>)&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span></code></pre></td></tr></table></div></div><p>Before using NMS</p><div style=text-align:center><img src=img/detect-people-image.png width=400></div><p>After using NMS</p><div style=text-align:center><img src=img/detect-people-image-NMS.png width=400></div><h3 id=detect-people-on-video>Detect people on video</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span><span class=lnt>76
+</span><span class=lnt>77
+</span><span class=lnt>78
+</span><span class=lnt>79
+</span><span class=lnt>80
+</span><span class=lnt>81
+</span><span class=lnt>82
+</span><span class=lnt>83
+</span><span class=lnt>84
+</span><span class=lnt>85
+</span><span class=lnt>86
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=kn>from</span> <span class=nn>IPython.display</span> <span class=kn>import</span> <span class=n>display</span><span class=p>,</span> <span class=n>clear_output</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>yt_dlp</span>  
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>PIL.Image</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Load YouTube video using pafy</span>
+</span></span><span class=line><span class=cl><span class=n>url</span> <span class=o>=</span> <span class=s1>&#39;https://youtu.be/NyLF8nHIquM&#39;</span>
+</span></span><span class=line><span class=cl><span class=c1># Get the best video stream</span>
+</span></span><span class=line><span class=cl><span class=n>ydl_opts</span> <span class=o>=</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl><span class=k>with</span> <span class=n>yt_dlp</span><span class=o>.</span><span class=n>YoutubeDL</span><span class=p>(</span><span class=n>ydl_opts</span><span class=p>)</span> <span class=k>as</span> <span class=n>ydl</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>info_dict</span> <span class=o>=</span> <span class=n>ydl</span><span class=o>.</span><span class=n>extract_info</span><span class=p>(</span><span class=n>url</span><span class=p>,</span> <span class=n>download</span><span class=o>=</span><span class=kc>False</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>video_url</span> <span class=o>=</span> <span class=n>info_dict</span><span class=p>[</span><span class=s1>&#39;url&#39;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>cap</span> <span class=o>=</span> <span class=n>cv2</span><span class=o>.</span><span class=n>VideoCapture</span><span class=p>(</span><span class=n>video_url</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Set Optimized Performance</span>
+</span></span><span class=line><span class=cl><span class=n>cv2</span><span class=o>.</span><span class=n>setUseOptimized</span><span class=p>(</span><span class=kc>True</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>cv2</span><span class=o>.</span><span class=n>setNumThreads</span><span class=p>(</span><span class=mi>4</span><span class=p>)</span>  <span class=c1># Adjust based on CPU</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Process every nth frame (skip frames)</span>
+</span></span><span class=line><span class=cl><span class=n>frame_skip</span> <span class=o>=</span> <span class=mi>2</span>
+</span></span><span class=line><span class=cl><span class=n>frame_count</span> <span class=o>=</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Read and process frames</span>
+</span></span><span class=line><span class=cl><span class=k>while</span> <span class=kc>True</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>ret</span><span class=p>,</span> <span class=n>frame</span> <span class=o>=</span> <span class=n>cap</span><span class=o>.</span><span class=n>read</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=ow>not</span> <span class=n>ret</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>break</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=n>frame_count</span> <span class=o>%</span> <span class=n>frame_skip</span> <span class=o>!=</span> <span class=mi>0</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>frame_count</span> <span class=o>+=</span> <span class=mi>1</span>
+</span></span><span class=line><span class=cl>        <span class=k>continue</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>frame_count</span> <span class=o>+=</span> <span class=mi>1</span>  <span class=c1># Increment counter</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=n>img</span> <span class=o>=</span> <span class=n>cv2</span><span class=o>.</span><span class=n>resize</span><span class=p>(</span><span class=n>frame</span><span class=p>,</span> <span class=p>(</span><span class=mi>512</span><span class=p>,</span><span class=mi>512</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    <span class=n>detections</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>    <span class=n>scale</span> <span class=o>=</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl>    <span class=c1># Using pyramid to detect the larger or smaller object (scaled the image purpose sliding window will detect different object with original cell)</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>resized</span> <span class=ow>in</span> <span class=n>pyramid_gaussian</span><span class=p>(</span><span class=n>img</span><span class=p>,</span> <span class=n>downscale</span><span class=o>=</span><span class=n>down_scale</span><span class=p>,</span> <span class=n>channel_axis</span> <span class=o>=</span> <span class=o>-</span><span class=mi>1</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=c1># pyramid_gaussian convert the image into [0, 1]</span>
+</span></span><span class=line><span class=cl>        <span class=c1># So we need to convert back to unit8 </span>
+</span></span><span class=line><span class=cl>        <span class=n>resized</span> <span class=o>=</span> <span class=p>(</span><span class=n>resized</span> <span class=o>*</span> <span class=mi>255</span><span class=p>)</span><span class=o>.</span><span class=n>astype</span><span class=p>(</span><span class=n>np</span><span class=o>.</span><span class=n>uint8</span><span class=p>)</span>  <span class=c1># Convert float64 to uint8, go back [0, 255]</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=p>(</span><span class=n>x</span> <span class=p>,</span> <span class=n>y</span> <span class=p>,</span> <span class=n>window</span><span class=p>)</span> <span class=ow>in</span> <span class=n>sliding_window</span><span class=p>(</span><span class=n>resized</span><span class=p>,</span> <span class=n>stepSize</span> <span class=o>=</span> <span class=mi>8</span><span class=p>,</span> <span class=n>windowSize</span> <span class=o>=</span> <span class=n>window_size</span><span class=p>):</span> <span class=c1># You can adjust the stepsize</span>
+</span></span><span class=line><span class=cl>            <span class=c1># validation the window size</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=p>(</span><span class=n>window</span><span class=o>.</span><span class=n>shape</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span> <span class=o>!=</span> <span class=n>window_size</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=ow>or</span> <span class=n>window</span><span class=o>.</span><span class=n>shape</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>!=</span> <span class=n>window_size</span><span class=p>[</span><span class=mi>1</span><span class=p>]):</span>
+</span></span><span class=line><span class=cl>                <span class=k>continue</span>
+</span></span><span class=line><span class=cl>                
+</span></span><span class=line><span class=cl>            <span class=c1># change the window to gray, easily compute HOG                    </span>
+</span></span><span class=line><span class=cl>            <span class=n>window</span> <span class=o>=</span> <span class=n>cv2</span><span class=o>.</span><span class=n>cvtColor</span><span class=p>(</span><span class=n>window</span><span class=p>,</span> <span class=n>cv2</span><span class=o>.</span><span class=n>COLOR_RGB2GRAY</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=c1>#Extract HOG features</span>
+</span></span><span class=line><span class=cl>            <span class=n>fds</span> <span class=o>=</span> <span class=n>hog</span><span class=o>.</span><span class=n>compute</span><span class=p>(</span><span class=n>window</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>fds</span> <span class=o>=</span> <span class=n>fds</span><span class=o>.</span><span class=n>reshape</span><span class=p>(</span><span class=mi>1</span> <span class=p>,</span> <span class=o>-</span><span class=mi>1</span><span class=p>)</span> <span class=c1># Make become 2d</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=c1>#prediction SVM</span>
+</span></span><span class=line><span class=cl>            <span class=n>pred</span> <span class=o>=</span> <span class=n>model</span><span class=o>.</span><span class=n>predict</span><span class=p>(</span><span class=n>fds</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=c1># print(pred)</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=n>pred</span> <span class=o>==</span> <span class=mi>1</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=k>if</span> <span class=p>(</span><span class=n>model</span><span class=o>.</span><span class=n>decision_function</span><span class=p>(</span><span class=n>fds</span><span class=p>)</span> <span class=o>&gt;</span> <span class=mf>0.5</span><span class=p>):</span> <span class=c1># add threshold</span>
+</span></span><span class=line><span class=cl>                    <span class=n>back_to_original</span> <span class=o>=</span> <span class=n>down_scale</span> <span class=o>**</span> <span class=n>scale</span> <span class=c1># When we use pyramid to shrink the image, we will give the detection window back to original size</span>
+</span></span><span class=line><span class=cl>                    <span class=n>detections</span><span class=o>.</span><span class=n>append</span><span class=p>((</span><span class=n>x</span><span class=o>*</span><span class=n>back_to_original</span> <span class=p>,</span> <span class=n>y</span><span class=o>*</span><span class=n>back_to_original</span>
+</span></span><span class=line><span class=cl>                                        <span class=p>,</span> <span class=nb>int</span><span class=p>(</span><span class=n>window_size</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=o>*</span><span class=n>back_to_original</span><span class=p>),</span> <span class=nb>int</span><span class=p>(</span><span class=n>window_size</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span><span class=o>*</span><span class=n>back_to_original</span><span class=p>),</span><span class=n>model</span><span class=o>.</span><span class=n>decision_function</span><span class=p>(</span><span class=n>fds</span><span class=p>)))</span>
+</span></span><span class=line><span class=cl>        <span class=n>scale</span> <span class=o>+=</span> <span class=mi>1</span> <span class=c1># increase the scale </span>
+</span></span><span class=line><span class=cl>    <span class=n>clone</span> <span class=o>=</span> <span class=n>img</span><span class=o>.</span><span class=n>copy</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=n>rects</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>array</span><span class=p>([[</span><span class=n>x</span><span class=p>,</span><span class=n>y</span><span class=p>,</span><span class=n>x</span> <span class=o>+</span> <span class=n>w</span> <span class=p>,</span> <span class=n>y</span> <span class=o>+</span> <span class=n>h</span><span class=p>]</span> <span class=k>for</span> <span class=p>(</span><span class=n>x</span><span class=p>,</span><span class=n>y</span><span class=p>,</span><span class=n>w</span><span class=p>,</span><span class=n>h</span><span class=p>,</span><span class=n>_</span><span class=p>)</span> <span class=ow>in</span> <span class=n>detections</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>    <span class=n>sc</span> <span class=o>=</span> <span class=p>[</span><span class=n>score</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=k>for</span> <span class=p>(</span><span class=n>_</span><span class=p>,</span><span class=n>_</span><span class=p>,</span><span class=n>_</span><span class=p>,</span><span class=n>_</span><span class=p>,</span><span class=n>score</span><span class=p>)</span> <span class=ow>in</span> <span class=n>detections</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>    <span class=n>sc</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>array</span><span class=p>(</span><span class=n>sc</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=c1># Apply Non-Maximum Suppression (NMS) if detections exist</span>
+</span></span><span class=line><span class=cl>    <span class=n>final_detections</span> <span class=o>=</span> <span class=n>non_max_suppression</span><span class=p>(</span><span class=n>rects</span><span class=p>,</span> <span class=n>probs</span><span class=o>=</span><span class=n>sc</span><span class=p>,</span> <span class=n>overlapThresh</span><span class=o>=</span><span class=mf>0.35</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>#Draw bouding boxes</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=p>(</span><span class=n>x</span> <span class=p>,</span> <span class=n>y</span> <span class=p>,</span> <span class=n>w</span> <span class=p>,</span> <span class=n>h</span><span class=p>)</span> <span class=ow>in</span> <span class=n>final_detections</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>cv2</span><span class=o>.</span><span class=n>rectangle</span><span class=p>(</span><span class=n>img</span><span class=p>,</span> <span class=p>(</span><span class=n>x</span> <span class=p>,</span> <span class=n>y</span><span class=p>),</span> <span class=p>(</span><span class=n>x</span> <span class=o>+</span> <span class=n>w</span><span class=p>,</span> <span class=n>y</span> <span class=o>+</span> <span class=n>h</span><span class=p>),</span> <span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=mi>255</span><span class=p>,</span> <span class=mi>0</span><span class=p>),</span> <span class=mi>2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>cv2</span><span class=o>.</span><span class=n>putText</span><span class=p>(</span><span class=n>img</span><span class=p>,</span> <span class=s1>&#39;Person: </span><span class=si>{:.2f}</span><span class=s1>&#39;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=n>np</span><span class=o>.</span><span class=n>max</span><span class=p>(</span><span class=n>sc</span><span class=p>)),</span> <span class=p>(</span><span class=n>x</span> <span class=o>-</span> <span class=mi>2</span><span class=p>,</span> <span class=n>y</span> <span class=o>-</span> <span class=mi>2</span><span class=p>),</span> <span class=n>cv2</span><span class=o>.</span><span class=n>FONT_HERSHEY_SIMPLEX</span><span class=p>,</span> <span class=mf>0.5</span><span class=p>,</span> <span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=mi>255</span><span class=p>,</span> <span class=mi>0</span><span class=p>),</span> <span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># Convert BGR to RGB for display in matplotlib</span>
+</span></span><span class=line><span class=cl>    <span class=n>img_rgb</span> <span class=o>=</span> <span class=n>cv2</span><span class=o>.</span><span class=n>cvtColor</span><span class=p>(</span><span class=n>img</span><span class=p>,</span> <span class=n>cv2</span><span class=o>.</span><span class=n>COLOR_BGR2RGB</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>img_pil</span> <span class=o>=</span> <span class=n>PIL</span><span class=o>.</span><span class=n>Image</span><span class=o>.</span><span class=n>fromarray</span><span class=p>(</span><span class=n>img_rgb</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1># Clear previous frame and display new frame</span>
+</span></span><span class=line><span class=cl>    <span class=n>clear_output</span><span class=p>(</span><span class=n>wait</span><span class=o>=</span><span class=kc>True</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>display</span><span class=p>(</span><span class=n>img_pil</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=c1># Add a small delay and allow stopping</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=n>cv2</span><span class=o>.</span><span class=n>waitKey</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span> <span class=o>==</span> <span class=mi>27</span><span class=p>:</span>  <span class=c1># Press ESC to exit</span>
+</span></span><span class=line><span class=cl>        <span class=k>break</span>
+</span></span><span class=line><span class=cl><span class=n>cap</span><span class=o>.</span><span class=n>release</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>cv2</span><span class=o>.</span><span class=n>destroyAllWindows</span><span class=p>()</span>
+</span></span></code></pre></td></tr></table></div></div><div style=text-align:center><img src=img/detect-people-video.png width=400></div><h2 id=summary>Summary</h2><p>In image processing, the Histogram of Oriented Gradients (HOG) algorithm is one of the powerful feature descriptors that encodes an image into a feature vector with a sufficiently large number of dimensions to effectively classify images. The algorithm works based on representing a histogram vector of gradient magnitudes according to bins of gradient directions applied to local image regions. Normalization methods are applied to make the aggregated histogram vector invariant to changes in image intensity, ensuring consistency for images with the same content but different brightness levels.</p><p>In object detection, the HOG algorithm proves to be highly effective, particularly in detecting people at various scales. Additionally, in some image classification cases where the dataset is small, large neural networks such as CNNs may not perform accurately due to the training set not covering all possible variations. In such situations, applying classical feature extraction methods like HOG can yield surprisingly good results while requiring fewer computational resources and lower costs.</p><p>This demonstrates that although HOG is an older method, it remains highly effective in many applications. Depending on the specific scenario, we may choose to use the HOG algorithm instead of necessarily applying a deep learning model with millions of parameters to achieve high accuracy.</p><h2 id=reference>Reference</h2><ol><li><a class=link href=https://phamdinhkhanh.github.io/2019/11/22/HOG.html target=_blank rel=noopener>https://phamdinhkhanh.github.io/2019/11/22/HOG.html</a></li><li><a class=link href=https://lilianweng.github.io/posts/2017-10-29-object-recognition-part-1/ target=_blank rel=noopener>Object Detection for Dummies Part 1: Gradient Vector, HOG, and SS | Lil&rsquo;Log</a></li><li><a class=link href=https://learnopencv.com/histogram-of-oriented-gradients/ target=_blank rel=noopener>Histogram of Oriented Gradients explained using OpenCV</a></li><li><a class=link href=https://github.com/nguyentuss/CV target=_blank rel=noopener>https://github.com/nguyentuss/CV</a> (full code and data put in here)</li></ol></section><footer class=article-footer><section class=article-tags><a href=/tags/%23cv/>#CV</a>
+<a href=/tags/%23machine_learning/>#Machine_Learning</a>
+<a href=/tags/%23extract_image/>#Extract_image</a></section><section class=article-copyright><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css integrity=sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV crossorigin=anonymous><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js integrity=sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8 crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js integrity=sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05 crossorigin=anonymous defer></script><script>window.addEventListener("DOMContentLoaded",()=>{const e=document.querySelector(".main-article");renderMathInElement(e,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}],ignoredClasses:["gist"]})})</script></article><aside class=related-content--wrapper><h2 class=section-title>Related content</h2><div class=related-content><div class="flex article-list--tile"><article class=has-image><a href=/p/optical-flow/><div class=article-image><img src=/p/optical-flow/cover.b504306606439d461fecae9641a61657_hu_628bcd80b70a91e.jpg width=250 height=150 loading=lazy alt="Featured image of post Optical Flow" data-hash="md5-tQQwZgZDnUYf7K6WQaYWVw=="></div><div class=article-details><h2 class=article-title>Optical Flow</h2></div></a></article></div></div></aside><div class=disqus-container><div id=disqus_thread></div><script>window.disqus_config=function(){},function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}var t=document,e=t.createElement("script");e.async=!0,e.src="//hugo-theme-stack.disqus.com/embed.js",e.setAttribute("data-timestamp",+new Date),(t.head||t.body).appendChild(e)}()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div><style>.disqus-container{background-color:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);padding:var(--card-padding)}</style><script>window.addEventListener("onColorSchemeChange",e=>{typeof DISQUS=="object"&&DISQUS.reset({reload:!0})})</script><footer class=site-footer><section class=copyright>&copy;
+2020 -
+2025 nguyentuss blog</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.30.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a></section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Introduction on nguyentuss blog</title><link>https://nguyentuss.github.io/tags/introduction/</link><description>Recent content in Introduction on nguyentuss blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Thu, 13 Mar 2025 22:05:35 +0700</lastBuildDate><atom:link href="https://nguyentuss.github.io/tags/introduction/index.xml" rel="self" type="application/rss+xml"/><item><title>Optical Flow</title><link>https://nguyentuss.github.io/p/optical-flow/</link><pubDate>Thu, 13 Mar 2025 22:05:35 +0700</pubDate><guid>https://nguyentuss.github.io/p/optical-flow/</guid><description>&lt;img src="https://nguyentuss.github.io/p/optical-flow/cover.jpg" alt="Featured image of post Optical Flow" />&lt;p>Optical flow quantifies the motion of objects between consecutive frames captured by a camera. These algorithms attempt to capture the apparent motion of brightness patterns in the image. It is an important subfield of computer vision, enabling machines to understand scene dynamics and movement.
+&lt;img src="https://nguyentuss.github.io/p/optical-flow/img/pic1.png"
+width="1060"
+height="354"
+srcset="https://nguyentuss.github.io/p/optical-flow/img/pic1_hu_b63abf68a9bdbc3d.png 480w, https://nguyentuss.github.io/p/optical-flow/img/pic1_hu_48f5d5a7ecab6654.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="299"
+data-flex-basis="718px"
+>&lt;/p>
+&lt;h2 id="what-is-brightness">What is brightness
+&lt;/h2>&lt;p>Lets break down the definition of brightness. In an image, &lt;strong>brightness&lt;/strong> refers to the intensity of light at each pixel. It determines how &lt;strong>light or dark&lt;/strong> a pixel appears.&lt;/p>
+&lt;h3 id="how-brightness-is-represented-in-images">How Brightness Is Represented in Images
+&lt;/h3>&lt;h4 id="grayscale-images">Grayscale Images
+&lt;/h4>&lt;ul>
+&lt;li>Each pixel has a single intensity value ranging from:
+&lt;ul>
+&lt;li>&lt;strong>0 (black)&lt;/strong>&lt;/li>
+&lt;li>&lt;strong>255 (white)&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h4 id="color-images-rgb-format">Color Images (RGB Format)
+&lt;/h4>&lt;ul>
+&lt;li>Each pixel is made of &lt;strong>Red, Green, and Blue (RGB)&lt;/strong> channels.&lt;/li>
+&lt;li>Each channel has values from &lt;strong>0 to 255&lt;/strong>.&lt;/li>
+&lt;li>&lt;strong>Brightness is the combined intensity of all three channels&lt;/strong>.&lt;/li>
+&lt;/ul>
+&lt;h4 id="how-to-measure-brightness">How to Measure Brightness?
+&lt;/h4>&lt;ul>
+&lt;li>&lt;strong>For grayscale images:&lt;/strong> Brightness is just the pixel value.&lt;/li>
+&lt;li>&lt;strong>For color images:&lt;/strong> A common way to measure brightness is:
+$$
+brightness = \frac{R+B+G}{3}
+$$&lt;/li>
+&lt;/ul>
+&lt;h2 id="basic-gradient-based-estimation">Basic Gradient-Based Estimation
+&lt;/h2>$$ I(\vec{x},t)=I(\vec{x}+\vec{u},t+1) \tag{1}$$&lt;p>
+where $I(\vec{x},t)$ is an image intensity as a function of space $\vec{x}=(x,y)^T$ and time $t$, and $\vec{u}=(u_1,u_2)^T$ is the 2D velocity.
+That equation only holds under &lt;em>brightness constancy&lt;/em> assumption. Of course, &lt;em>brightness constancy&lt;/em> rarely hold exactly. The underlying assumptions that surface radiance remains fixed from one frame to next. One can fabricate scenes for which this holds, the scene might be constrained to contain only &lt;a class="link" href="https://www.azooptics.com/Article.aspx?ArticleID=790" target="_blank" rel="noopener"
+>Lambertian Surface&lt;/a> (no secularities), with a distant point source (so that changing the distance to the light source has no effect), no object rotations, and no secondary illumination (shadows or inter-surface reflection). Although this is unrealistic, it is remarkable that the brightness constancy assumption works well in practice.
+&lt;img src="https://nguyentuss.github.io/p/optical-flow/img/pic2.png"
+width="927"
+height="281"
+srcset="https://nguyentuss.github.io/p/optical-flow/img/pic2_hu_4136bd4e895e7980.png 480w, https://nguyentuss.github.io/p/optical-flow/img/pic2_hu_c8852120de14ae46.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="329"
+data-flex-basis="791px"
+>
+To derive an estimator for 2D velocity $\vec{u}$, we first consider the 1D case. Let $f_1(x)$ and $f_2(x)$ be 1D signals (images) at two time instants. In the figure above, suppose that $f_2(x)$ is a translated version $f_1(x)$, let $f_2(x)=f_1(x-d)$ where &lt;em>d&lt;/em> denotes the translation. &lt;a class="link" href="https://tutorial.math.lamar.edu/classes/calcii/taylorseries.aspx" target="_blank" rel="noopener"
+>A Taylor series expansion&lt;/a> of $f_1(x-d)$ about x is given by&lt;/p>
+$$
+f_1(x-d) = f_1(x) -df'_1(x) + \frac{d^2}{2!}f''_1(x)-...= \sum_{0}^{\infty}\frac{(-d)^n}{n!}f^{(n)} \tag{2}(x)
+$$&lt;p>With this expansion, we can rewrite the difference between two signals at location $x$&lt;/p>
+$$
+f_1(x)-f_2(x) = df_1(x)-O(d^2f''_1) \tag{3}
+$$&lt;p>Ignoring the second- and higher-order terms, we obtain the approximation at $x$&lt;/p>
+$$
+\hat{d}=\frac{f_1(x)-f_2(x)}{f'_1(x)} \tag{4}
+$$&lt;p>The 1D case generalizes straightforwardly to 2D. Assume that the displaced image is well approximated y the first-order Taylor series:&lt;/p>
+$$ I(\vec{x}+\vec{u},t+1)\approx I(\vec{x},t)+\vec{u}\nabla I(\vec{x},t)+I_t(\vec{x},t)\tag{5}$$&lt;p>where $\nabla I(\vec{x},t)=(I_x,I_y)$, which $I_x,I_y$ show how brightness changes in the x and y directions and $I_t$ show how brightness changes over time of image $I(\vec{x},t)$ at time $t$. If $I_t&amp;gt;0$, the pixel is getting brighter and $I_t&amp;lt;0$ otherwise, and $\vec{u}=(u_1,u_2)^T$ is the 2D velocity.
+Ignoring the high-order Taylor series, substitute with equation $(1)$, we obtain&lt;/p>
+$$\nabla I(\vec{x},t)\vec{u}+I_t(\vec{x},t)=0 \tag{6}$$&lt;p>
+This equation relates the velocity to the space-time image derivatives at one image location, and is often called the &lt;em>gradient constraint equation&lt;/em> or &lt;strong>Optical flow constraint equation(OFCE)&lt;/strong>. If one has access to only two frames, or cannot estimate $I_t$, it is straight-forward to derive a closely related gradient constraint, in which $I_t(\vec{x},t)$ is replaced by $\delta I(\vec{x},t) \triangleq I(\vec{x},t+1)-I(\vec{x},t)$&lt;/p>
+&lt;h2 id="intensity-conversation">Intensity Conversation
+&lt;/h2>&lt;div style="text-align: center;">
+&lt;img src="img/moving_ball.gif" width="340">
+&lt;/div>
+&lt;p>Imagine you are watching a video where a &lt;strong>white ball moves across a dark background&lt;/strong>. As the ball moves, its &lt;strong>brightness (intensity) remains unchanged&lt;/strong>, meaning the white color of the ball does not fade or darken while it moves.
+Let&lt;/p>
+&lt;ul>
+&lt;li>$I(x,y,t)$ represent the brightness (grayscale intensity) at position $(x,y)$ at time $t$.&lt;/li>
+&lt;li>The ball moves along a path $\vec{x}=(x(t),y(t))$.&lt;/li>
+&lt;li>The intensity of the ball (its brightness) remains constant at $c$.
+From the equation
+$$
+I(\vec{x}(t),t)=c \tag{7}
+$$
+This means that any time t, the intensity in the track remain the same, regardless of its positions. The temporal derivative of which yields
+$$
+\frac{d}{dt}I(\vec{x}(t),t)=0 \tag{8}
+$$
+Expanding the left-hand-side, using chain rule give us
+$$
+\frac{d}{dt}I(\vec{x}(t),t)=\frac{\partial I}{\partial x}\frac{\partial x}{\partial t} + \frac{\partial I}{\partial y}\frac{\partial y}{\partial t} + \frac{\partial I}{\partial t}\frac{\partial t}{\partial t} = \nabla I(\vec{x},t)\vec{u} + I_t \tag{9}
+$$
+where the path derivative it just the optical flow $\vec{u} \triangleq (dx/dt,dy/dt)^T$. Combine $(8),(9)$ we have &lt;em>gradient constraint equation&lt;/em>.&lt;/li>
+&lt;/ul>
+&lt;h2 id="least-squares-estimation">Least-Squares Estimation
+&lt;/h2>&lt;p>Once cannot recover u from one gradient constraint since $(6)$ is one equation with two unknown, $u_1$ and $u_2$. The intensity gradient constrains the flow to a one parameter family of velocities along a line in &lt;em>velocity space&lt;/em>.
+Two vectors are perpendicular if their dot product is zero:&lt;/p>
+$$
+\nabla I \cdot \vec{d} = 0
+$$&lt;p>where:&lt;/p>
+&lt;ul>
+&lt;li>$\nabla I = (I_x, I_y)$ &lt;em>(gradient direction)&lt;/em>, and&lt;/li>
+&lt;li>$\vec{d}$ is the &lt;strong>direction vector of the constraint line&lt;/strong>.&lt;/li>
+&lt;/ul>
+$$
+\vec{d} = (I_y, -I_x)
+$$&lt;p>
+Now, compute the dot product:&lt;/p>
+$$
+(I_x, I_y) \cdot (I_y, -I_x)
+= I_x I_y + I_y (-I_x)
+= I_x I_y - I_x I_y
+= 0
+$$$$
+E(\mathbf{u}) \;=\; \sum_{\vec{x}} g(\vec{x})
+\Bigl[\;\vec{u} \,\cdot\, \nabla I(\vec{x}, t) \;+\; I_t(\vec{x}, t)\Bigr]^{2}
+$$&lt;p>where $g(\vec{x})$ is a weighting function that determines the &lt;em>support&lt;/em> of the estimator (the region within which we combine constraints). It is common to let $g(\vec{x})$ be Gaussian in order to weight constraints in the center of the neighborhood more highly, giving them more influence. The 2D velocity $\hat{u}$ that minimizes $E(\vec{u})$ is the least squares flow estimate.
+The minimum of $E(\vec{u})$ can be found from its critical points, where its derivatives with respect to $\vec{u}$ are zero; i.e.,&lt;/p>
+$$
+\frac{\partial E(u_1, u_2)}{\partial u_1}=\sum_{\vec{x}} g(\tilde{x})\Bigl[u_1 \,I_x^2+ u_2 \, I_x \, I_y+ I_t \, I_x\Bigr]= 0
+$$$$
+\frac{\partial E(u_1, u_2)}{\partial u_2}
+=\sum_{\vec{x}} g(\vec{x})\Bigl[u_1 \, I_xI_y + u_2 \, I_y^2+ I_t \, I_y\Bigr]= 0
+$$&lt;p>
+These equations can we rewritten in matrix form&lt;/p>
+$$
+\mathbf{M}\vec{u}=\vec b
+$$$$
+\mathbf{M} =
+\begin{bmatrix}
+\sum g I_x^2 &amp; \sum g I_xI_y \\
+\sum gI_y^2 &amp; \sum g I_x I_y
+\end{bmatrix}
+, \vec{b} = -
+\begin{pmatrix}
+I_tI_x \\
+I_tI_y
+\end{pmatrix}
+$$&lt;p>
+When $\mathbf{M}$ has rank 2, then the LS estimate is $\hat{u}=\mathbf{M}^{-1}\vec{b}$&lt;/p>
+&lt;h2 id="find-root">Find root
+&lt;/h2>&lt;p>Back to the equation &lt;strong>OCFE&lt;/strong>, this gives you one equation but find two unknowns $(u,v)$, this means the solution cannot be determined uniquely with a single constraint (a single pixel), We &lt;strong>need more information&lt;/strong> to determine the correct motion for each pixel. So there are different methods handle this problem in different ways&lt;/p>
+&lt;h3 id="lucas-kanade-optical-flow-local-estimation">Lucas-Kanade Optical Flow (Local Estimation)
+&lt;/h3>&lt;ul>
+&lt;li>Finds $(u,v)$ in small patches (instead of a single pixel).&lt;/li>
+&lt;li>Assumes motion is &lt;strong>constant within a small neighborhood&lt;/strong>.&lt;/li>
+&lt;li>Uses &lt;strong>least-squares optimization&lt;/strong> to find $(u,v)$ for the whole patch.&lt;/li>
+&lt;/ul>
+&lt;h3 id="horn-schunck-optical-flow-global-estimation">Horn-Schunck Optical Flow (Global Estimation)
+&lt;/h3>&lt;ul>
+&lt;li>Finds $(u,v)$ for every pixel across the entire image.&lt;/li>
+&lt;li>Uses a &lt;strong>smoothness constraint&lt;/strong> so that neighboring pixels have similar motion.&lt;/li>
+&lt;li>Solves $(u,v)$ as a global optimization problem.
+&lt;a class="link" href="https://www.ipol.im/pub/art/2013/20/article_lr.pdf" target="_blank" rel="noopener"
+>Click this link to see more information&lt;/a>and &lt;a class="link" href="https://www.cs.cmu.edu/~16385/s17/Slides/14.3_OF__HornSchunck.pdf" target="_blank" rel="noopener"
+>this&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;h3 id="brox-optical-flow--deep-learning-based-methods">Brox Optical Flow &amp;amp; Deep Learning-Based Methods
+&lt;/h3>&lt;ul>
+&lt;li>Use &lt;strong>more complex constraints&lt;/strong> (e.g., gradient constancy, deep learning models).&lt;/li>
+&lt;li>Improve accuracy for &lt;strong>large and complex motions&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;h2 id="practice">Practice
+&lt;/h2>&lt;h2 id="reference">Reference
+&lt;/h2>&lt;ol>
+&lt;li>&lt;a class="link" href="https://www.thinkautonomous.ai/blog/computer-vision-from-image-to-video-analysis/" target="_blank" rel="noopener"
+>Video Analysis Algorithms in Computer Vision&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://product.vinbigdata.org/thuat-toan-phan-tich-video-trong-thi-giac-may-tinh/" target="_blank" rel="noopener"
+>Thuật toán phân tích video trong thị giác máy tính – VinBigdata Product&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://paperswithcode.com/task/optical-flow-estimation#task-home" target="_blank" rel="noopener"
+>Optical Flow Estimation | Papers With Code&lt;/a> (recommend)&lt;/li>
+&lt;li>&lt;a class="link" href="https://www.cs.cmu.edu/~16385/s17/Slides/14.3_OF__HornSchunck.pdf" target="_blank" rel="noopener"
+>14.3 OF - HornSchunck&lt;/a>&lt;/li>
+&lt;/ol></description></item></channel></rss>
