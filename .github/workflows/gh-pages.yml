@@ -3,7 +3,7 @@ name: Deploy Hugo to GitHub Pages
 on:
   push:
     branches:
-      - main  # Or 'master' if you use that
+      - main  # or 'master' if that's your default branch
 
 permissions:
   contents: read
@@ -18,7 +18,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Hugo
@@ -27,7 +27,7 @@ jobs:
           hugo-version: '0.146.7'
           extended: true
 
-      - name: Build site
+      - name: Build Hugo site
         run: hugo --minify
 
       - name: Debug Hugo Output
@@ -46,7 +46,6 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
