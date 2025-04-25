@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Computer Vision on My New Hugo Site</title>
+    <link>https://nguyentuss.github.io/categories/computer-vision/</link>
+    <description>Recent content in Computer Vision on My New Hugo Site</description>
+    <generator>Hugo -- 0.146.7</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 13 Mar 2025 22:05:35 +0700</lastBuildDate>
+    <atom:link href="https://nguyentuss.github.io/categories/computer-vision/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Optical Flow</title>
+      <link>https://nguyentuss.github.io/posts/optical-flow/</link>
+      <pubDate>Thu, 13 Mar 2025 22:05:35 +0700</pubDate>
+      <guid>https://nguyentuss.github.io/posts/optical-flow/</guid>
+      <description>&lt;p&gt;Optical flow quantifies the motion of objects between consecutive frames captured by a camera. These algorithms attempt to capture the apparent motion of brightness patterns in the image. It is an important subfield of computer vision, enabling machines to understand scene dynamics and movement.
+&lt;img loading=&#34;lazy&#34; src=&#34;https://nguyentuss.github.io/posts/optical-flow/img/pic1.png&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;what-is-brightness&#34;&gt;What is brightness&lt;/h2&gt;
+&lt;p&gt;Lets break down the definition of brightness. In an image, &lt;strong&gt;brightness&lt;/strong&gt; refers to the intensity of light at each pixel. It determines how &lt;strong&gt;light or dark&lt;/strong&gt; a pixel appears.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Histogram of Oriented Gradients (HOG)</title>
+      <link>https://nguyentuss.github.io/posts/hog/</link>
+      <pubDate>Tue, 11 Mar 2025 10:49:42 +0700</pubDate>
+      <guid>https://nguyentuss.github.io/posts/hog/</guid>
+      <description>&lt;hr&gt;
+&lt;p&gt;There are many different methods in computer vision. When it comes to image classification, we can apply families of CNN models such as Inception Net, MobileNet, ResNet, DenseNet, AlexNet, U-Net, and so on. For object detection, models like YOLO, SSD, Faster R-CNN, Fast R-CNN, and Mask R-CNN are commonly used.
+All the above algorithms belong to the deep learning category. However, before the deep learning boom, what algorithms were typically used in image processing? Today, we will explore a classic yet highly effective algorithm in image processing: &lt;strong&gt;HOG (Histogram of Oriented Gradients).&lt;/strong&gt;
+This algorithm generates &lt;strong&gt;features description&lt;/strong&gt; for the purpose of &lt;strong&gt;object detection&lt;/strong&gt;. From an image, two key matrices are extracted to store essential information: &lt;strong&gt;gradient magnitude&lt;/strong&gt; and &lt;strong&gt;gradient orientation&lt;/strong&gt;. By combining these two pieces of information into a histogram distribution—where the gradient magnitude is counted in bins according to gradient orientation—we obtain a &lt;strong&gt;HOG feature vector&lt;/strong&gt; that represents the histogram. This is the basic concept, but in practice, the algorithm is more complex. The &lt;strong&gt;HOG vector&lt;/strong&gt; is computed over &lt;strong&gt;local regions&lt;/strong&gt;, similar to how CNNs operate, followed by &lt;strong&gt;local normalization&lt;/strong&gt; to standardize measurements. Finally, the overall &lt;strong&gt;HOG vector&lt;/strong&gt; is aggregated from all local vectors.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

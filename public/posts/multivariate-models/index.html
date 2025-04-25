@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Multivariate Models | My New Hugo Site</title>
+<meta name="keywords" content="#AI, #Machine_Learning">
+<meta name="description" content="Joint distributions for multiple random variables
+Covariance
+The covariance between two random variables ${X}$ and ${Y}$ measures the direction of the linear relationship to which ${X}$ and ${Y}$ are (linearly) related. It quantifies how the random variables change together.
+
+  Positive: If one increases, the other also increases.
+  Negative: If one increases while the other decreases.
+  Zero: There is no relationship between the variables.
+
+$$\textrm{Cov}[X,Y] \triangleq \mathbb{E}\Bigl[(X-\mathbb{E}[X])(Y-\mathbb{E}[Y])\Bigr] = \mathbb{E}[XY] - \mathbb{E}[X]\mathbb{E}[Y].$$">
+<meta name="author" content="">
+<link rel="canonical" href="https://nguyentuss.github.io/posts/multivariate-models/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.6da9a63d25a9608bca2f7f907a030e887a7dd3c3f3918e4cc113129361414bda.css" integrity="sha256-bammPSWpYIvKL3&#43;QegMOiHp908PzkY5MwRMSk2FBS9o=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://nguyentuss.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://nguyentuss.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://nguyentuss.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://nguyentuss.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://nguyentuss.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://nguyentuss.github.io/posts/multivariate-models/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+          delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+          ],
+          throwOnError : false
+        });
+    });
+</script>
+
+
+<meta property="og:url" content="https://nguyentuss.github.io/posts/multivariate-models/">
+  <meta property="og:site_name" content="My New Hugo Site">
+  <meta property="og:title" content="Multivariate Models">
+  <meta property="og:description" content="Joint distributions for multiple random variables Covariance The covariance between two random variables ${X}$ and ${Y}$ measures the direction of the linear relationship to which ${X}$ and ${Y}$ are (linearly) related. It quantifies how the random variables change together.
+Positive: If one increases, the other also increases. Negative: If one increases while the other decreases. Zero: There is no relationship between the variables. $$\textrm{Cov}[X,Y] \triangleq \mathbb{E}\Bigl[(X-\mathbb{E}[X])(Y-\mathbb{E}[Y])\Bigr] = \mathbb{E}[XY] - \mathbb{E}[X]\mathbb{E}[Y].$$">
+  <meta property="og:locale" content="en-us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-03-10T21:50:35+07:00">
+    <meta property="article:modified_time" content="2025-03-10T21:50:35+07:00">
+    <meta property="article:tag" content="#AI">
+    <meta property="article:tag" content="#Machine_Learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Multivariate Models">
+<meta name="twitter:description" content="Joint distributions for multiple random variables
+Covariance
+The covariance between two random variables ${X}$ and ${Y}$ measures the direction of the linear relationship to which ${X}$ and ${Y}$ are (linearly) related. It quantifies how the random variables change together.
+
+  Positive: If one increases, the other also increases.
+  Negative: If one increases while the other decreases.
+  Zero: There is no relationship between the variables.
+
+$$\textrm{Cov}[X,Y] \triangleq \mathbb{E}\Bigl[(X-\mathbb{E}[X])(Y-\mathbb{E}[Y])\Bigr] = \mathbb{E}[XY] - \mathbb{E}[X]\mathbb{E}[Y].$$">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://nguyentuss.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Multivariate Models",
+      "item": "https://nguyentuss.github.io/posts/multivariate-models/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Multivariate Models",
+  "name": "Multivariate Models",
+  "description": "Joint distributions for multiple random variables Covariance The covariance between two random variables ${X}$ and ${Y}$ measures the direction of the linear relationship to which ${X}$ and ${Y}$ are (linearly) related. It quantifies how the random variables change together.\nPositive: If one increases, the other also increases. Negative: If one increases while the other decreases. Zero: There is no relationship between the variables. $$\\textrm{Cov}[X,Y] \\triangleq \\mathbb{E}\\Bigl[(X-\\mathbb{E}[X])(Y-\\mathbb{E}[Y])\\Bigr] = \\mathbb{E}[XY] - \\mathbb{E}[X]\\mathbb{E}[Y].$$\n",
+  "keywords": [
+    "#AI", "#Machine_Learning"
+  ],
+  "articleBody": "Joint distributions for multiple random variables Covariance The covariance between two random variables ${X}$ and ${Y}$ measures the direction of the linear relationship to which ${X}$ and ${Y}$ are (linearly) related. It quantifies how the random variables change together.\nPositive: If one increases, the other also increases. Negative: If one increases while the other decreases. Zero: There is no relationship between the variables. $$\\textrm{Cov}[X,Y] \\triangleq \\mathbb{E}\\Bigl[(X-\\mathbb{E}[X])(Y-\\mathbb{E}[Y])\\Bigr] = \\mathbb{E}[XY] - \\mathbb{E}[X]\\mathbb{E}[Y].$$\nIf ${\\mathbf{x}}$ is a $D$-dimensional random vector, its covariance matrix is defined as\n$$\\textrm{Cov}[\\mathbf{x}] \\triangleq \\mathbb{E}\\Bigl[(\\mathbf{x}-\\mathbb{E}[\\mathbf{x}])(\\mathbf{x}-\\mathbb{E}[\\mathbf{x}])^T\\Bigr] \\triangleq \\mathbf{\\Sigma} =.$$\n$$\\begin{pmatrix} \\textrm{Var}[X_1] \u0026 \\textrm{Cov}[X_1,X_2] \u0026 \\cdots \u0026 \\textrm{Cov}[X_1,X_D] \\ \\textrm{Cov}[X_2,X_1] \u0026 \\textrm{Var}[X_2] \u0026 \\cdots \u0026 \\textrm{Cov}[X_2,X_D] \\ \\vdots \u0026 \\vdots \u0026 \\ddots \u0026 \\vdots \\ \\textrm{Cov}[X_D,X_1] \u0026 \\textrm{Cov}[X_D,X_2] \u0026 \\cdots \u0026 \\textrm{Var}[X_D] \\end{pmatrix}$$\nCovariance itself is the variance of the distribution, from which we can get the important result\n$$\\mathbb{E}[\\mathbf{x}\\mathbf{x}^T] = \\mathbf{\\Sigma} + \\mathbf{\\mu}\\mathbf{\\mu}^T.$$\nAnother useful result is that the covariance of a linear transformation\n$$\\textrm{Cov}[\\mathbf{A}\\mathbf{x} + b] = \\mathbf{A} , \\textrm{Cov}[\\mathbf{x}] , \\mathbf{A}^T.$$\nThe cross-covariance between two random vectors is defined by\n$$\\textrm{Cov}[\\mathbf{x},\\mathbf{y}] = \\mathbb{E}\\Bigl[(\\mathbf{x}-\\mathbb{E}[\\mathbf{x}])(\\mathbf{y}-\\mathbb{E}[\\mathbf{y}])^T\\Bigr].$$\nCorrelation Covariance can range over all real numbers. Sometimes it is more convenient to work with a normalized measure that is bounded. The correlation coefficient between ${X}$ and ${Y}$ is defined as\n$$\\rho \\triangleq \\textrm{Corr}[X,Y] \\triangleq \\frac{\\textrm{Cov}[X,Y]}{\\sqrt{\\textrm{Var}[X]\\textrm{Var}[Y]}}.$$\nWhile covariance can be any real number, correlation is always between ${-1}$ and ${1}$. In the case of a vector ${\\mathbf{x}}$ of related variables, the correlation matrix is given by\n$$\\textrm{Corr}(\\mathbf{x}) = \\begin{pmatrix} 1 \u0026 \\frac{\\mathbb{E}[(X_1 - \\mu_1)(X_2 - \\mu_2)]}{\\sigma_1 \\sigma_2} \u0026 \\cdots \u0026 \\frac{\\mathbb{E}[(X_1 - \\mu_1)(X_D - \\mu_D)]}{\\sigma_1 \\sigma_D} \\ \\frac{\\mathbb{E}[(X_2 - \\mu_2)(X_1 - \\mu_1)]}{\\sigma_2 \\sigma_1} \u0026 1 \u0026 \\cdots \u0026 \\frac{\\mathbb{E}[(X_2 - \\mu_2)(X_D - \\mu_D)]}{\\sigma_2 \\sigma_D} \\ \\vdots \u0026 \\vdots \u0026 \\ddots \u0026 \\vdots \\ \\frac{\\mathbb{E}[(X_D - \\mu_D)(X_1 - \\mu_1)]}{\\sigma_D \\sigma_1} \u0026 \\frac{\\mathbb{E}[(X_D - \\mu_D)(X_2 - \\mu_2)]}{\\sigma_D \\sigma_2} \u0026 \\cdots \u0026 1 \\end{pmatrix}.$$\nNote that uncorrelated does not imply independent. For example, if ${X}\\sim \\textrm{Unif}(-1,1)$ and ${Y} = {X}^2$, even though $\\textrm{Cov}[X,Y]=0$ and $\\textrm{Corr}[X,Y]=0$, ${Y}$ clearly depends on ${X}$.\nSimpson Paradox Simpson’s paradox demonstrates that a statistical trend observed in several different groups of data can disappear or even reverse when these groups are combined.\nThe Multivariate Gaussian (Normal) Distribution The multivariate Gaussian (normal) distribution generalizes the univariate Gaussian to multiple dimensions.\n$$\\mathcal{N}(\\mathbf{y};\\mathbf{\\mu},\\mathbf{\\Sigma}) \\triangleq \\frac{1}{(2\\pi)^{D/2}|\\mathbf{\\Sigma}|^{1/2}}\\exp\\left(-\\frac{1}{2}(\\mathbf{y}-\\mathbf{\\mu})^T\\mathbf{\\Sigma}^{-1}(\\mathbf{y}-\\mathbf{\\mu})\\right).$$\nwhere ${\\mathbf{\\mu}} = \\mathbb{E}[\\mathbf{y}] \\in \\mathbb{R}^D$ is the mean vector and ${\\mathbf{\\Sigma}} = \\textrm{Cov}[\\mathbf{y}]$ is the $D\\times D$ covariance matrix.\nIn 2D, the MVN is known as the Bivariate Gaussian distribution. In this case, if ${\\mathbf{y}} \\sim \\mathcal{N}(\\mathbf{\\mu},\\mathbf{\\Sigma})$ with\n$$\\mathbf{\\Sigma} = \\begin{pmatrix} \\sigma_1^2 \u0026 \\rho,\\sigma_1,\\sigma_2 \\ \\rho,\\sigma_1,\\sigma_2 \u0026 \\sigma_2^2 \\end{pmatrix},$$\nthe marginal distribution ${p(y_1)}$ is a 1D Gaussian given by\n$$p(y_1) = \\mathcal{N}(y_1 \\mid \\mu_1, \\sigma_1^2).$$\nand if we observe ${y_2}$, the conditional distribution is\n$$p(y_1 \\mid y_2) = \\mathcal{N}!\\Biggl(y_1 \\Bigl| \\mu_1 + \\frac{\\rho,\\sigma_1,\\sigma_2}{\\sigma_2^2}(y_2 - \\mu_2),, \\sigma_1^2 - \\frac{(\\rho,\\sigma_1,\\sigma_2)^2}{\\sigma_2^2} \\Bigr.\\Biggr).$$\nIf $\\sigma_1 = \\sigma_2 = \\sigma$, then\n$$p(y_1 \\mid y_2) = \\mathcal{N}!\\Biggl(y_1 \\Bigl| \\mu_1 + \\rho(y_2 - \\mu_2),, \\sigma^2(1 - \\rho^2) \\Bigr.\\Biggr).$$\nFor instance, if ${\\rho = 0.8}$, ${\\sigma_1 = \\sigma_2 = 1}$, ${\\mu_1 = \\mu_2 = 0}$, and ${y_2} = 1$, then $\\mathbb{E}[y_1 \\mid y_2 = 1] = 0.8$ and\n$$\\textrm{Var}(y_1 \\mid y_2 = 1) = 1 - 0.8^2 = 0.36.$$\nMarginals and Conditionals of an MVN Suppose ${\\mathbf{y}} = (y_1, y_2)$ is jointly Gaussian with parameters\n$$\\mathbf{\\mu} = \\begin{pmatrix} \\mu_1 \\ \\mu_2 \\end{pmatrix}, \\quad \\mathbf{\\Sigma} = \\begin{pmatrix} \\Sigma_{11} \u0026 \\Sigma_{12} \\ \\Sigma_{21} \u0026 \\Sigma_{22} \\end{pmatrix}.$$\nThen the marginals are\n$$p(y_1) = \\mathcal{N}(y_1 \\mid \\mu_1, \\Sigma_{11}), \\qquad p(y_2) = \\mathcal{N}(y_2 \\mid \\mu_2, \\Sigma_{22}).$$\nand the conditional is\n$$p(y_1 \\mid y_2) = \\mathcal{N}(y_1 \\mid \\mu_{1|2}, \\Sigma_{1|2})$$ $$\\quad \\mu_{1|2} = \\mu_1 + \\Sigma_{12}\\Sigma_{22}^{-1}(y_2 - \\mu_2), \\quad \\Sigma_{1|2} = \\Sigma_{11} -\\Sigma_{12}\\Sigma_{22}^{-1}\\Sigma_{21}.$$\nExample: Missing Data Suppose we sample ${N=10}$ vectors from an 8D Gaussian and then hide 50% of the data. For each example ${n}$, let ${v}$ denote the indices of the visible features and ${h}$ the hidden ones. With model parameters ${\\theta = (\\mathbf{\\mu}, \\mathbf{\\Sigma})}$, we compute the marginal distribution\n$$p(\\mathbf{y}{n,h}\\mid \\mathbf{y}{n,v}, \\theta)$$\nfor each missing variable ${i \\in h}$, and then set the prediction as the posterior mean\n$$\\bar{y}{n,i} = \\mathbb{E}!\\Bigl[ y{n,i} \\mid \\mathbf{y}_{n,v}, \\theta \\Bigr].$$\nThe posterior variance\n$$\\textrm{Var}!\\Bigl[y_{n,i} \\mid \\mathbf{y}_{n,v}, \\theta\\Bigr]$$\nindicates our confidence in that prediction.\nLinear Gaussian Systems Consider a scenario where ${z\\in \\mathbb{R}^L}$ is an unknown value and ${y\\in \\mathbb{R}^D}$ is a noisy measurement of ${z}$. Assume\n$$\\begin{aligned} p(z) \u0026= \\mathcal{N}(z \\mid \\mu_z, \\Sigma_z), \\qquad p(y \\mid z) = \\mathcal{N}(y \\mid Wz + b, \\Sigma_y), \\end{aligned}$$\nwhere ${W}$ is a ${D\\times L}$ matrix. The joint distribution ${p(z,y) = p(z)p(y\\mid z)}$ is an $(L+D)$-dimensional Gaussian with mean\n$$\\mu = \\begin{pmatrix} \\mu_z \\ W\\mu_z + b \\end{pmatrix},$$\nand covariance\n$$\\Sigma = \\begin{pmatrix} \\Sigma_z \u0026 \\Sigma_zW^T \\ W\\Sigma_z \u0026 \\Sigma_y + W\\Sigma_zW^T \\end{pmatrix}.$$\nBayes Rule for Gaussians The posterior distribution is\n$$\\begin{aligned} p(z \\mid y) \u0026= \\mathcal{N}(z \\mid \\mu_{z \\mid y}, \\Sigma_{z \\mid y}), \\quad \\Sigma_{z \\mid y}^{-1} = \\Sigma_z^{-1} + W^T\\Sigma_y^{-1}W, \\quad \\mu_{z \\mid y} = \\Sigma_{z \\mid y}\\Bigl[ W^T\\Sigma_y^{-1}(y - b) + \\Sigma_z^{-1}\\mu_z \\Bigr]. \\end{aligned}$$\nThe normalization constant is given by\n$$\\begin{aligned} p(y) \u0026= \\int \\mathcal{N}(z \\mid \\mu_z, \\Sigma_z),\\mathcal{N}(y \\mid Wz+b, \\Sigma_y),dz = \\mathcal{N}\\Bigl(y \\mid W\\mu_z+b,, \\Sigma_y+W\\Sigma_zW^T\\Bigr). \\end{aligned}$$\nDerivation The log of the joint distribution is\n$$\\begin{aligned} \\log p(z,y) \u0026= -\\frac{1}{2}(z-\\mu_z)^T\\Sigma_z^{-1}(z-\\mu_z) -\\frac{1}{2}(y-Wz-b)^T\\Sigma_y^{-1}(y-Wz-b). \\end{aligned}$$\nThis quadratic form can be rearranged (by completing the square) to derive the expressions for ${\\Sigma_{z \\mid y}}$ and ${\\mu_{z \\mid y}}$.\nExample: Inferring an Unknown Scalar Suppose we make ${N}$ noisy measurements ${y_i}$ of a scalar ${z}$ with measurement noise precision ${\\lambda_y = \\frac{1}{\\sigma^2}}$:\n$$p(y_i \\mid z) = \\mathcal{N}(y_i \\mid z, \\lambda_y^{-1}),$$\nand assume a prior\n$$p(z) = \\mathcal{N}(z \\mid \\mu_0, \\lambda_0^{-1}).$$\nThen the posterior is\n$$p(z \\mid y_1,\\dots,y_N) = \\mathcal{N}(z \\mid \\mu_N, \\lambda_N^{-1}),$$\nwith\n$$\\lambda_N = \\lambda_0 + N\\lambda_y,$$\nand\n$$\\mu_N = \\frac{N\\lambda_y\\overline{y} + \\lambda_0\\mu_0}{\\lambda_N}.$$\nIn other words, the posterior mean is a weighted average of the prior mean and the sample mean. The posterior variance is\n$$\\tau_N^2 = \\frac{\\sigma^2,\\tau_0^2}{N\\tau_0^2 + \\sigma^2},$$\nwhich decreases as more data is observed.\nSequential updates follow the same principle. After observing ${y_1}$:\n$$p(z \\mid y_1) = \\mathcal{N}(z \\mid \\mu_1, \\sigma_1^2),$$\nwith\n$$\\mu_1 = \\frac{\\sigma_y^2\\mu_0 + \\sigma_0^2y_1}{\\sigma_0^2 + \\sigma_y^2}, \\quad \\sigma_1^2 = \\frac{\\sigma_0^2\\sigma_y^2}{\\sigma_0^2 + \\sigma_y^2}.$$\nThen, using ${p(z \\mid y_1)}$ as the new prior, subsequent updates follow similarly.\nSignal-to-noise Ratio (SNR):\n$$\\text{SNR} = \\frac{\\mathbb{E}[Z^2]}{\\mathbb{E}[\\epsilon^2]} = \\frac{\\Sigma_0 + \\mu_0^2}{\\Sigma_y}.$$\nThis ratio indicates how much the data refines our estimate of ${z}$.\nMixture Models ",
+  "wordCount" : "1054",
+  "inLanguage": "en",
+  "datePublished": "2025-03-10T21:50:35+07:00",
+  "dateModified": "2025-03-10T21:50:35+07:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://nguyentuss.github.io/posts/multivariate-models/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://nguyentuss.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://nguyentuss.github.io/" accesskey="h" title="My New Hugo Site (Alt + H)">My New Hugo Site</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Multivariate Models
+    </h1>
+    <div class="post-meta"><span title='2025-03-10 21:50:35 +0700 +07'>March 10, 2025</span>
+
+</div>
+  </header> 
+  <div class="post-content"><h2 id="joint-distributions-for-multiple-random-variables">Joint distributions for multiple random variables<a hidden class="anchor" aria-hidden="true" href="#joint-distributions-for-multiple-random-variables">#</a></h2>
+<h3 id="covariance">Covariance<a hidden class="anchor" aria-hidden="true" href="#covariance">#</a></h3>
+<p>The <strong>covariance</strong> between two random variables ${X}$ and ${Y}$ measures the <strong>direction</strong> of the <strong>linear relationship</strong> to which ${X}$ and ${Y}$ are (linearly) related. It quantifies how the random variables change together.</p>
+<ul>
+<li>  Positive: If one increases, the other also increases.</li>
+<li>  Negative: If one increases while the other decreases.</li>
+<li>  Zero: There is no relationship between the variables.</li>
+</ul>
+<p>$$\textrm{Cov}[X,Y] \triangleq \mathbb{E}\Bigl[(X-\mathbb{E}[X])(Y-\mathbb{E}[Y])\Bigr] = \mathbb{E}[XY] - \mathbb{E}[X]\mathbb{E}[Y].$$</p>
+<p>If ${\mathbf{x}}$ is a $D$-dimensional random vector, its <strong>covariance matrix</strong> is defined as</p>
+<p>$$\textrm{Cov}[\mathbf{x}] \triangleq \mathbb{E}\Bigl[(\mathbf{x}-\mathbb{E}[\mathbf{x}])(\mathbf{x}-\mathbb{E}[\mathbf{x}])^T\Bigr] \triangleq \mathbf{\Sigma} =.$$</p>
+<p>$$\begin{pmatrix} \textrm{Var}[X_1] &amp; \textrm{Cov}[X_1,X_2] &amp; \cdots &amp; \textrm{Cov}[X_1,X_D] \ \textrm{Cov}[X_2,X_1] &amp; \textrm{Var}[X_2] &amp; \cdots &amp; \textrm{Cov}[X_2,X_D] \ \vdots &amp; \vdots &amp; \ddots &amp; \vdots \ \textrm{Cov}[X_D,X_1] &amp; \textrm{Cov}[X_D,X_2] &amp; \cdots &amp; \textrm{Var}[X_D] \end{pmatrix}$$</p>
+<p>Covariance itself is the variance of the distribution, from which we can get the important result</p>
+<p>$$\mathbb{E}[\mathbf{x}\mathbf{x}^T] = \mathbf{\Sigma} + \mathbf{\mu}\mathbf{\mu}^T.$$</p>
+<p>Another useful result is that the covariance of a linear transformation</p>
+<p>$$\textrm{Cov}[\mathbf{A}\mathbf{x} + b] = \mathbf{A} , \textrm{Cov}[\mathbf{x}] , \mathbf{A}^T.$$</p>
+<p>The <strong>cross-covariance</strong> between two random vectors is defined by</p>
+<p>$$\textrm{Cov}[\mathbf{x},\mathbf{y}] = \mathbb{E}\Bigl[(\mathbf{x}-\mathbb{E}[\mathbf{x}])(\mathbf{y}-\mathbb{E}[\mathbf{y}])^T\Bigr].$$</p>
+<h3 id="correlation">Correlation<a hidden class="anchor" aria-hidden="true" href="#correlation">#</a></h3>
+<p><img alt="image" loading="lazy" src="/posts/multivariate-models/img/correlation.png"></p>
+<p>Covariance can range over all real numbers. Sometimes it is more convenient to work with a normalized measure that is bounded. The <strong>correlation coefficient</strong> between ${X}$ and ${Y}$ is defined as</p>
+<p>$$\rho \triangleq \textrm{Corr}[X,Y] \triangleq \frac{\textrm{Cov}[X,Y]}{\sqrt{\textrm{Var}[X]\textrm{Var}[Y]}}.$$</p>
+<p>While covariance can be any real number, correlation is always between ${-1}$ and ${1}$. In the case of a vector ${\mathbf{x}}$ of related variables, the correlation matrix is given by</p>
+<p>$$\textrm{Corr}(\mathbf{x}) = \begin{pmatrix} 1 &amp; \frac{\mathbb{E}[(X_1 - \mu_1)(X_2 - \mu_2)]}{\sigma_1 \sigma_2} &amp; \cdots &amp; \frac{\mathbb{E}[(X_1 - \mu_1)(X_D - \mu_D)]}{\sigma_1 \sigma_D} \ \frac{\mathbb{E}[(X_2 - \mu_2)(X_1 - \mu_1)]}{\sigma_2 \sigma_1} &amp; 1 &amp; \cdots &amp; \frac{\mathbb{E}[(X_2 - \mu_2)(X_D - \mu_D)]}{\sigma_2 \sigma_D} \ \vdots &amp; \vdots &amp; \ddots &amp; \vdots \ \frac{\mathbb{E}[(X_D - \mu_D)(X_1 - \mu_1)]}{\sigma_D \sigma_1} &amp; \frac{\mathbb{E}[(X_D - \mu_D)(X_2 - \mu_2)]}{\sigma_D \sigma_2} &amp; \cdots &amp; 1 \end{pmatrix}.$$</p>
+<p>Note that <strong>uncorrelated does not imply independent</strong>. For example, if ${X}\sim \textrm{Unif}(-1,1)$ and ${Y} = {X}^2$, even though $\textrm{Cov}[X,Y]=0$ and $\textrm{Corr}[X,Y]=0$, ${Y}$ clearly depends on ${X}$.</p>
+<h3 id="simpson-paradox">Simpson Paradox<a hidden class="anchor" aria-hidden="true" href="#simpson-paradox">#</a></h3>
+<p><img alt="image" loading="lazy" src="/posts/multivariate-models/img/SimpsonParadox.png"></p>
+<p>Simpson&rsquo;s paradox demonstrates that a statistical trend observed in several different groups of data can disappear or even reverse when these groups are combined.</p>
+<h2 id="the-multivariate-gaussian-normal-distribution">The Multivariate Gaussian (Normal) Distribution<a hidden class="anchor" aria-hidden="true" href="#the-multivariate-gaussian-normal-distribution">#</a></h2>
+<p>The multivariate Gaussian (normal) distribution generalizes the univariate Gaussian to multiple dimensions.</p>
+<p>$$\mathcal{N}(\mathbf{y};\mathbf{\mu},\mathbf{\Sigma}) \triangleq \frac{1}{(2\pi)^{D/2}|\mathbf{\Sigma}|^{1/2}}\exp\left(-\frac{1}{2}(\mathbf{y}-\mathbf{\mu})^T\mathbf{\Sigma}^{-1}(\mathbf{y}-\mathbf{\mu})\right).$$</p>
+<p>where ${\mathbf{\mu}} = \mathbb{E}[\mathbf{y}] \in \mathbb{R}^D$ is the mean vector and ${\mathbf{\Sigma}} = \textrm{Cov}[\mathbf{y}]$ is the $D\times D$ covariance matrix.</p>
+<p><img alt="image" loading="lazy" src="/posts/multivariate-models/img/MVN.png"></p>
+<p>In 2D, the MVN is known as the <strong>Bivariate Gaussian</strong> distribution. In this case, if ${\mathbf{y}} \sim \mathcal{N}(\mathbf{\mu},\mathbf{\Sigma})$ with</p>
+<p>$$\mathbf{\Sigma} = \begin{pmatrix} \sigma_1^2 &amp; \rho,\sigma_1,\sigma_2 \ \rho,\sigma_1,\sigma_2 &amp; \sigma_2^2 \end{pmatrix},$$</p>
+<p>the marginal distribution ${p(y_1)}$ is a 1D Gaussian given by</p>
+<p>$$p(y_1) = \mathcal{N}(y_1 \mid \mu_1, \sigma_1^2).$$</p>
+<p>and if we observe ${y_2}$, the conditional distribution is</p>
+<p>$$p(y_1 \mid y_2) = \mathcal{N}!\Biggl(y_1 \Bigl| \mu_1 + \frac{\rho,\sigma_1,\sigma_2}{\sigma_2^2}(y_2 - \mu_2),, \sigma_1^2 - \frac{(\rho,\sigma_1,\sigma_2)^2}{\sigma_2^2} \Bigr.\Biggr).$$</p>
+<p>If $\sigma_1 = \sigma_2 = \sigma$, then</p>
+<p>$$p(y_1 \mid y_2) = \mathcal{N}!\Biggl(y_1 \Bigl| \mu_1 + \rho(y_2 - \mu_2),, \sigma^2(1 - \rho^2) \Bigr.\Biggr).$$</p>
+<p>For instance, if ${\rho = 0.8}$, ${\sigma_1 = \sigma_2 = 1}$, ${\mu_1 = \mu_2 = 0}$, and ${y_2} = 1$, then $\mathbb{E}[y_1 \mid y_2 = 1] = 0.8$ and</p>
+<p>$$\textrm{Var}(y_1 \mid y_2 = 1) = 1 - 0.8^2 = 0.36.$$</p>
+<h3 id="marginals-and-conditionals-of-an-mvn">Marginals and Conditionals of an MVN<a hidden class="anchor" aria-hidden="true" href="#marginals-and-conditionals-of-an-mvn">#</a></h3>
+<p>Suppose ${\mathbf{y}} = (y_1, y_2)$ is jointly Gaussian with parameters</p>
+<p>$$\mathbf{\mu} = \begin{pmatrix} \mu_1 \ \mu_2 \end{pmatrix}, \quad \mathbf{\Sigma} = \begin{pmatrix} \Sigma_{11} &amp; \Sigma_{12} \ \Sigma_{21} &amp; \Sigma_{22} \end{pmatrix}.$$</p>
+<p>Then the marginals are</p>
+<p>$$p(y_1) = \mathcal{N}(y_1 \mid \mu_1, \Sigma_{11}), \qquad p(y_2) = \mathcal{N}(y_2 \mid \mu_2, \Sigma_{22}).$$</p>
+<p>and the conditional is</p>
+<p>$$p(y_1 \mid y_2) = \mathcal{N}(y_1 \mid \mu_{1|2}, \Sigma_{1|2})$$
+$$\quad \mu_{1|2} = \mu_1 + \Sigma_{12}\Sigma_{22}^{-1}(y_2 - \mu_2), \quad \Sigma_{1|2} = \Sigma_{11} -\Sigma_{12}\Sigma_{22}^{-1}\Sigma_{21}.$$</p>
+<h3 id="example-missing-data">Example: Missing Data<a hidden class="anchor" aria-hidden="true" href="#example-missing-data">#</a></h3>
+<p>Suppose we sample ${N=10}$ vectors from an 8D Gaussian and then hide 50% of the data. For each example ${n}$, let ${v}$ denote the indices of the visible features and ${h}$ the hidden ones. With model parameters ${\theta = (\mathbf{\mu}, \mathbf{\Sigma})}$, we compute the marginal distribution</p>
+<p>$$p(\mathbf{y}<em>{n,h}\mid \mathbf{y}</em>{n,v}, \theta)$$</p>
+<p>for each missing variable ${i \in h}$, and then set the prediction as the posterior mean</p>
+<p>$$\bar{y}<em>{n,i} = \mathbb{E}!\Bigl[ y</em>{n,i} \mid \mathbf{y}_{n,v}, \theta \Bigr].$$</p>
+<p>The posterior variance</p>
+<p>$$\textrm{Var}!\Bigl[y_{n,i} \mid \mathbf{y}_{n,v}, \theta\Bigr]$$</p>
+<p>indicates our confidence in that prediction.</p>
+<h2 id="linear-gaussian-systems">Linear Gaussian Systems<a hidden class="anchor" aria-hidden="true" href="#linear-gaussian-systems">#</a></h2>
+<p>Consider a scenario where ${z\in \mathbb{R}^L}$ is an unknown value and ${y\in \mathbb{R}^D}$ is a noisy measurement of ${z}$. Assume</p>
+<p>$$\begin{aligned} p(z) &amp;= \mathcal{N}(z \mid \mu_z, \Sigma_z), \qquad p(y \mid z) = \mathcal{N}(y \mid Wz + b, \Sigma_y), \end{aligned}$$</p>
+<p>where ${W}$ is a ${D\times L}$ matrix. The joint distribution ${p(z,y) = p(z)p(y\mid z)}$ is an $(L+D)$-dimensional Gaussian with mean</p>
+<p>$$\mu = \begin{pmatrix} \mu_z \ W\mu_z + b \end{pmatrix},$$</p>
+<p>and covariance</p>
+<p>$$\Sigma = \begin{pmatrix} \Sigma_z &amp; \Sigma_zW^T \ W\Sigma_z &amp; \Sigma_y + W\Sigma_zW^T \end{pmatrix}.$$</p>
+<h3 id="bayes-rule-for-gaussians">Bayes Rule for Gaussians<a hidden class="anchor" aria-hidden="true" href="#bayes-rule-for-gaussians">#</a></h3>
+<p>The posterior distribution is</p>
+<p>$$\begin{aligned} p(z \mid y) &amp;= \mathcal{N}(z \mid \mu_{z \mid y}, \Sigma_{z \mid y}), \quad \Sigma_{z \mid y}^{-1} = \Sigma_z^{-1} + W^T\Sigma_y^{-1}W, \quad \mu_{z \mid y} = \Sigma_{z \mid y}\Bigl[ W^T\Sigma_y^{-1}(y - b) + \Sigma_z^{-1}\mu_z \Bigr]. \end{aligned}$$</p>
+<p>The normalization constant is given by</p>
+<p>$$\begin{aligned} p(y) &amp;= \int \mathcal{N}(z \mid \mu_z, \Sigma_z),\mathcal{N}(y \mid Wz+b, \Sigma_y),dz = \mathcal{N}\Bigl(y \mid W\mu_z+b,, \Sigma_y+W\Sigma_zW^T\Bigr). \end{aligned}$$</p>
+<h3 id="derivation">Derivation<a hidden class="anchor" aria-hidden="true" href="#derivation">#</a></h3>
+<p>The log of the joint distribution is</p>
+<p>$$\begin{aligned} \log p(z,y) &amp;= -\frac{1}{2}(z-\mu_z)^T\Sigma_z^{-1}(z-\mu_z) -\frac{1}{2}(y-Wz-b)^T\Sigma_y^{-1}(y-Wz-b). \end{aligned}$$</p>
+<p>This quadratic form can be rearranged (by completing the square) to derive the expressions for ${\Sigma_{z \mid y}}$ and ${\mu_{z \mid y}}$.</p>
+<h3 id="example-inferring-an-unknown-scalar">Example: Inferring an Unknown Scalar<a hidden class="anchor" aria-hidden="true" href="#example-inferring-an-unknown-scalar">#</a></h3>
+<p>Suppose we make ${N}$ noisy measurements ${y_i}$ of a scalar ${z}$ with measurement noise precision ${\lambda_y = \frac{1}{\sigma^2}}$:</p>
+<p>$$p(y_i \mid z) = \mathcal{N}(y_i \mid z, \lambda_y^{-1}),$$</p>
+<p>and assume a prior</p>
+<p>$$p(z) = \mathcal{N}(z \mid \mu_0, \lambda_0^{-1}).$$</p>
+<p>Then the posterior is</p>
+<p>$$p(z \mid y_1,\dots,y_N) = \mathcal{N}(z \mid \mu_N, \lambda_N^{-1}),$$</p>
+<p>with</p>
+<p>$$\lambda_N = \lambda_0 + N\lambda_y,$$</p>
+<p>and</p>
+<p>$$\mu_N = \frac{N\lambda_y\overline{y} + \lambda_0\mu_0}{\lambda_N}.$$</p>
+<p>In other words, the posterior mean is a weighted average of the prior mean and the sample mean. The posterior variance is</p>
+<p>$$\tau_N^2 = \frac{\sigma^2,\tau_0^2}{N\tau_0^2 + \sigma^2},$$</p>
+<p>which decreases as more data is observed.</p>
+<p>Sequential updates follow the same principle. After observing ${y_1}$:</p>
+<p>$$p(z \mid y_1) = \mathcal{N}(z \mid \mu_1, \sigma_1^2),$$</p>
+<p>with</p>
+<p>$$\mu_1 = \frac{\sigma_y^2\mu_0 + \sigma_0^2y_1}{\sigma_0^2 + \sigma_y^2}, \quad \sigma_1^2 = \frac{\sigma_0^2\sigma_y^2}{\sigma_0^2 + \sigma_y^2}.$$</p>
+<p>Then, using ${p(z \mid y_1)}$ as the new prior, subsequent updates follow similarly.</p>
+<p><strong>Signal-to-noise Ratio (SNR):</strong></p>
+<p>$$\text{SNR} = \frac{\mathbb{E}[Z^2]}{\mathbb{E}[\epsilon^2]} = \frac{\Sigma_0 + \mu_0^2}{\Sigma_y}.$$</p>
+<p>This ratio indicates how much the data refines our estimate of ${z}$.</p>
+<h2 id="mixture-models">Mixture Models<a hidden class="anchor" aria-hidden="true" href="#mixture-models">#</a></h2>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://nguyentuss.github.io/tags/%23ai/">#AI</a></li>
+      <li><a href="https://nguyentuss.github.io/tags/%23machine_learning/">#Machine_Learning</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="https://nguyentuss.github.io/">My New Hugo Site</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

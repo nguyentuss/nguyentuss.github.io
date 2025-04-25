@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Statistic | My New Hugo Site</title>
+<meta name="keywords" content="Math, Probability">
+<meta name="description" content="Introduction
+In the section Univariate Models and  Multivariate Models, we assumed all the parameters $\theta$ is known. In this section, we discuss how to learn these parameters from data.
+The process of estimating $\theta$ from $\mathcal{D}$ is call model fitting, or training, and is at the heart of machine learning. There are many methods for producing such estimates, but most boil down to an optimization problem of the form.
+$$
+\widehat{\theta} = \arg\min_{\theta} \mathcal{L}(\theta)
+$$
+where $\mathcal{L(\theta)}$ is some kind of loss function or objective function. We discuss several different loss functions in this chapter. In some cases we also discuss how to solve the optimization problem in closed form. In general, however we will need to use some kind of generic optimization algorithm, which we will discuss in Optimization.
+In addition to computing a point estimate $\widehat{\theta}$. We discuss how to model our uncertainty or confidence in this estimate. In statistics, the process of quantifying uncertainty about an unknown quantity estimated from a finite sample of data is called inference.">
+<meta name="author" content="">
+<link rel="canonical" href="https://nguyentuss.github.io/posts/statistic/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.6da9a63d25a9608bca2f7f907a030e887a7dd3c3f3918e4cc113129361414bda.css" integrity="sha256-bammPSWpYIvKL3&#43;QegMOiHp908PzkY5MwRMSk2FBS9o=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://nguyentuss.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://nguyentuss.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://nguyentuss.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://nguyentuss.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://nguyentuss.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://nguyentuss.github.io/posts/statistic/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+          delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+          ],
+          throwOnError : false
+        });
+    });
+</script>
+
+
+<meta property="og:url" content="https://nguyentuss.github.io/posts/statistic/">
+  <meta property="og:site_name" content="My New Hugo Site">
+  <meta property="og:title" content="Statistic">
+  <meta property="og:description" content="Introduction In the section Univariate Models and Multivariate Models, we assumed all the parameters $\theta$ is known. In this section, we discuss how to learn these parameters from data. The process of estimating $\theta$ from $\mathcal{D}$ is call model fitting, or training, and is at the heart of machine learning. There are many methods for producing such estimates, but most boil down to an optimization problem of the form. $$ \widehat{\theta} = \arg\min_{\theta} \mathcal{L}(\theta) $$ where $\mathcal{L(\theta)}$ is some kind of loss function or objective function. We discuss several different loss functions in this chapter. In some cases we also discuss how to solve the optimization problem in closed form. In general, however we will need to use some kind of generic optimization algorithm, which we will discuss in Optimization. In addition to computing a point estimate $\widehat{\theta}$. We discuss how to model our uncertainty or confidence in this estimate. In statistics, the process of quantifying uncertainty about an unknown quantity estimated from a finite sample of data is called inference.">
+  <meta property="og:locale" content="en-us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-04-20T12:03:54+07:00">
+    <meta property="article:modified_time" content="2025-04-20T12:03:54+07:00">
+    <meta property="article:tag" content="Math">
+    <meta property="article:tag" content="Probability">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Statistic">
+<meta name="twitter:description" content="Introduction
+In the section Univariate Models and  Multivariate Models, we assumed all the parameters $\theta$ is known. In this section, we discuss how to learn these parameters from data.
+The process of estimating $\theta$ from $\mathcal{D}$ is call model fitting, or training, and is at the heart of machine learning. There are many methods for producing such estimates, but most boil down to an optimization problem of the form.
+$$
+\widehat{\theta} = \arg\min_{\theta} \mathcal{L}(\theta)
+$$
+where $\mathcal{L(\theta)}$ is some kind of loss function or objective function. We discuss several different loss functions in this chapter. In some cases we also discuss how to solve the optimization problem in closed form. In general, however we will need to use some kind of generic optimization algorithm, which we will discuss in Optimization.
+In addition to computing a point estimate $\widehat{\theta}$. We discuss how to model our uncertainty or confidence in this estimate. In statistics, the process of quantifying uncertainty about an unknown quantity estimated from a finite sample of data is called inference.">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://nguyentuss.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Statistic",
+      "item": "https://nguyentuss.github.io/posts/statistic/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Statistic",
+  "name": "Statistic",
+  "description": "Introduction In the section Univariate Models and Multivariate Models, we assumed all the parameters $\\theta$ is known. In this section, we discuss how to learn these parameters from data. The process of estimating $\\theta$ from $\\mathcal{D}$ is call model fitting, or training, and is at the heart of machine learning. There are many methods for producing such estimates, but most boil down to an optimization problem of the form. $$ \\widehat{\\theta} = \\arg\\min_{\\theta} \\mathcal{L}(\\theta) $$ where $\\mathcal{L(\\theta)}$ is some kind of loss function or objective function. We discuss several different loss functions in this chapter. In some cases we also discuss how to solve the optimization problem in closed form. In general, however we will need to use some kind of generic optimization algorithm, which we will discuss in Optimization. In addition to computing a point estimate $\\widehat{\\theta}$. We discuss how to model our uncertainty or confidence in this estimate. In statistics, the process of quantifying uncertainty about an unknown quantity estimated from a finite sample of data is called inference.\n",
+  "keywords": [
+    "Math", "Probability"
+  ],
+  "articleBody": "Introduction In the section Univariate Models and Multivariate Models, we assumed all the parameters $\\theta$ is known. In this section, we discuss how to learn these parameters from data. The process of estimating $\\theta$ from $\\mathcal{D}$ is call model fitting, or training, and is at the heart of machine learning. There are many methods for producing such estimates, but most boil down to an optimization problem of the form. $$ \\widehat{\\theta} = \\arg\\min_{\\theta} \\mathcal{L}(\\theta) $$ where $\\mathcal{L(\\theta)}$ is some kind of loss function or objective function. We discuss several different loss functions in this chapter. In some cases we also discuss how to solve the optimization problem in closed form. In general, however we will need to use some kind of generic optimization algorithm, which we will discuss in Optimization. In addition to computing a point estimate $\\widehat{\\theta}$. We discuss how to model our uncertainty or confidence in this estimate. In statistics, the process of quantifying uncertainty about an unknown quantity estimated from a finite sample of data is called inference.\nMaximum likelihood estimation (MLE) The most common approach to parameter estimation is to pick the parameters that assign the highest probability to the training data; this is called maximum likelihood estimation or MLE. We give more details below, and then give a series of worked examples.\nDefinition We define the MLE as follows: $$ \\widehat{\\theta}{\\text{mle}} \\triangleq \\arg\\max{\\theta} p(\\mathcal{D} \\mid \\theta) $$\nWe usually assume the training examples are independently sampled from the same distribution, so the (conditional) likelihood becomes\n$$ p(\\mathcal{D} \\mid \\theta) = \\prod_{n=1}^{N} p(y_n \\mid x_n, \\theta) $$\nThis is known as the i.i.d assumption, which stands for “independent and identically distributed”. We usually work with the log likelihood, which is given by $$ \\ell(\\theta) \\triangleq \\log p(\\mathcal{D} \\mid \\theta) = \\sum_{n=1}^{N} \\log p(y_n \\mid x_n, \\theta) $$\nThis decomposes into a sum of terms, one per example. Thus, the MLE is given by $$ \\widehat{\\theta}{\\text{mle}} = \\arg\\max{\\theta} \\sum_{n=1}^{N} \\log p(y_n \\mid x_n, \\theta) $$\nSince most optimization algorithms (such as those discussed in Optimization) are designed to minimize cost functions, we can redefine the objective function to be the (conditional) negative log likelihood or NLL:\n$$ \\text{NLL}(\\theta) \\triangleq -\\log p(\\mathcal{D} \\mid \\theta) = -\\sum_{n=1}^{N} \\log p(y_n \\mid x_n, \\theta) $$ Minimizing this will give the MLE. If the model is unconditional (unsupervised), the MLE becomes\n$$ \\widehat{\\theta}{\\text{mle}} = \\arg\\min{\\theta} -\\sum_{n=1}^{N} \\log p(y_n) $$ since we have outputs $y_n$ but no inputs $x_n$. In statistics, it is standard to use $y$ to represent variables whose generative distribution we choose to model, and use $x$ to represent exogenous inputs (coming from outside the system), which are given but not generated. Alternatively we may want to maximize the joint likelihood of inputs and outputs. The MLE in this case becomes\n$$ \\widehat{\\theta}{\\text{mle}} = \\arg\\min{\\theta} -\\sum_{n=1}^{N} \\log p(y_n, x_n \\mid \\theta) $$\nJustification for MLE There are several ways to justify the method of MLE. One way is to view it as simple point approximation to the Bayesian posterior $p(\\theta|\\mathcal{D})$ using a uniform prior (A uniform prior is a type of prior distribution used in Bayesian statistics, where we assume that all values within a certain range are equally likely before we observe any data). In particular, suppose we approximate the posterior by a delta function, $p(\\theta \\mid \\mathcal{D}) = \\delta(\\theta - \\widehat\\theta_{\\text{map}})$, where $\\widehat{\\theta}_{\\text{map}}$ is the posterior mode, given by\n$$ \\widehat{\\theta}{\\text{map}} = \\arg\\max{\\theta} \\log p(\\theta \\mid \\mathcal{D}) = \\arg\\max_{\\theta} \\log p(\\mathcal{D} \\mid \\theta) + \\log p(\\theta) $$\nIf we use a uniform prior, $p(\\theta) \\propto 1$, the MAP estimate becomes equal to the MLE, $\\widehat\\theta_{\\text{map}} = \\widehat\\theta_{\\text{mle}}$. Another way to justify the use of the MLE is that the resulting predictive distribution $p(y \\mid \\widehat\\theta_{\\text{mle}})$ is as close as possible (in a sense to be defined below) to the empirical distribution of the data. In the unconditional case, the empirical distribution is defined by\n$$ p_{\\mathcal{D}}(y) \\triangleq \\frac{1}{N} \\sum_{n=1}^{N} \\delta(y - y_n) $$\nWe see that the empirical distribution is a series of delta functions or “spikes” at the observed training points. We want to create a model whose distribution $q(y) = p(y \\mid \\theta)$ is similar to $p_{\\mathcal{D}}(y)$. A standard way to measure the (dis)similarity between probability distributions $p$ and $q$ is the Kullback-Leibler divergence, or KL divergence. We give the details in here, but in brief this is defined as\n$$ D_{\\text{KL}}(p \\parallel q) = \\sum_{y} p(y) \\log \\frac{p(y)}{q(y)} $$ $$ = \\sum_{y} p(y) \\log p(y) - \\sum_{y} p(y) \\log q(y) $$ $$ = \\underbrace{-\\mathbb{H}(p)}{\\text{entropy}} + \\underbrace{\\mathbb{H}{\\text{ce}}(p,q)}_{\\text{cross-entropy}} $$\nwhere $\\mathbb{H}(p)$ is the entropy of $p$ (Cross Entropy), and $\\mathbb H_{\\text{ce}}(p,q)$ is the cross-entropy of $p$ and $q$. One can show that $D_{\\text{KL}}(p \\parallel q) \\geq 0$, with equality if $p = q$. If we define $q(y) = p(y \\mid \\theta)$, and set $p(y) = p_{\\mathcal{D}}(y)$, then the KL divergence becomes\n$$ D_{\\text{KL}}(p \\parallel q) = \\sum_{y} \\left[ p_{\\mathcal{D}}(y) \\log p_{\\mathcal{D}}(y) - p_{\\mathcal{D}}(y) \\log q(y) \\right] $$ $$ = -\\mathbb{H}(p_{\\mathcal{D}}) - \\frac{1}{N} \\sum_{n=1}^{N} \\log p(y_n \\mid \\theta) $$ $$ = \\text{const} + \\text{NLL}(\\theta) $$\nThe first term is a constant which we can ignore, leaving just the NLL. Thus minimizing the KL is equivalent to minimizing the NLL which is equivalent to computing the MLE. We can generalize the above results to the supervised (conditional) setting by using the following empirical distribution:\n$$ p_{\\mathcal{D}}(x, y) = p_{\\mathcal{D}}(y \\mid x)p_{\\mathcal{D}}(x) = \\frac{1}{N} \\sum_{n=1}^{N} \\delta(x - x_n)\\delta(y - y_n) $$\nThe expected KL then becomes\n$$ \\mathbb{E}{p{\\mathcal{D}}(x)} \\left[ D_{\\text{KL}}\\left( p_{\\mathcal{D}}(Y \\mid x) \\parallel q(Y \\mid x) \\right) \\right] = \\sum_{x} p_{\\mathcal{D}}(x) \\left[ \\sum_{y} p_{\\mathcal{D}}(y \\mid x) \\log \\frac{p_{\\mathcal{D}}(y \\mid x)}{q(y \\mid x)} \\right] $$ $$ = \\text{const} - \\sum_{x, y} p_{\\mathcal{D}}(x, y) \\log q(y \\mid x) $$ $$ = \\text{const} - \\frac{1}{N} \\sum_{n=1}^{N} \\log p(y_n \\mid x_n, \\theta) $$\nMinimizing this is equivalent to minimizing the conditional NLL in Equation.\nExample: MLE for the Bernoulli distribution Suppose $Y$ is a random variable representing a coin toss where the event $Y=1$ corresponds to heads and $Y=0$ corresponds to tails. Let $\\theta=p(Y=1)$ be the probability of heads. The probability distribution for this r.v is the Bernoulli, which we introduced in Univariate Models. The NLL for the Bernoulli distribution is given by\n$$ \\text{NLL}(\\theta)=-log \\prod_{n=1}^{N} p(y_n|\\theta) $$ $$ = -log \\prod_{n=1}^N \\theta^{\\mathbb{I}(y_n=1)}(1-\\theta)^{\\mathbb{I}(y_n=1)} $$ $$ =-\\sum_{n=1}^{N}[\\mathbb{I}(y_n=1)\\log(\\theta)+\\mathbb{I}(y_n=0)\\log(1-\\theta)] $$ $$ = -[N_1\\log(\\theta)+N_0\\log(1-\\theta)] $$\nwhere we have defined $N_1 = \\sum_{n=1}^{N} \\mathbb{I}(y_n = 1)$ and $N_0 = \\sum_{n=1}^{N} \\mathbb{I}(y_n = 0)$, representing the number of heads and tails. (The NLL for the binomial is the same as for the Bernoulli, modulo an irrelevant $\\binom{N}{c}$ term, which is a constant independent of $\\theta$.) These two numbers are called the sufficient statistics of the data, since they summarize everything we need to know about $\\mathcal{D}$. The total count, $N = N_0 + N_1$, is called the sample size. The MLE can be found by solving $\\frac{d}{d\\theta} \\text{NLL}(\\theta) = 0$. The derivative of the NLL is\n$$ \\frac{d}{d\\theta} \\text{NLL}(\\theta) = \\frac{-N_1}{\\theta} + \\frac{N_0}{1 - \\theta} $$\nand hence the MLE is given by\n$$ \\widehat\\theta_{\\text{mle}} = \\frac{N_1}{N_0 + N_1} $$\nWe see that this is just the empirical fraction of heads, which is an intuitive result.\nExample: MLE for the categorical distribution Suppose we roll a K-sided dice N times. Let $Y_n \\in {1,…,K}$ be the n’th outcome, where $Y_n \\sim Cat(\\theta)$. We want to estimate the probabilities $\\theta$ from the dataset $\\mathcal{D}= (y_n :n=1:N)$. The NLL is given by\n$$ \\text{NLL}(\\theta)=-\\sum_k N_k log(\\theta_k) $$\nwhere $N_k$ is the number of times the event $Y=k$ is observed. (The NLL for the multinomial is the same, up to irrelevant scale factors.) To compute the MLE, we have to minimize the NLL subject to the constraint that $\\sum_{k=1}^{K} \\theta_k =1$. To do this, we will use the method Lagrange multiplies (Optimization).\n",
+  "wordCount" : "1290",
+  "inLanguage": "en",
+  "datePublished": "2025-04-20T12:03:54+07:00",
+  "dateModified": "2025-04-20T12:03:54+07:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://nguyentuss.github.io/posts/statistic/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://nguyentuss.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://nguyentuss.github.io/" accesskey="h" title="My New Hugo Site (Alt + H)">My New Hugo Site</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Statistic
+    </h1>
+    <div class="post-meta"><span title='2025-04-20 12:03:54 +0700 +07'>April 20, 2025</span>
+
+</div>
+  </header> 
+  <div class="post-content"><h2 id="introduction">Introduction<a hidden class="anchor" aria-hidden="true" href="#introduction">#</a></h2>
+<p>In the section <a href="https://nguyentuss.github.io/p/univariate-models/">Univariate Models</a> and  <a href="https://nguyentuss.github.io/p/multivariate-models/">Multivariate Models</a>, we assumed all the parameters $\theta$ is known. In this section, we discuss how to learn these parameters from data.
+The process of estimating $\theta$ from $\mathcal{D}$ is call <strong>model fitting</strong>, or <strong>training</strong>, and is at the heart of machine learning. There are many methods for producing such estimates, but most boil down to an optimization problem of the form.
+$$
+\widehat{\theta} = \arg\min_{\theta} \mathcal{L}(\theta)
+$$
+where $\mathcal{L(\theta)}$ is some kind of loss function or objective function. We discuss several different loss functions in this chapter. In some cases we also discuss how to solve the optimization problem in closed form. In general, however we will need to use some kind of generic optimization algorithm, which we will discuss in <a href="https://nguyentuss.github.io/p/optimization/">Optimization</a>.
+In addition to computing a <strong>point estimate $\widehat{\theta}$</strong>. We discuss how to model our uncertainty or confidence in this estimate. In statistics, the process of quantifying uncertainty about an unknown quantity estimated from a finite sample of data is called <strong>inference</strong>.</p>
+<hr>
+<h2 id="maximum-likelihood-estimation-mle">Maximum likelihood estimation (MLE)<a hidden class="anchor" aria-hidden="true" href="#maximum-likelihood-estimation-mle">#</a></h2>
+<p>The most common approach to parameter estimation is to pick the parameters that assign the highest probability to the training data; this is called <strong>maximum likelihood estimation</strong> or <strong>MLE</strong>. We give more details below, and then give a series of worked examples.</p>
+<h3 id="definition">Definition<a hidden class="anchor" aria-hidden="true" href="#definition">#</a></h3>
+<p>We define the MLE as follows:
+$$
+\widehat{\theta}<em>{\text{mle}} \triangleq \arg\max</em>{\theta} p(\mathcal{D} \mid \theta)
+$$</p>
+<p>We usually assume the training examples are independently sampled from the same distribution, so the (conditional) likelihood becomes</p>
+<p>$$
+p(\mathcal{D} \mid \theta) = \prod_{n=1}^{N} p(y_n \mid x_n, \theta)
+$$</p>
+<p>This is known as the i.i.d assumption, which stands for “independent and identically distributed”. We usually work with the log likelihood, which is given by
+$$
+\ell(\theta) \triangleq \log p(\mathcal{D} \mid \theta) = \sum_{n=1}^{N} \log p(y_n \mid x_n, \theta)
+$$</p>
+<p>This decomposes into a sum of terms, one per example. Thus, the MLE is given by
+$$
+\widehat{\theta}<em>{\text{mle}} = \arg\max</em>{\theta} \sum_{n=1}^{N} \log p(y_n \mid x_n, \theta)
+$$</p>
+<p>Since most optimization algorithms (such as those discussed in <a href="https://nguyentuss.github.io/p/optimization/">Optimization</a>) are designed to <em>minimize</em> cost functions, we can redefine the <strong>objective function</strong> to be the (conditional) <strong>negative log likelihood</strong> or <strong>NLL</strong>:</p>
+<p>$$
+\text{NLL}(\theta) \triangleq -\log p(\mathcal{D} \mid \theta) = -\sum_{n=1}^{N} \log p(y_n \mid x_n, \theta)
+$$
+Minimizing this will give the MLE. If the model is unconditional (unsupervised), the MLE becomes</p>
+<p>$$
+\widehat{\theta}<em>{\text{mle}} = \arg\min</em>{\theta} -\sum_{n=1}^{N} \log p(y_n)
+$$
+since we have outputs $y_n$ but no inputs $x_n$. In statistics, it is standard to use $y$ to represent variables whose generative distribution we choose to model, and use $x$ to represent exogenous inputs (coming from outside the system), which are given but not generated.
+Alternatively we may want to maximize the <strong>joint</strong> likelihood of inputs and outputs. The MLE in this case becomes</p>
+<p>$$
+\widehat{\theta}<em>{\text{mle}} = \arg\min</em>{\theta} -\sum_{n=1}^{N} \log p(y_n, x_n \mid \theta)
+$$</p>
+<h3 id="justification-for-mle">Justification for MLE<a hidden class="anchor" aria-hidden="true" href="#justification-for-mle">#</a></h3>
+<p>There are several ways to justify the method of MLE. One way is to view it as simple point approximation to the Bayesian posterior $p(\theta|\mathcal{D})$ using a uniform prior (A <strong>uniform prior</strong> is a type of <strong>prior distribution</strong> used in <strong>Bayesian statistics</strong>, where we assume that <strong>all values within a certain range are equally likely</strong> before we observe any data).
+In particular, suppose we approximate the posterior by a delta function, $p(\theta \mid \mathcal{D}) = \delta(\theta - \widehat\theta_{\text{map}})$, where $\widehat{\theta}_{\text{map}}$ is the posterior mode, given by</p>
+<p>$$
+\widehat{\theta}<em>{\text{map}} = \arg\max</em>{\theta} \log p(\theta \mid \mathcal{D}) = \arg\max_{\theta} \log p(\mathcal{D} \mid \theta) + \log p(\theta)
+$$</p>
+<p>If we use a uniform prior, $p(\theta) \propto 1$, the MAP estimate becomes equal to the MLE, $\widehat\theta_{\text{map}} = \widehat\theta_{\text{mle}}$.
+Another way to justify the use of the MLE is that the resulting predictive distribution $p(y \mid \widehat\theta_{\text{mle}})$ is as close as possible (in a sense to be defined below) to the <strong>empirical distribution</strong> of the data. In the unconditional case, the empirical distribution is defined by</p>
+<p>$$
+p_{\mathcal{D}}(y) \triangleq \frac{1}{N} \sum_{n=1}^{N} \delta(y - y_n)
+$$</p>
+<p>We see that the empirical distribution is a series of delta functions or “spikes” at the observed training points. We want to create a model whose distribution $q(y) = p(y \mid \theta)$ is similar to $p_{\mathcal{D}}(y)$.
+A standard way to measure the (dis)similarity between probability distributions $p$ and $q$ is the <strong>Kullback-Leibler divergence</strong>, or <strong>KL divergence</strong>. We give the details in <a href="https://nguyentuss.github.io/p/information-theory/#kl-divergence">here</a>, but in brief this is defined as</p>
+<p>$$
+D_{\text{KL}}(p \parallel q) = \sum_{y} p(y) \log \frac{p(y)}{q(y)}
+$$
+$$
+= \sum_{y} p(y) \log p(y) - \sum_{y} p(y) \log q(y)
+$$
+$$
+= \underbrace{-\mathbb{H}(p)}<em>{\text{entropy}} + \underbrace{\mathbb{H}</em>{\text{ce}}(p,q)}_{\text{cross-entropy}}
+$$</p>
+<p>where $\mathbb{H}(p)$ is the entropy of $p$ (<a href="https://nguyentuss.github.io/p/information-theory/#entropy">Cross Entropy</a>), and $\mathbb H_{\text{ce}}(p,q)$ is the cross-entropy of $p$ and $q$. One can show that $D_{\text{KL}}(p \parallel q) \geq 0$, with equality if $p = q$.
+If we define $q(y) = p(y \mid \theta)$, and set $p(y) = p_{\mathcal{D}}(y)$, then the KL divergence becomes</p>
+<p>$$
+D_{\text{KL}}(p \parallel q) = \sum_{y} \left[ p_{\mathcal{D}}(y) \log p_{\mathcal{D}}(y) - p_{\mathcal{D}}(y) \log q(y) \right]
+$$
+$$
+= -\mathbb{H}(p_{\mathcal{D}}) - \frac{1}{N} \sum_{n=1}^{N} \log p(y_n \mid \theta)
+$$
+$$
+= \text{const} + \text{NLL}(\theta)
+$$</p>
+<p>The first term is a constant which we can ignore, leaving just the NLL. Thus minimizing the KL is equivalent to minimizing the NLL which is equivalent to computing the MLE.
+We can generalize the above results to the supervised (conditional) setting by using the following empirical distribution:</p>
+<p>$$
+p_{\mathcal{D}}(x, y) = p_{\mathcal{D}}(y \mid x)p_{\mathcal{D}}(x) = \frac{1}{N} \sum_{n=1}^{N} \delta(x - x_n)\delta(y - y_n)
+$$</p>
+<p>The expected KL then becomes</p>
+<p>$$
+\mathbb{E}<em>{p</em>{\mathcal{D}}(x)} \left[ D_{\text{KL}}\left( p_{\mathcal{D}}(Y \mid x) \parallel q(Y \mid x) \right) \right] = \sum_{x} p_{\mathcal{D}}(x) \left[ \sum_{y} p_{\mathcal{D}}(y \mid x) \log \frac{p_{\mathcal{D}}(y \mid x)}{q(y \mid x)} \right]
+$$
+$$
+= \text{const} - \sum_{x, y} p_{\mathcal{D}}(x, y) \log q(y \mid x)
+$$
+$$
+= \text{const} - \frac{1}{N} \sum_{n=1}^{N} \log p(y_n \mid x_n, \theta)
+$$</p>
+<p>Minimizing this is equivalent to minimizing the conditional NLL in Equation.</p>
+<h3 id="example-mle-for-the-bernoulli-distribution">Example: MLE for the Bernoulli distribution<a hidden class="anchor" aria-hidden="true" href="#example-mle-for-the-bernoulli-distribution">#</a></h3>
+<p>Suppose $Y$ is a random variable representing a coin toss where the event $Y=1$ corresponds to heads and $Y=0$ corresponds to tails. Let $\theta=p(Y=1)$ be the probability of heads. The probability distribution for this r.v is the Bernoulli, which we introduced in <a href="https://nguyentuss.github.io/p/univariate-models/">Univariate Models</a>.
+The NLL for the Bernoulli distribution is given by</p>
+<p>$$
+\text{NLL}(\theta)=-log \prod_{n=1}^{N} p(y_n|\theta)
+$$
+$$
+= -log \prod_{n=1}^N \theta^{\mathbb{I}(y_n=1)}(1-\theta)^{\mathbb{I}(y_n=1)}
+$$
+$$
+=-\sum_{n=1}^{N}[\mathbb{I}(y_n=1)\log(\theta)+\mathbb{I}(y_n=0)\log(1-\theta)]
+$$
+$$
+= -[N_1\log(\theta)+N_0\log(1-\theta)]
+$$</p>
+<p>where we have defined $N_1 = \sum_{n=1}^{N} \mathbb{I}(y_n = 1)$ and $N_0 = \sum_{n=1}^{N} \mathbb{I}(y_n = 0)$, representing the number of heads and tails. (The NLL for the binomial is the same as for the Bernoulli, modulo an irrelevant $\binom{N}{c}$ term, which is a constant independent of $\theta$.) These two numbers are called the <strong>sufficient statistics</strong> of the data, since they summarize everything we need to know about $\mathcal{D}$. The total count, $N = N_0 + N_1$, is called the <strong>sample size</strong>.
+The MLE can be found by solving $\frac{d}{d\theta} \text{NLL}(\theta) = 0$. The derivative of the NLL is</p>
+<p>$$
+\frac{d}{d\theta} \text{NLL}(\theta) = \frac{-N_1}{\theta} + \frac{N_0}{1 - \theta}
+$$</p>
+<p>and hence the MLE is given by</p>
+<p>$$
+\widehat\theta_{\text{mle}} = \frac{N_1}{N_0 + N_1}
+$$</p>
+<p>We see that this is just the empirical fraction of heads, which is an intuitive result.</p>
+<h3 id="example-mle-for-the-categorical-distribution">Example: MLE for the categorical distribution<a hidden class="anchor" aria-hidden="true" href="#example-mle-for-the-categorical-distribution">#</a></h3>
+<p>Suppose we roll a K-sided dice N times. Let $Y_n \in {1,&hellip;,K}$ be the n&rsquo;th outcome, where $Y_n \sim Cat(\theta)$. We want to estimate the probabilities $\theta$ from the dataset $\mathcal{D}= (y_n :n=1:N)$. The NLL is given by</p>
+<p>$$
+\text{NLL}(\theta)=-\sum_k N_k log(\theta_k)
+$$</p>
+<p>where $N_k$ is the number of times the event $Y=k$ is observed. (The NLL for the multinomial is the same, up to irrelevant scale factors.)
+To compute the MLE, we have to minimize the NLL subject to the constraint that $\sum_{k=1}^{K} \theta_k =1$.  To do this, we will use the method Lagrange multiplies (<a href="https://nguyentuss.github.io/p/optimization/">Optimization</a>).</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://nguyentuss.github.io/tags/math/">Math</a></li>
+      <li><a href="https://nguyentuss.github.io/tags/probability/">Probability</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="https://nguyentuss.github.io/">My New Hugo Site</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

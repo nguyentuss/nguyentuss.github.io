@@ -2,18 +2,142 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Posts on My New Hugo Site</title>
-    <link>http://localhost:1313/posts/</link>
+    <link>https://nguyentuss.github.io/posts/</link>
     <description>Recent content in Posts on My New Hugo Site</description>
     <generator>Hugo -- 0.146.7</generator>
     <language>en-us</language>
     <lastBuildDate>Fri, 25 Apr 2025 21:26:33 +0700</lastBuildDate>
-    <atom:link href="http://localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://nguyentuss.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>About me</title>
+      <link>https://nguyentuss.github.io/posts/about/</link>
+      <pubDate>Sat, 15 Mar 2025 14:44:34 +0700</pubDate>
+      <guid>https://nguyentuss.github.io/posts/about/</guid>
+      <description>Welcome</description>
+    </item>
     <item>
       <title>My First Post</title>
-      <link>http://localhost:1313/posts/my-first-post/</link>
+      <link>https://nguyentuss.github.io/posts/my-first-post/</link>
       <pubDate>Fri, 25 Apr 2025 21:26:33 +0700</pubDate>
-      <guid>http://localhost:1313/posts/my-first-post/</guid>
+      <guid>https://nguyentuss.github.io/posts/my-first-post/</guid>
       <description>&lt;p&gt;Hello&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Optimization</title>
+      <link>https://nguyentuss.github.io/posts/optimization/</link>
+      <pubDate>Sun, 20 Apr 2025 13:34:38 +0700</pubDate>
+      <guid>https://nguyentuss.github.io/posts/optimization/</guid>
+      <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;In &lt;em&gt;Machine Learning&lt;/em&gt;, the core problem is that solving the parameter estimation (model fitting), we want to find the values for a set of variable $\theta\in\Theta$, that minimized the scalar &lt;strong&gt;loss function&lt;/strong&gt; or &lt;strong&gt;cost function&lt;/strong&gt; $\mathcal{L}(\theta) \rightarrow \mathbb{R}$. This is called a &lt;strong&gt;optimization problem&lt;/strong&gt;.
+$$
+\theta^* \in \arg\min \mathcal{L}(\theta)
+$$
+We will assume that the &lt;em&gt;parameter space&lt;/em&gt; is given by $\Theta \subseteq \mathbb{R}^D$, where $D$ is the number of variables being optimized over.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Statistic</title>
+      <link>https://nguyentuss.github.io/posts/statistic/</link>
+      <pubDate>Sun, 20 Apr 2025 12:03:54 +0700</pubDate>
+      <guid>https://nguyentuss.github.io/posts/statistic/</guid>
+      <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;In the section &lt;a href=&#34;https://nguyentuss.github.io/p/univariate-models/&#34;&gt;Univariate Models&lt;/a&gt; and  &lt;a href=&#34;https://nguyentuss.github.io/p/multivariate-models/&#34;&gt;Multivariate Models&lt;/a&gt;, we assumed all the parameters $\theta$ is known. In this section, we discuss how to learn these parameters from data.
+The process of estimating $\theta$ from $\mathcal{D}$ is call &lt;strong&gt;model fitting&lt;/strong&gt;, or &lt;strong&gt;training&lt;/strong&gt;, and is at the heart of machine learning. There are many methods for producing such estimates, but most boil down to an optimization problem of the form.
+$$
+\widehat{\theta} = \arg\min_{\theta} \mathcal{L}(\theta)
+$$
+where $\mathcal{L(\theta)}$ is some kind of loss function or objective function. We discuss several different loss functions in this chapter. In some cases we also discuss how to solve the optimization problem in closed form. In general, however we will need to use some kind of generic optimization algorithm, which we will discuss in &lt;a href=&#34;https://nguyentuss.github.io/p/optimization/&#34;&gt;Optimization&lt;/a&gt;.
+In addition to computing a &lt;strong&gt;point estimate $\widehat{\theta}$&lt;/strong&gt;. We discuss how to model our uncertainty or confidence in this estimate. In statistics, the process of quantifying uncertainty about an unknown quantity estimated from a finite sample of data is called &lt;strong&gt;inference&lt;/strong&gt;.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Information Theory</title>
+      <link>https://nguyentuss.github.io/posts/information-theory/</link>
+      <pubDate>Sun, 20 Apr 2025 11:34:08 +0700</pubDate>
+      <guid>https://nguyentuss.github.io/posts/information-theory/</guid>
+      <description>&lt;h2 id=&#34;kl-divergence&#34;&gt;KL Divergence&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Kullback-Leibler (KL) divergence&lt;/strong&gt; measures how one probability distribution diverges from a second, expected distribution.&lt;/p&gt;
+&lt;h3 id=&#34;definition&#34;&gt;Definition&lt;/h3&gt;
+&lt;p&gt;For discrete distributions $P$ and $Q$ over a set $\mathcal{X}$:&lt;/p&gt;
+&lt;p&gt;$$
+D_{KL}(P \parallel Q) = \sum_{x \in \mathcal{X}} P(x) \log \frac{P(x)}{Q(x)}
+$$&lt;/p&gt;
+&lt;p&gt;For continuous distributions with densities $p(x)$ and $q(x)$:&lt;/p&gt;
+&lt;p&gt;$$
+D_{KL}(P \parallel Q) = \int_{-\infty}^{\infty} p(x) \log \frac{p(x)}{q(x)} , dx
+$$&lt;/p&gt;
+&lt;h3 id=&#34;intuition&#34;&gt;Intuition&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;KL divergence quantifies the &lt;strong&gt;extra information&lt;/strong&gt; needed when using $Q$ instead of the true distribution $P$.&lt;/li&gt;
+&lt;li&gt;It is &lt;strong&gt;asymmetric&lt;/strong&gt;, so generally:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;$$
+D_{KL}(P \parallel Q) \ne D_{KL}(Q \parallel P)
+$$&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Numerical Method</title>
+      <link>https://nguyentuss.github.io/posts/numerical-method/</link>
+      <pubDate>Mon, 17 Mar 2025 13:18:12 +0700</pubDate>
+      <guid>https://nguyentuss.github.io/posts/numerical-method/</guid>
+      <description>&lt;h2 id=&#34;truncation-errors-and-the-taylor-series&#34;&gt;Truncation Errors and the Taylor Series&lt;/h2&gt;
+&lt;p&gt;Truncation errors are those that result from using approximation in place of an exact mathematical procedure.
+$$ \frac{dv}{dt} \approx \frac{\Delta v}{\Delta t} = \frac{v(t_{i+1})-v(t_i)}{t_{i+1}-t_i}$$
+A truncation error was introduced into the numerical solution because the difference equation only approximates the true value of the derivative. In order to gain insight into the properties of such errors, we now turn to a mathematical formulation that is used widely in numerical methods to express functions in an approximate fashion— the Taylor series.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Optical Flow</title>
+      <link>https://nguyentuss.github.io/posts/optical-flow/</link>
+      <pubDate>Thu, 13 Mar 2025 22:05:35 +0700</pubDate>
+      <guid>https://nguyentuss.github.io/posts/optical-flow/</guid>
+      <description>&lt;p&gt;Optical flow quantifies the motion of objects between consecutive frames captured by a camera. These algorithms attempt to capture the apparent motion of brightness patterns in the image. It is an important subfield of computer vision, enabling machines to understand scene dynamics and movement.
+&lt;img loading=&#34;lazy&#34; src=&#34;https://nguyentuss.github.io/posts/optical-flow/img/pic1.png&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;what-is-brightness&#34;&gt;What is brightness&lt;/h2&gt;
+&lt;p&gt;Lets break down the definition of brightness. In an image, &lt;strong&gt;brightness&lt;/strong&gt; refers to the intensity of light at each pixel. It determines how &lt;strong&gt;light or dark&lt;/strong&gt; a pixel appears.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Convolution Neural Network</title>
+      <link>https://nguyentuss.github.io/posts/cnn/</link>
+      <pubDate>Thu, 13 Mar 2025 21:29:50 +0700</pubDate>
+      <guid>https://nguyentuss.github.io/posts/cnn/</guid>
+      <description>&lt;p&gt;Convolutional Neural Networks are very similar to ordinary Neural Networks, they are made up of neurons that have learnable weights and biases. Each neuron receives some inputs, performs a dot product and optionally follows it with a non-linearity. The whole network still expresses a single differentiable score function: from the raw image pixels on one end to class scores at the other. And they still have a loss function (e.g. SVM/Softmax) on the last (fully-connected) layer and all the tips/tricks we developed for learning regular Neural Networks still apply.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Histogram of Oriented Gradients (HOG)</title>
+      <link>https://nguyentuss.github.io/posts/hog/</link>
+      <pubDate>Tue, 11 Mar 2025 10:49:42 +0700</pubDate>
+      <guid>https://nguyentuss.github.io/posts/hog/</guid>
+      <description>&lt;hr&gt;
+&lt;p&gt;There are many different methods in computer vision. When it comes to image classification, we can apply families of CNN models such as Inception Net, MobileNet, ResNet, DenseNet, AlexNet, U-Net, and so on. For object detection, models like YOLO, SSD, Faster R-CNN, Fast R-CNN, and Mask R-CNN are commonly used.
+All the above algorithms belong to the deep learning category. However, before the deep learning boom, what algorithms were typically used in image processing? Today, we will explore a classic yet highly effective algorithm in image processing: &lt;strong&gt;HOG (Histogram of Oriented Gradients).&lt;/strong&gt;
+This algorithm generates &lt;strong&gt;features description&lt;/strong&gt; for the purpose of &lt;strong&gt;object detection&lt;/strong&gt;. From an image, two key matrices are extracted to store essential information: &lt;strong&gt;gradient magnitude&lt;/strong&gt; and &lt;strong&gt;gradient orientation&lt;/strong&gt;. By combining these two pieces of information into a histogram distribution—where the gradient magnitude is counted in bins according to gradient orientation—we obtain a &lt;strong&gt;HOG feature vector&lt;/strong&gt; that represents the histogram. This is the basic concept, but in practice, the algorithm is more complex. The &lt;strong&gt;HOG vector&lt;/strong&gt; is computed over &lt;strong&gt;local regions&lt;/strong&gt;, similar to how CNNs operate, followed by &lt;strong&gt;local normalization&lt;/strong&gt; to standardize measurements. Finally, the overall &lt;strong&gt;HOG vector&lt;/strong&gt; is aggregated from all local vectors.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Introduction</title>
+      <link>https://nguyentuss.github.io/posts/introduction/</link>
+      <pubDate>Tue, 11 Mar 2025 10:17:26 +0700</pubDate>
+      <guid>https://nguyentuss.github.io/posts/introduction/</guid>
+      <description>Welcome to Hugo Theme Stack</description>
+    </item>
+    <item>
+      <title>Multivariate Models</title>
+      <link>https://nguyentuss.github.io/posts/multivariate-models/</link>
+      <pubDate>Mon, 10 Mar 2025 21:50:35 +0700</pubDate>
+      <guid>https://nguyentuss.github.io/posts/multivariate-models/</guid>
+      <description>&lt;h2 id=&#34;joint-distributions-for-multiple-random-variables&#34;&gt;Joint distributions for multiple random variables&lt;/h2&gt;
+&lt;h3 id=&#34;covariance&#34;&gt;Covariance&lt;/h3&gt;
+&lt;p&gt;The &lt;strong&gt;covariance&lt;/strong&gt; between two random variables ${X}$ and ${Y}$ measures the &lt;strong&gt;direction&lt;/strong&gt; of the &lt;strong&gt;linear relationship&lt;/strong&gt; to which ${X}$ and ${Y}$ are (linearly) related. It quantifies how the random variables change together.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;  Positive: If one increases, the other also increases.&lt;/li&gt;
+&lt;li&gt;  Negative: If one increases while the other decreases.&lt;/li&gt;
+&lt;li&gt;  Zero: There is no relationship between the variables.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;$$\textrm{Cov}[X,Y] \triangleq \mathbb{E}\Bigl[(X-\mathbb{E}[X])(Y-\mathbb{E}[Y])\Bigr] = \mathbb{E}[XY] - \mathbb{E}[X]\mathbb{E}[Y].$$&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Univariate Models</title>
+      <link>https://nguyentuss.github.io/posts/univariate-models/</link>
+      <pubDate>Mon, 10 Mar 2025 21:50:35 +0700</pubDate>
+      <guid>https://nguyentuss.github.io/posts/univariate-models/</guid>
+      <description>Welcome to Hugo Theme Stack</description>
     </item>
   </channel>
 </rss>

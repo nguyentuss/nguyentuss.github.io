@@ -2,17 +2,109 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://localhost:1313/posts/my-first-post/</loc>
+    <loc>https://nguyentuss.github.io/posts/about/</loc>
+    <lastmod>2025-03-15T14:44:34+07:00</lastmod>
+  </url><url>
+    <loc>https://nguyentuss.github.io/posts/my-first-post/</loc>
     <lastmod>2025-04-25T21:26:33+07:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/</loc>
+    <loc>https://nguyentuss.github.io/</loc>
     <lastmod>2025-04-25T21:26:33+07:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/</loc>
+    <loc>https://nguyentuss.github.io/posts/</loc>
     <lastmod>2025-04-25T21:26:33+07:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/categories/</loc>
+    <loc>https://nguyentuss.github.io/categories/</loc>
+    <lastmod>2025-04-20T13:34:38+07:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/tags/</loc>
+    <loc>https://nguyentuss.github.io/tags/machine_learning/</loc>
+    <lastmod>2025-04-20T13:34:38+07:00</lastmod>
+  </url><url>
+    <loc>https://nguyentuss.github.io/categories/math/</loc>
+    <lastmod>2025-04-20T13:34:38+07:00</lastmod>
+  </url><url>
+    <loc>https://nguyentuss.github.io/tags/math/</loc>
+    <lastmod>2025-04-20T13:34:38+07:00</lastmod>
+  </url><url>
+    <loc>https://nguyentuss.github.io/posts/optimization/</loc>
+    <lastmod>2025-04-20T13:34:38+07:00</lastmod>
+  </url><url>
+    <loc>https://nguyentuss.github.io/tags/</loc>
+    <lastmod>2025-04-20T13:34:38+07:00</lastmod>
+  </url><url>
+    <loc>https://nguyentuss.github.io/tags/probability/</loc>
+    <lastmod>2025-04-20T12:03:54+07:00</lastmod>
+  </url><url>
+    <loc>https://nguyentuss.github.io/posts/statistic/</loc>
+    <lastmod>2025-04-20T12:03:54+07:00</lastmod>
+  </url><url>
+    <loc>https://nguyentuss.github.io/posts/information-theory/</loc>
+    <lastmod>2025-04-20T11:34:08+07:00</lastmod>
+  </url><url>
+    <loc>https://nguyentuss.github.io/tags/%23math/</loc>
+    <lastmod>2025-03-17T13:18:12+07:00</lastmod>
+  </url><url>
+    <loc>https://nguyentuss.github.io/categories/number-theory/</loc>
+    <lastmod>2025-03-17T13:18:12+07:00</lastmod>
+  </url><url>
+    <loc>https://nguyentuss.github.io/posts/numerical-method/</loc>
+    <lastmod>2025-03-17T13:18:12+07:00</lastmod>
+  </url><url>
+    <loc>https://nguyentuss.github.io/tags/%23deep_learning/</loc>
+    <lastmod>2025-03-13T22:05:35+07:00</lastmod>
+  </url><url>
+    <loc>https://nguyentuss.github.io/categories/computer-vision/</loc>
+    <lastmod>2025-03-13T22:05:35+07:00</lastmod>
+  </url><url>
+    <loc>https://nguyentuss.github.io/tags/cv/</loc>
+    <lastmod>2025-03-13T22:05:35+07:00</lastmod>
+  </url><url>
+    <loc>https://nguyentuss.github.io/categories/deep-learning/</loc>
+    <lastmod>2025-03-13T22:05:35+07:00</lastmod>
+  </url><url>
+    <loc>https://nguyentuss.github.io/tags/introduction/</loc>
+    <lastmod>2025-03-13T22:05:35+07:00</lastmod>
+  </url><url>
+    <loc>https://nguyentuss.github.io/posts/optical-flow/</loc>
+    <lastmod>2025-03-13T22:05:35+07:00</lastmod>
+  </url><url>
+    <loc>https://nguyentuss.github.io/posts/cnn/</loc>
+    <lastmod>2025-03-13T21:29:50+07:00</lastmod>
+  </url><url>
+    <loc>https://nguyentuss.github.io/tags/%23cv/</loc>
+    <lastmod>2025-03-11T10:49:42+07:00</lastmod>
+  </url><url>
+    <loc>https://nguyentuss.github.io/tags/%23extract_image/</loc>
+    <lastmod>2025-03-11T10:49:42+07:00</lastmod>
+  </url><url>
+    <loc>https://nguyentuss.github.io/tags/%23machine_learning/</loc>
+    <lastmod>2025-03-11T10:49:42+07:00</lastmod>
+  </url><url>
+    <loc>https://nguyentuss.github.io/posts/hog/</loc>
+    <lastmod>2025-03-11T10:49:42+07:00</lastmod>
+  </url><url>
+    <loc>https://nguyentuss.github.io/tags/%23introduction/</loc>
+    <lastmod>2025-03-11T10:17:26+07:00</lastmod>
+  </url><url>
+    <loc>https://nguyentuss.github.io/tags/ai/</loc>
+    <lastmod>2025-03-11T10:17:26+07:00</lastmod>
+  </url><url>
+    <loc>https://nguyentuss.github.io/posts/introduction/</loc>
+    <lastmod>2025-03-11T10:17:26+07:00</lastmod>
+  </url><url>
+    <loc>https://nguyentuss.github.io/categories/machine_learning/</loc>
+    <lastmod>2025-03-11T10:17:26+07:00</lastmod>
+  </url><url>
+    <loc>https://nguyentuss.github.io/tags/%23ai/</loc>
+    <lastmod>2025-03-10T21:50:35+07:00</lastmod>
+  </url><url>
+    <loc>https://nguyentuss.github.io/tags/%23probability/</loc>
+    <lastmod>2025-03-10T21:50:35+07:00</lastmod>
+  </url><url>
+    <loc>https://nguyentuss.github.io/posts/multivariate-models/</loc>
+    <lastmod>2025-03-10T21:50:35+07:00</lastmod>
+  </url><url>
+    <loc>https://nguyentuss.github.io/posts/univariate-models/</loc>
+    <lastmod>2025-03-10T21:50:35+07:00</lastmod>
   </url>
 </urlset>

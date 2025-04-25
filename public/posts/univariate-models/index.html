@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Univariate Models | My New Hugo Site</title>
+<meta name="keywords" content="AI, Machine_Learning, #Probability">
+<meta name="description" content="Welcome to Hugo Theme Stack">
+<meta name="author" content="">
+<link rel="canonical" href="https://nguyentuss.github.io/posts/univariate-models/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.6da9a63d25a9608bca2f7f907a030e887a7dd3c3f3918e4cc113129361414bda.css" integrity="sha256-bammPSWpYIvKL3&#43;QegMOiHp908PzkY5MwRMSk2FBS9o=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://nguyentuss.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://nguyentuss.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://nguyentuss.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://nguyentuss.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://nguyentuss.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://nguyentuss.github.io/posts/univariate-models/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+          delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+          ],
+          throwOnError : false
+        });
+    });
+</script>
+
+
+<meta property="og:url" content="https://nguyentuss.github.io/posts/univariate-models/">
+  <meta property="og:site_name" content="My New Hugo Site">
+  <meta property="og:title" content="Univariate Models">
+  <meta property="og:description" content="Welcome to Hugo Theme Stack">
+  <meta property="og:locale" content="en-us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-03-10T21:50:35+07:00">
+    <meta property="article:modified_time" content="2025-03-10T21:50:35+07:00">
+    <meta property="article:tag" content="AI">
+    <meta property="article:tag" content="Machine_Learning">
+    <meta property="article:tag" content="#Probability">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Univariate Models">
+<meta name="twitter:description" content="Welcome to Hugo Theme Stack">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://nguyentuss.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Univariate Models",
+      "item": "https://nguyentuss.github.io/posts/univariate-models/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Univariate Models",
+  "name": "Univariate Models",
+  "description": "Welcome to Hugo Theme Stack",
+  "keywords": [
+    "AI", "Machine_Learning", "#Probability"
+  ],
+  "articleBody": "Introduction Calling sample space ${\\mathcal{X}}$ are all possible experiences, and an event will be a subset of the sample space.\nUnion $$Pr(A \\land B)=Pr(A,B).$$\nIf independent events,\n$$Pr(A \\land B)=Pr(A)Pr(B).$$\nWe say a set of variables ${X_1, \\dots, X_n}$ is (mutually) independent if the joint can be written as a product of marginals for all subsets ${{X_1,\\dots, X_m} \\subseteq {X_1,\\dots,X_n}}$,\n$$p(X_1,X_2,\\dots,X_n)=\\prod_{i=1}^{m}p(X_i).$$\nDisjoint $$Pr(A \\vee B)=Pr(A)+Pr(B)-Pr(A\\land B).$$\nConditional Probability $$Pr(B|A)\\triangleq \\frac{Pr(A,B)}{Pr(A)}.$$\nIf events ${A}$ and ${B}$ are conditionally independent given event ${C}$,\n$$Pr(A,B|C)=Pr(A|C)Pr(B|C).$$\nBe careful, we say ${X_1, X_2, X_3}$ are mutually independent if the following conditions hold:\n$$\\begin{split} p(X_1,X_2,X_3)=p(X_1)p(X_2)p(X_3),\\, p(X_1,X_2)=p(X_1)p(X_2),\\, p(X_1,X_3)=p(X_1)p(X_3),\\, p(X_2,X_3)=p(X_2)p(X_3) \\end{split}.$$\nRandom Variables Given an experiment with sample space ${\\mathbb{S}}$, a random variable (r.v.) is a function mapping from ${\\mathbb{S}}$ to ${\\mathbb{R}}$.\nDiscrete Random Variables If the sample space ${\\mathbb{S}}$ is finite or countable, it is called a discrete r.v. Denote the probability of events in ${\\mathbb{S}}$ having value ${x}$ by ${Pr(X=x)}$. This is called the probability mass function (pmf):\n$$p(x)\\triangleq Pr(X=x).$$\nThe pmf satisfies ${0\\leq p(x) \\leq 1}$ and ${\\sum_{x\\in \\mathcal{X}}p(x)=1}$.\nContinuous Random Variables If ${X \\in \\mathbb{R}}$, it is called a continuous r.v. The values no longer create a finite set of distinct possible values.\nCumulative Distribution Function (cdf) $$P(x) \\triangleq Pr(X\\leq x).$$\nWe can compute the probability of any interval:\n$$P(a\\leq x \\leq b) = P(b)-P(a-1).$$\nIn discrete r.v, the cdf will compute:\n$$P(x)=\\sum_{x\\in \\mathcal{X}}p(x).$$\nIn continuous r.v, the cdf will compute:\n$$P(x)=\\int_{x\\in \\mathcal{X}}p(x).$$\nProbability Density Function (pdf) Define the pdf as the derivative of the cdf:\n$$p(x) \\triangleq \\frac{d}{dx}P(x).$$\nAs the size of the interval gets smaller, we can write:\n$$ Pr(x \u003c X \u003c x + dx) \\approx p(x)dx $$\nQuantiles If the cdf ${P}$ is monotonically increasing, it has an inverse called the inverse cdf. If ${P}$ is the cdf of ${X}$, then ${P^{-1}(q)}$ is the value ${x_q}$ such that ${Pr(X\\leq x_q)=q}$; this is called the q’th quantile of ${P}$.\nSets of Related Random Variables Suppose we have two r.v. ${X}$ and ${Y}$. We can define the joint distribution:\n$$p(x,y)=Pr(X=x,Y=y),$$\nfor all possible values of ${x}$ and ${y}$. We can represent all possible values by a 2D table. For example:\n$$\\begin{array}{c|cc} p(X,Y) \u0026 Y = 0 \u0026 Y = 1 \\ \\hline X = 0 \u0026 0.2 \u0026 0.3 \\ X = 1 \u0026 0.3 \u0026 0.2 \\end{array}.$$\nHere, ${Pr(X=0,Y=1)=0.3}$, and\n$$\\sum_{x \\in \\mathcal{X},y \\in \\mathcal{Y}}p(x,y)=1.$$\nMoments of a Distribution The mean (or expected value) for a continuous r.v. is defined as:\n$$\\mathbb{E}[X]=\\int_{x\\in \\mathcal{X}}x,p(x)dx.$$\nFor discrete r.v, the mean is:\n$$\\mathbb{E}[X]=\\sum_{x\\in \\mathcal{X}}x,p(x).$$\nSince the mean is linear, we have the linearity of expectation:\n$$\\mathbb{E}[aX+b]=a,\\mathbb{E}[X]+b.$$\nFor ${n}$ random variables, the sum of expectations is:\n$$\\mathbb{E}\\Bigl[\\sum X_i\\Bigr]=\\sum \\mathbb{E}[X_i].$$\nIf they are independent, the expectation of the product is:\n$$\\mathbb{E}\\Bigl[\\prod X_i\\Bigr]=\\prod \\mathbb{E}[X_i].$$\nWhen dealing with two or more dependent r.v’s, we can compute the moment of one given the others:\n$$\\mathbb{E}[X]=\\mathbb{E}_Y\\Bigl[\\mathbb{E}[X|Y]\\Bigr].$$\nA similar formula exists for the variance:\n$$\\mathbb{V}[X]=\\mathbb{E}_Y\\Bigl[\\mathbb{V}[X|Y]\\Bigr] +\\mathbb{V}_Y\\Bigl[\\mathbb{E}[X|Y]\\Bigr].$$\nThe variance is a measure of how “spread out” the distribution is, denoted as ${\\sigma^2}$ and defined as:\n$$\\mathbb{V}[X] \\triangleq \\mathbb{E}[(X- \\mu)^2] =\\int (x-\\mu)^2p(x)dx =\\mathbb{E}[X^2]-\\mu^2.$$\nThe standard deviation is given by:\n$$std[X]=\\sqrt{\\mathbb{V}[X]}=\\sigma.$$\nLower deviation means the distribution is closer to the mean; higher deviation means it is further away.\nThe variance of a shifted and scaled version of a random variable is:\n$$\\mathbb{V}[aX+b]=a^2\\mathbb{V}[X].$$\nFor ${n}$ independent random variables, the variance of their sum is:\n$$\\mathbb{V}\\Bigl[\\sum X_i\\Bigr]=\\sum \\mathbb{V}[X_i].$$\nThe variance of their product is:\n$$\\mathbb{V}\\Bigl[\\prod X_i\\Bigr]= \\prod\\Bigl(\\sigma_i^2 + \\mu_i^2\\Bigr)-\\prod \\mu_i^2.$$\nMode of a Distribution\nThe mode of a distribution is the value with the highest probability mass or density:\n$$\\mathbf{x^*}= \\arg \\max_{\\mathbf{x}} p(\\mathbf{x}).$$\nFor multimodal distributions, the mode may not be unique.\nBayes’ Rule Bayes’ Rule, and with Extra Conditioning $$P({ A=a}|{ B=b}) = \\frac{P({ B=a}|{ A=b})P({ A=a})}{P({ B=b})}.$$\n$$P({ A=a}|{ B=b}, { C=c}) = \\frac{P({ B=b}|{ A=a}, { C=c})P({ A=a} \\mid { C=c})}{P({ B=b} \\mid { C=c})}.$$\nThe term ${p(A)}$ represents what we know about the possible values of ${A}$ before observing any data; this is the prior distribution. (If ${A}$ has ${K}$ possible values, then ${p(A)}$ is a vector of ${K}$ probabilities summing to ${1}$.) The term ${p(B \\mid A = a)}$ represents the distribution over possible outcomes of ${B}$ if ${A = a}$; this is the observation distribution. Evaluated at the observed ${b}$, the function ${p(B = b \\mid A = a)}$ is called the likelihood.\nMultiplying the prior ${p(A = a)}$ by the likelihood ${p(B = b \\mid A = a)}$ for each ${a}$ gives the unnormalized joint distribution ${p(A = a, B = b)}$. Normalizing by dividing by ${p(B = b)}$ (the marginal likelihood) gives:\n$$p(B = b) = \\sum_{a’ \\in \\mathcal{A}} p(A = a’) p(B = b \\mid A = a’) = \\sum_{a’ \\in \\mathcal{A}} p(A = a’, B = b).$$\nOdds Form of Bayes’ Rule\n$$\\frac{P({ A}| { B})}{P({ A^c}| { B})} = \\frac{P({ B}|{ A})}{P({ B}| { A^c})}\\frac{P({ A})}{P({ A^c})}.$$\nThe posterior odds of ${A}$ equal the likelihood ratio times the prior odds.\nBernoulli and Binomial Distributions For an experiment tossing a coin with head probability ${0\\leq\\theta \\leq 1}$, let ${Y = 1}$ denote heads and ${Y = 0}$ denote tails. So, ${p(Y=1)=\\theta}$ and ${p(Y=0)=1-\\theta}$. This is the Bernoulli distribution, written as:\n$$Y \\sim Ber(\\theta).$$\nThe pmf is defined as:\n$$\\text{Ber}(y \\mid \\theta) = \\begin{cases} 1 - \\theta \u0026 \\text{if } y = 0, \\ \\theta \u0026 \\text{if } y = 1 \\end{cases}.$$\nIt can also be written as:\n$$\\text{Ber}(y \\mid \\theta) \\triangleq \\theta^y(1-\\theta)^{1-y}.$$\nA Bernoulli trial is a special case of the Binomial distribution. Tossing a coin ${N}$ times gives a set of ${N}$ Bernoulli trials, denoted ${y_n \\sim Ber(\\cdot\\mid\\theta)}$. Let ${s = \\sum_{n=1}^{N}\\mathbb{I}(y_n = 1)}$ be the number of heads. Then, ${s}$ follows a binomial distribution:\n$$Bin(s \\mid\\theta,N) \\triangleq \\binom{N}{s}\\theta^s(1-\\theta)^{N-s}.$$\nWhen predicting a binary variable ${y \\in {0, 1}}$ given inputs ${x \\in X}$, we use a conditional distribution of the form:\n$$p(y|\\mathbf{x},\\theta) = Ber(y\\mid f(\\mathbf{x};\\theta)).$$\nTo ensure ${0\\leq f(\\mathbf{x};\\theta)\\leq1}$, we often write:\n$$p(y|\\mathbf{x},\\theta) = Ber(y\\mid \\sigma (f(\\mathbf{x};\\theta))).$$\nwhere ${\\sigma(\\cdot)}$ is the sigmoid (or logistic) function, defined as:\n$$\\sigma(a) \\triangleq \\frac{1}{1+e^{-a}}= \\frac{e^a}{1 + e^a}.$$\nIts inverse is the logit function:\n$$a = logit(p) =\\sigma^{-1}(p) \\triangleq \\log\\frac{p}{1-p}.$$\nThus, the sigmoid transforms a function from ${\\mathbb{R}}$ into a probability in ${[0,1]}$, while the logit transforms a probability into a real number.\nSome useful properties of these functions:\n$$\\sigma(x) \\triangleq \\frac{1}{1 + e^{-x}} = \\frac{e^x}{1 + e^x}.$$\n$$\\frac{d}{dx} \\sigma(x) = \\sigma(x)(1 - \\sigma(x)).$$\n$$1 - \\sigma(x) = \\sigma(-x).$$\n$$\\sigma_+(x) \\triangleq \\log(1 + e^x) \\triangleq \\text{softplus}(x).$$\n$$\\frac{d}{dx} \\sigma_+(x) = \\sigma(x).$$\nIn particular, note an issue often encountered with activation functions: obtaining zero (or near zero) gradient during backpropagation.\nWhen ${x = 0}$:\n$$f(0) = \\frac{1}{1 + e^0} = \\frac{1}{2},$$\n$$f’(0) = \\frac{1}{2} \\cdot \\Bigl(1 - \\frac{1}{2}\\Bigr) = \\frac{1}{4} = 0.25.$$\nWhen ${x \\gg 0}$ (large positive):\n$$f(x) \\to 1, \\quad f’(x) = 1 \\cdot (1 - 1) = 0.$$\nGradient approaches 0.\nWhen ${x \\ll 0}$ (large negative):\n$$f(x) \\to 0, \\quad f’(x) = 0 \\cdot (1 - 0) = 0.$$\nGradient also approaches 0.\nCategorical and Multinomial Distributions For more than 2 classes, the categorical distribution represents a distribution over a finite set of labels ${y \\in {1,\\dots,C}}$, generalizing the Bernoulli to ${C \u003e 2}$. Its pmf is:\n$$\\text{Cat}(y \\mid \\theta) \\triangleq \\prod_{c=1}^{C} \\theta_c^{\\mathbb{I}(y=c)}.$$\nIn other words, ${p(y=c \\mid \\theta)=\\theta_c}$, where the parameters are constrained so that ${0\\leq\\theta_c\\leq1}$.\nBy converting ${y}$ into a one-hot vector with ${C}$ elements (e.g. for ${C=3}$, the classes are encoded as ${ (1,0,0) }$, ${ (0,1,0) }$, and ${ (0,0,1) }$), we can view a fair 6-sided die with outcomes:\n$$y \\in {1, 2, 3, 4, 5, 6},$$\nwith each face having equal probability:\n$$\\theta = \\bigl(\\tfrac{1}{6}, \\tfrac{1}{6}, \\tfrac{1}{6}, \\tfrac{1}{6}, \\tfrac{1}{6}, \\tfrac{1}{6}\\bigr).$$\nIf we roll a 3, the one-hot encoding is:\n$$(0, 0, 1, 0, 0, 0),$$\nand\n$$P(y = 3 \\mid \\theta) = \\theta_3 = \\tfrac{1}{6}.$$\nFor a biased die with:\n$$\\theta = (0.10, 0.15, 0.30, 0.20, 0.15, 0.10),$$\nthe probability of rolling a 3 becomes:\n$$P(y = 3 \\mid \\theta) = \\theta_3 = 0.30.$$\nThe categorical distribution is a special case of the multinomial distribution. If we observe ${N}$ categorical trials, ${y_n \\sim Cat(\\cdot\\mid\\theta)}$ for ${n = 1,\\dots,N}$, and define ${y_c = \\sum_{n=1}^{N}\\mathbb{I}(y_n = c)}$, then the vector ${\\mathbf{y}}$ follows:\n$$\\mathcal{M}(\\mathbf{y} \\mid N, \\theta) \\triangleq \\binom{N}{y_1 \\dots y_C} \\prod_{c=1}^{C} \\theta_c^{y_c}.$$\nIn the conditional case, we can define:\n$$p(y \\mid x, \\theta) = \\text{Cat}(y \\mid f(x; \\theta)),$$\nor equivalently:\n$$p(y \\mid x, \\theta) = \\mathcal{M}(y \\mid 1, f(x; \\theta)),$$\nrequiring that ${0 \\leq f_c(x; \\theta) \\leq 1}$ and ${\\sum_{c=1}^{C} f_c(x; \\theta) = 1}$.\nTo avoid forcing ${f}$ to directly predict a probability vector, it is common to pass its output into the softmax function (or multinomial logit), defined as:\n$$softmax(\\mathbf{a})\\triangleq \\begin{bmatrix} \\frac{e^{a_1}}{\\sum_{c’=1}^{C}e^{a_{c’}}}, \\dots, \\frac{e^{a_C}}{\\sum_{c’=1}^{C}e^{a_{c’}}} \\end{bmatrix}.$$\nThis converts ${\\mathbb{R}^C}$ into a probability vector in ${[0,1]^C}$. One weakness is that if\n$$p_c=\\frac{e^{a_c}}{Z(\\mathbf{a})}=\\frac{e^{a_c}}{\\sum_{c’=1}^{C}e^{a_{c’}}},$$\nfor logits ${\\mathbf{a}=f(\\mathbf{x},\\theta)}$, then for extreme values like ${\\mathbf{a}=(1000,1000,1000)}$ or ${\\mathbf{a}=(-1000,-1000,-1000)}$, numerical issues (overflow or underflow) occur. To avoid this, we use the trick:\n$$\\log\\sum_{c’=1}^{C}e^{a_{c’}} = m +\\log\\sum_{c’=1}^{C}e^{a_{c’}-m},$$\nwith ${m=\\max_c a_c}$.\nThus, we have:\n$$\\begin{aligned} p(y=c|\\mathbf{x}) \u0026= \\frac{\\exp(a_c-m)}{\\sum_{c’} \\exp(a_{c’}-m)} \\ \u0026=e^{a_c-lse(\\mathbf{a})}. \\end{aligned}$$\nThe loss for the softmax function is given by:\n$$J(\\mathbf{W}; \\mathbf{x}, \\mathbf{y}) = - \\sum_{i=1}^{N} \\sum_{j=1}^{C} y_{ji} \\log (a_{ji}),$$\nor equivalently:\n$$J(\\mathbf{W}; \\mathbf{x}, \\mathbf{y}) = - \\sum_{i=1}^{N} \\sum_{j=1}^{C} y_{ji} \\log \\Bigl( \\frac{\\exp(\\mathbf{W}_j^T \\mathbf{x}i)}{\\sum{k=1}^{C} \\exp(\\mathbf{W}_k^T \\mathbf{x}_i)} \\Bigr).$$\nFor a single data point $({\\mathbf{x}_i}, {\\mathbf{y}_i})$, the loss is:\n$$J_i(\\mathbf{W}) \\triangleq J(\\mathbf{W}; \\mathbf{x}i, \\mathbf{y}i) = - \\sum{j=1}^{C} y{ji} \\log \\Bigl( \\frac{\\exp(\\mathbf{W}_j^T \\mathbf{x}i)}{\\sum{k=1}^{C} \\exp(\\mathbf{W}_k^T \\mathbf{x}_i)} \\Bigr).$$\nWhich can be rewritten as:\n$$J_i(\\mathbf{W}) = - \\sum_{j=1}^{C} y_{ji},\\mathbf{W}_j^T \\mathbf{x}i + \\log \\Bigl( \\sum{k=1}^{C} \\exp(\\mathbf{W}_k^T \\mathbf{x}_i) \\Bigr).$$\nThe gradient for each column ${j}$ is computed as:\n$$\\frac{\\partial J_i(\\mathbf{W})}{\\partial \\mathbf{W}j} = - y{ji},\\mathbf{x}_i + \\frac{\\exp(\\mathbf{W}_j^T \\mathbf{x}_i),\\mathbf{x}i}{\\sum{k=1}^{C} \\exp(\\mathbf{W}_k^T \\mathbf{x}_i)}.$$\nThis simplifies to:\n$$\\frac{\\partial J_i(\\mathbf{W})}{\\partial \\mathbf{W}j} = \\mathbf{x}i,(a{ji} - y{ji}),$$\nor equivalently:\n$$\\frac{\\partial J_i(\\mathbf{W})}{\\partial \\mathbf{W}j} = \\mathbf{x}i,e{ji}, \\quad \\text{where } e{ji} = a_{ji} - y_{ji}.$$\nCollecting for all columns, we have:\n$$\\frac{\\partial J_i(\\mathbf{W})}{\\partial \\mathbf{W}} = \\mathbf{x}i,[e{i1}, e_{i2}, \\dots, e_{iC}] = \\mathbf{x}_i,\\mathbf{e}_i^T,$$\nand thus the full gradient is:\n$$\\frac{\\partial J(\\mathbf{W})}{\\partial \\mathbf{W}} = \\sum_{i=1}^{N} \\mathbf{x}_i,\\mathbf{e}_i^T = \\mathbf{x},\\mathbf{E}^T,$$\nwhere ${\\mathbf{E} = \\mathbf{A} - \\mathbf{Y}}$. This compact gradient expression is useful for Batch Gradient Descent, Stochastic Gradient Descent (SGD), and Mini-batch Gradient Descent.\nAssuming SGD, the weight matrix ${\\mathbf{W}}$ is updated as:\n$$\\mathbf{W} = \\mathbf{W} + \\eta,\\mathbf{x}_i,(y_i - a_i)^T.$$\nUnivariate Gaussian (Normal) Distribution The cdf of the Gaussian is defined by:\n$$\\phi(y;\\mu,\\sigma^2)\\triangleq\\int_{-\\infty}^{y}\\mathcal{N}(z,\\mu,\\sigma^2)dz.$$\nIt can be implemented using:\n$$\\phi(y;\\mu,\\sigma^2)=\\tfrac{1}{2}\\bigl[1+erf\\bigl(\\tfrac{z}{\\sqrt{2}}\\bigr)\\bigr],$$\nwhere ${z=(y-\\mu)/\\sigma}$ and the error function is defined as:\n$$erf(u)\\triangleq\\frac{2}{\\sqrt{\\pi}}\\int_{0}^{u}e^{-t}dt.$$\nThe pdf of the Gaussian is given by:\n$$\\mathcal{N}(y\\mid\\mu,\\sigma^2)=\\frac{1}{\\sqrt{2\\pi\\sigma^2}},\\exp!\\Bigl(-\\tfrac{1}{2\\sigma^2}(y-\\mu)^2\\Bigr).$$\nThe mean of the distribution is:\n$$\\mathbb{E}[\\mathcal{N}(\\cdot\\mid\\mu,\\sigma^2)]=\\mu,$$\nand the standard deviation is:\n$$std[\\mathcal{N}(\\cdot\\mid\\mu,\\sigma^2)]=\\sigma.$$\nIt is common to parameterize the Gaussian as a function of input variables to create a conditional density model of the form:\n$$p(y\\mid\\mathbf{x},\\theta)=\\mathcal{N}\\Bigl(y\\mid f_{\\mu}(\\mathbf{x};\\theta),, f_{\\sigma}(\\mathbf{x};\\theta)^2\\Bigr),$$\nwhere ${f_{\\mu}(\\mathbf{x};\\theta)\\in \\mathbb{R}}$ predicts the mean and ${f_{\\sigma}(\\mathbf{x};\\theta)\\in \\mathbb{R}_+}$ predicts the variance.\nAssuming fixed variance independent of the input (homoscedastic regression) and a linear mean, we have:\n$$p(y\\mid\\mathbf{x},\\theta)=\\mathcal{N}\\Bigl(y\\mid \\mathbf{W}^T\\mathbf{x}+b,,\\sigma^2\\Bigr)$$\nwith ${\\theta=(\\mathbf{W},b,\\sigma^2)}$. If the variance depends on the input (heteroskedastic regression), then:\n$$p(y\\mid\\mathbf{x},\\theta)=\\mathcal{N}\\Bigl(y\\mid\\mathbf{W}{\\mu}^T\\mathbf{x}+b,\\sigma+\\bigl(\\mathbf{W}_\\sigma^T\\mathbf{x}\\bigr)^2\\Bigr)$$\nwith $$\\theta=(\\mathbf{W}\\mu,\\mathbf{W}\\sigma)$$, and $\\sigma_+(x)$ being the softplus function mapping ${\\mathbb{R}}$ to ${\\mathbb{R}_+}$.\nWhen the variance approaches 0, the Gaussian becomes infinitely narrow:\n$$\\lim_{\\sigma\\rightarrow0}\\mathcal{N}(y\\mid\\mu,\\sigma^2)\\rightarrow\\delta(y-\\mu),$$\nwhere the Dirac delta function is defined as:\n$$\\delta(x) = \\begin{cases} +\\infty \u0026 \\text{if } x=0, \\ 0 \u0026 \\text{if } x \\neq 0 \\end{cases},$$\nand similarly,\n$$\\delta_y(x) = \\begin{cases} +\\infty \u0026 \\text{if } x=y, \\ 0 \u0026 \\text{if } x \\neq y \\end{cases},$$\nwith ${\\delta_y(x) = \\delta(x-y)}$.\nSome Common Other Univariate Distributions Student t Distribution $$\\mathcal{T}(y \\mid \\mu, \\sigma^2, \\nu) ;\\propto; \\Bigl[ 1 + \\tfrac{1}{\\nu} \\Bigl(\\tfrac{y - \\mu}{\\sigma}\\Bigr)^2 \\Bigr]^{-\\tfrac{\\nu + 1}{2}}.$$\nIts properties include:\n$$\\text{mean} = \\mu,\\quad \\text{mode} = \\mu,\\quad \\text{var} = \\frac{\\nu \\sigma^2}{\\nu - 2},$$\nwith the mean defined if ${\\nu \u003e 1}$ and the variance if ${\\nu \u003e 2}$. For ${\\nu \\gg 5}$, it approaches a Gaussian. A common choice is ${\\nu = 4}$.\nCauchy Distribution For ${\\nu=1}$, the Student t distribution becomes the Cauchy (or Lorentz) distribution:\n$$\\mathcal{C}(x\\mid\\mu,\\gamma)=\\frac{1}{\\pi,\\gamma} \\Bigl[1+\\Bigl(\\tfrac{x-\\mu}{\\gamma}\\Bigr)^2\\Bigr]^{-1}.$$\nThe Half Cauchy distribution (with ${\\mu=0}$) is defined as:\n$$\\mathcal{C}_+(x\\mid \\gamma) ;\\triangleq; \\tfrac{2}{\\pi,\\gamma} \\Bigl[1+\\Bigl(\\tfrac{x}{\\gamma}\\Bigr)^2\\Bigr]^{-1}.$$\nLaplace Distribution Also known as the double-sided exponential distribution, the Laplace distribution has the pdf:\n$$\\text{Laplace}(y \\mid \\mu, b) ;\\triangleq; \\frac{1}{2b} \\exp\\Bigl(-\\tfrac{|y-\\mu|}{b}\\Bigr),$$\nwith properties:\n$$\\text{mean} = \\mu,\\quad \\text{mode} = \\mu,\\quad \\text{var} = 2b^2.$$\nBeta Distribution The Beta distribution is supported on the interval ${[0,1]}$ and is defined as:\n$$\\text{Beta}(x \\mid a, b) ;=; \\frac{1}{B(a, b)},x^{,a-1},\\bigl(1 - x\\bigr)^{b-1},$$\nwhere the beta function is:\n$$B(a, b) ;\\triangleq; \\frac{\\Gamma(a),\\Gamma(b)}{\\Gamma(a + b)},$$\nand the Gamma function is defined as:\n$$\\Gamma(a) ;\\triangleq; \\int_{0}^{\\infty} x^{,a-1}e^{-x},dx.$$\nFor ${a = b = 1}$, this is the uniform distribution. When both ${a}$ and ${b}$ are less than 1, the distribution is bimodal with spikes at ${0}$ and ${1}$; when both are greater than 1, it is unimodal. Its properties include:\n$$\\text{mean} = \\frac{a}{,a+b,}, \\quad \\text{mode} = \\frac{a-1}{,a+b-2,}, \\quad \\text{var} = \\frac{ab}{(,a+b,)^2(,a+b+1,)}.$$\nTransformation of Random Variables Suppose ${\\mathbf{x}\\sim p()}$ is a random variable, and ${\\mathbf{y}=f(\\mathbf{x})}$ is a transformation of it. We discuss how to compute ${p(\\mathbf{y})}$.\nDiscrete Case For discrete r.v’s, the pmf of ${\\mathbf{y}}$ is obtained by summing the pmf of all ${\\mathbf{x}}$ such that ${f(\\mathbf{x})=\\mathbf{y}}$:\n$$p_{\\mathbf{y}}(\\mathbf{y})=\\sum_{\\mathbf{x}:,f(\\mathbf{x})=\\mathbf{y}}p_{\\mathbf{x}}(\\mathbf{x}).$$\nFor example, if ${f(\\mathbf{x})=1}$ when ${\\mathbf{x}}$ is even and ${0}$ otherwise, and ${\\mathbf{x}}$ is uniformly distributed over ${{1,2,\\dots,10}}$, then ${p_{\\mathbf{y}}(1)=0.5}$ and ${p_{\\mathbf{y}}(0)=0.5}$.\nContinuous Case For continuous r.v’s, we work with the cdf:\n$$P_{\\mathbf{y}}(\\mathbf{y})=Pr(Y\\leq \\mathbf{y}) = Pr\\Bigl(f(\\mathbf{x}) \\leq \\mathbf{y}\\Bigr)=Pr\\Bigl(\\mathbf{x} \\in {x \\mid f(x) \\leq \\mathbf{y}}\\Bigr).$$\nIf ${f}$ is invertible, differentiating the cdf yields the pdf; if not, Monte Carlo approximation may be used.\nInvertible Transformation (Bijections or One-to-One) For a monotonic (and hence invertible) function, if ${x\\sim Uni(0,1)}$ and ${y=f(x)=2x+1}$, then for general ${p_x(x)}$ and any monotonic ${f:\\mathbb{R}\\rightarrow\\mathbb{R}}$, let ${g=f^{-1}}$ with ${y=f(x)}$ and ${x=g(y)}$. Then:\n$$P_y(y)=Pr!\\bigl(f(X)\\leq y\\bigr)=Pr!\\bigl(X\\leq f^{-1}(y)\\bigr)=P_x!\\bigl(f^{-1}(y)\\bigr)=P_x!\\bigl(g(y)\\bigr).$$\nDifferentiating gives:\n$$p_y(y) \\triangleq \\frac{d}{dy}P_y(y)=p_x!\\bigl(g(y)\\bigr),\\Bigl|\\frac{dx}{dy}\\Bigr|.$$\nFor multivariate cases, if ${f:\\mathbb{R}^n\\rightarrow\\mathbb{R}^n}$ is invertible with inverse ${g}$, then:\n$$p_y(\\mathbf{y})=p_x(\\mathbf{x}),\\Bigl|\\det\\Bigl[\\mathbf{J}_g(\\mathbf{y})\\Bigr]\\Bigr|,$$\nwhere ${\\mathbf{J}_g(\\mathbf{y})=\\frac{d\\mathbf{g}(\\mathbf{y})}{,d\\mathbf{y}^T}}$ is the Jacobian.\nConvolution Theorem For ${Y=X_1+X_2}$ with independent r.v’s ${X_1}$ and ${X_2}$, in the discrete case:\n$$p(Y=y)=\\sum_{x=-\\infty}^{\\infty}p(X_1=x),p(X_2=y-x).$$\nIn the continuous case:\n$$p(y)=\\int p_1(x_1),p_2(y-x_1),dx_1.$$\nThis is written as:\n$$p = p_1 \\circledast p_2,$$\nwhere ${\\circledast}$ is the convolution operator.\nCentral Limit Theorem The Central Limit Theorem states that the sum of ${N}$ independent and identically distributed (i.i.d.) random variables (regardless of their original distribution) will approximate a Gaussian distribution as ${N}$ increases.\nMonte Carlo Approximation Suppose ${\\mathbf{x}}$ is a random variable and ${\\mathbf{y}=f(\\mathbf{x})}$. When computing ${p(\\mathbf{y})}$ directly is difficult, one can approximate it by drawing a large number of samples from ${p(x)}$, computing ${y_s=f(x_s)}$, and forming the empirical distribution:\n$$p_{\\mathbf{y}}(y) \\triangleq \\frac{1}{N_s} ,\\sum_{s=1}^{N_s} \\delta!\\bigl(y - y_s\\bigr).$$\n",
+  "wordCount" : "2402",
+  "inLanguage": "en",
+  "datePublished": "2025-03-10T21:50:35+07:00",
+  "dateModified": "2025-03-10T21:50:35+07:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://nguyentuss.github.io/posts/univariate-models/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://nguyentuss.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://nguyentuss.github.io/" accesskey="h" title="My New Hugo Site (Alt + H)">My New Hugo Site</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Univariate Models
+    </h1>
+    <div class="post-description">
+      Welcome to Hugo Theme Stack
+    </div>
+    <div class="post-meta"><span title='2025-03-10 21:50:35 +0700 +07'>March 10, 2025</span>
+
+</div>
+  </header> 
+  <div class="post-content"><h2 id="introduction">Introduction<a hidden class="anchor" aria-hidden="true" href="#introduction">#</a></h2>
+<p>Calling <strong>sample space</strong> ${\mathcal{X}}$ are all possible experiences, and an <strong>event</strong> will be a subset of the sample space.</p>
+<h3 id="union">Union<a hidden class="anchor" aria-hidden="true" href="#union">#</a></h3>
+<p>$$Pr(A \land B)=Pr(A,B).$$</p>
+<p>If independent events,</p>
+<p>$$Pr(A \land B)=Pr(A)Pr(B).$$</p>
+<p>We say a set of variables ${X_1, \dots, X_n}$ is (mutually) independent if the joint can be written as a product of marginals for all subsets ${{X_1,\dots, X_m} \subseteq {X_1,\dots,X_n}}$,</p>
+<p>$$p(X_1,X_2,\dots,X_n)=\prod_{i=1}^{m}p(X_i).$$</p>
+<h3 id="disjoint">Disjoint<a hidden class="anchor" aria-hidden="true" href="#disjoint">#</a></h3>
+<p>$$Pr(A \vee B)=Pr(A)+Pr(B)-Pr(A\land B).$$</p>
+<h3 id="conditional-probability">Conditional Probability<a hidden class="anchor" aria-hidden="true" href="#conditional-probability">#</a></h3>
+<p>$$Pr(B|A)\triangleq \frac{Pr(A,B)}{Pr(A)}.$$</p>
+<p>If events ${A}$ and ${B}$ are conditionally independent given event ${C}$,</p>
+<p>$$Pr(A,B|C)=Pr(A|C)Pr(B|C).$$</p>
+<p>Be careful, we say ${X_1, X_2, X_3}$ are mutually independent if the following conditions hold:</p>
+<p>$$\begin{split} p(X_1,X_2,X_3)=p(X_1)p(X_2)p(X_3),\, p(X_1,X_2)=p(X_1)p(X_2),\, p(X_1,X_3)=p(X_1)p(X_3),\, p(X_2,X_3)=p(X_2)p(X_3) \end{split}.$$</p>
+<h2 id="random-variables">Random Variables<a hidden class="anchor" aria-hidden="true" href="#random-variables">#</a></h2>
+<p><img alt="image" loading="lazy" src="/posts/univariate-models/img/rv.png">
+Given an experiment with sample space ${\mathbb{S}}$, a random variable (r.v.) is a function mapping from ${\mathbb{S}}$ to ${\mathbb{R}}$.</p>
+<h3 id="discrete-random-variables">Discrete Random Variables<a hidden class="anchor" aria-hidden="true" href="#discrete-random-variables">#</a></h3>
+<p>If the sample space ${\mathbb{S}}$ is finite or countable, it is called a discrete r.v. Denote the probability of events in ${\mathbb{S}}$ having value ${x}$ by ${Pr(X=x)}$. This is called the probability mass function (pmf):</p>
+<p>$$p(x)\triangleq Pr(X=x).$$</p>
+<p>The pmf satisfies ${0\leq p(x) \leq 1}$ and ${\sum_{x\in \mathcal{X}}p(x)=1}$.</p>
+<h3 id="continuous-random-variables">Continuous Random Variables<a hidden class="anchor" aria-hidden="true" href="#continuous-random-variables">#</a></h3>
+<p>If ${X \in \mathbb{R}}$, it is called a continuous r.v. The values no longer create a finite set of distinct possible values.</p>
+<h3 id="cumulative-distribution-function-cdf">Cumulative Distribution Function (cdf)<a hidden class="anchor" aria-hidden="true" href="#cumulative-distribution-function-cdf">#</a></h3>
+<p>$$P(x) \triangleq Pr(X\leq x).$$</p>
+<p>We can compute the probability of any interval:</p>
+<p>$$P(a\leq x \leq b) = P(b)-P(a-1).$$</p>
+<p>In discrete r.v, the cdf will compute:</p>
+<p>$$P(x)=\sum_{x\in \mathcal{X}}p(x).$$</p>
+<p>In continuous r.v, the cdf will compute:</p>
+<p>$$P(x)=\int_{x\in \mathcal{X}}p(x).$$</p>
+<h3 id="probability-density-function-pdf">Probability Density Function (pdf)<a hidden class="anchor" aria-hidden="true" href="#probability-density-function-pdf">#</a></h3>
+<p>Define the pdf as the derivative of the cdf:</p>
+<p>$$p(x) \triangleq \frac{d}{dx}P(x).$$</p>
+<p>As the size of the interval gets smaller, we can write:</p>
+<p>$$ Pr(x &lt; X &lt; x + dx) \approx p(x)dx $$</p>
+<h3 id="quantiles">Quantiles<a hidden class="anchor" aria-hidden="true" href="#quantiles">#</a></h3>
+<p>If the cdf ${P}$ is monotonically increasing, it has an inverse called the <strong>inverse cdf</strong>. If ${P}$ is the cdf of ${X}$, then ${P^{-1}(q)}$ is the value ${x_q}$ such that ${Pr(X\leq x_q)=q}$; this is called the q&rsquo;th quantile of ${P}$.</p>
+<h3 id="sets-of-related-random-variables">Sets of Related Random Variables<a hidden class="anchor" aria-hidden="true" href="#sets-of-related-random-variables">#</a></h3>
+<p>Suppose we have two r.v. ${X}$ and ${Y}$. We can define the joint distribution:</p>
+<p>$$p(x,y)=Pr(X=x,Y=y),$$</p>
+<p>for all possible values of ${x}$ and ${y}$. We can represent all possible values by a 2D table. For example:</p>
+<p>$$\begin{array}{c|cc} p(X,Y) &amp; Y = 0 &amp; Y = 1 \ \hline X = 0 &amp; 0.2 &amp; 0.3 \ X = 1 &amp; 0.3 &amp; 0.2 \end{array}.$$</p>
+<p>Here, ${Pr(X=0,Y=1)=0.3}$, and</p>
+<p>$$\sum_{x \in \mathcal{X},y \in \mathcal{Y}}p(x,y)=1.$$</p>
+<h3 id="moments-of-a-distribution">Moments of a Distribution<a hidden class="anchor" aria-hidden="true" href="#moments-of-a-distribution">#</a></h3>
+<p>The <strong>mean</strong> (or expected value) for a continuous r.v. is defined as:</p>
+<p>$$\mathbb{E}[X]=\int_{x\in \mathcal{X}}x,p(x)dx.$$</p>
+<p>For discrete r.v, the mean is:</p>
+<p>$$\mathbb{E}[X]=\sum_{x\in \mathcal{X}}x,p(x).$$</p>
+<p>Since the mean is linear, we have the <strong>linearity of expectation</strong>:</p>
+<p>$$\mathbb{E}[aX+b]=a,\mathbb{E}[X]+b.$$</p>
+<p>For ${n}$ random variables, the sum of expectations is:</p>
+<p>$$\mathbb{E}\Bigl[\sum X_i\Bigr]=\sum \mathbb{E}[X_i].$$</p>
+<p>If they are independent, the expectation of the product is:</p>
+<p>$$\mathbb{E}\Bigl[\prod X_i\Bigr]=\prod \mathbb{E}[X_i].$$</p>
+<p>When dealing with two or more dependent r.v&rsquo;s, we can compute the moment of one given the others:</p>
+<p>$$\mathbb{E}[X]=\mathbb{E}_Y\Bigl[\mathbb{E}[X|Y]\Bigr].$$</p>
+<p>A similar formula exists for the variance:</p>
+<p>$$\mathbb{V}[X]=\mathbb{E}_Y\Bigl[\mathbb{V}[X|Y]\Bigr] +\mathbb{V}_Y\Bigl[\mathbb{E}[X|Y]\Bigr].$$</p>
+<p>The <strong>variance</strong> is a measure of how &ldquo;spread out&rdquo; the distribution is, denoted as ${\sigma^2}$ and defined as:</p>
+<p>$$\mathbb{V}[X] \triangleq \mathbb{E}[(X- \mu)^2] =\int (x-\mu)^2p(x)dx =\mathbb{E}[X^2]-\mu^2.$$</p>
+<p><img alt="image" loading="lazy" src="/posts/univariate-models/img/Variance.png">
+The <strong>standard deviation</strong> is given by:</p>
+<p>$$std[X]=\sqrt{\mathbb{V}[X]}=\sigma.$$</p>
+<p>Lower deviation means the distribution is closer to the mean; higher deviation means it is further away.</p>
+<p>The variance of a shifted and scaled version of a random variable is:</p>
+<p>$$\mathbb{V}[aX+b]=a^2\mathbb{V}[X].$$</p>
+<p>For ${n}$ independent random variables, the variance of their sum is:</p>
+<p>$$\mathbb{V}\Bigl[\sum X_i\Bigr]=\sum \mathbb{V}[X_i].$$</p>
+<p>The variance of their product is:</p>
+<p>$$\mathbb{V}\Bigl[\prod X_i\Bigr]= \prod\Bigl(\sigma_i^2 + \mu_i^2\Bigr)-\prod \mu_i^2.$$</p>
+<p><strong>Mode of a Distribution</strong></p>
+<p>The <strong>mode</strong> of a distribution is the value with the highest probability mass or density:</p>
+<p>$$\mathbf{x^*}= \arg \max_{\mathbf{x}} p(\mathbf{x}).$$</p>
+<p>For multimodal distributions, the mode may not be unique.</p>
+<h2 id="bayes-rule">Bayes&rsquo; Rule<a hidden class="anchor" aria-hidden="true" href="#bayes-rule">#</a></h2>
+<h3 id="bayes-rule-and-with-extra-conditioning">Bayes&rsquo; Rule, and with Extra Conditioning<a hidden class="anchor" aria-hidden="true" href="#bayes-rule-and-with-extra-conditioning">#</a></h3>
+<p>$$P({ A=a}|{ B=b})  = \frac{P({ B=a}|{ A=b})P({ A=a})}{P({ B=b})}.$$</p>
+<p>$$P({ A=a}|{ B=b}, { C=c}) = \frac{P({ B=b}|{ A=a}, { C=c})P({ A=a} \mid { C=c})}{P({ B=b} \mid { C=c})}.$$</p>
+<p>The term ${p(A)}$ represents what we know about the possible values of ${A}$ before observing any data; this is the <strong>prior distribution</strong>. (If ${A}$ has ${K}$ possible values, then ${p(A)}$ is a vector of ${K}$ probabilities summing to ${1}$.) The term ${p(B \mid A = a)}$ represents the distribution over possible outcomes of ${B}$ if ${A = a}$; this is the <strong>observation distribution</strong>. Evaluated at the observed ${b}$, the function ${p(B = b \mid A = a)}$ is called the <strong>likelihood</strong>.</p>
+<p>Multiplying the prior ${p(A = a)}$ by the likelihood ${p(B = b \mid A = a)}$ for each ${a}$ gives the unnormalized joint distribution ${p(A = a, B = b)}$. Normalizing by dividing by ${p(B = b)}$ (the <strong>marginal likelihood</strong>) gives:</p>
+<p>$$p(B = b) = \sum_{a&rsquo; \in \mathcal{A}} p(A = a&rsquo;) p(B = b \mid A = a&rsquo;) = \sum_{a&rsquo; \in \mathcal{A}} p(A = a&rsquo;, B = b).$$</p>
+<p><strong>Odds Form of Bayes&rsquo; Rule</strong></p>
+<p>$$\frac{P({ A}| { B})}{P({ A^c}| { B})} = \frac{P({ B}|{ A})}{P({ B}| { A^c})}\frac{P({ A})}{P({ A^c})}.$$</p>
+<p>The <em>posterior odds</em> of ${A}$ equal the <em>likelihood ratio</em> times the <em>prior odds</em>.</p>
+<h2 id="bernoulli-and-binomial-distributions">Bernoulli and Binomial Distributions<a hidden class="anchor" aria-hidden="true" href="#bernoulli-and-binomial-distributions">#</a></h2>
+<p>For an experiment tossing a coin with head probability ${0\leq\theta \leq 1}$, let ${Y = 1}$ denote heads and ${Y = 0}$ denote tails. So, ${p(Y=1)=\theta}$ and ${p(Y=0)=1-\theta}$. This is the <strong>Bernoulli distribution</strong>, written as:</p>
+<p>$$Y \sim Ber(\theta).$$</p>
+<p>The pmf is defined as:</p>
+<p>$$\text{Ber}(y \mid \theta) = \begin{cases} 1 - \theta &amp; \text{if } y = 0, \ \theta &amp; \text{if } y = 1 \end{cases}.$$</p>
+<p>It can also be written as:</p>
+<p>$$\text{Ber}(y \mid \theta) \triangleq \theta^y(1-\theta)^{1-y}.$$</p>
+<p>A Bernoulli trial is a special case of the <strong>Binomial distribution</strong>. Tossing a coin ${N}$ times gives a set of ${N}$ Bernoulli trials, denoted ${y_n \sim Ber(\cdot\mid\theta)}$. Let ${s = \sum_{n=1}^{N}\mathbb{I}(y_n = 1)}$ be the number of heads. Then, ${s}$ follows a binomial distribution:</p>
+<p>$$Bin(s \mid\theta,N) \triangleq \binom{N}{s}\theta^s(1-\theta)^{N-s}.$$</p>
+<p>When predicting a binary variable ${y \in {0, 1}}$ given inputs ${x \in X}$, we use a conditional distribution of the form:</p>
+<p>$$p(y|\mathbf{x},\theta) = Ber(y\mid f(\mathbf{x};\theta)).$$</p>
+<p>To ensure ${0\leq f(\mathbf{x};\theta)\leq1}$, we often write:</p>
+<p>$$p(y|\mathbf{x},\theta) = Ber(y\mid \sigma (f(\mathbf{x};\theta))).$$</p>
+<p>where ${\sigma(\cdot)}$ is the <strong>sigmoid</strong> (or logistic) function, defined as:</p>
+<p>$$\sigma(a) \triangleq \frac{1}{1+e^{-a}}= \frac{e^a}{1 + e^a}.$$</p>
+<p>Its inverse is the <strong>logit function</strong>:</p>
+<p>$$a = logit(p) =\sigma^{-1}(p) \triangleq \log\frac{p}{1-p}.$$</p>
+<p>Thus, the sigmoid transforms a function from ${\mathbb{R}}$ into a probability in ${[0,1]}$, while the logit transforms a probability into a real number.</p>
+<p>Some useful properties of these functions:</p>
+<p>$$\sigma(x) \triangleq \frac{1}{1 + e^{-x}} = \frac{e^x}{1 + e^x}.$$</p>
+<p>$$\frac{d}{dx} \sigma(x) = \sigma(x)(1 - \sigma(x)).$$</p>
+<p>$$1 - \sigma(x) = \sigma(-x).$$</p>
+<p>$$\sigma_+(x) \triangleq \log(1 + e^x) \triangleq \text{softplus}(x).$$</p>
+<p>$$\frac{d}{dx} \sigma_+(x) = \sigma(x).$$</p>
+<p>In particular, note an issue often encountered with activation functions: obtaining zero (or near zero) gradient during backpropagation.</p>
+<p>When ${x = 0}$:</p>
+<p>$$f(0) = \frac{1}{1 + e^0} = \frac{1}{2},$$</p>
+<p>$$f&rsquo;(0) = \frac{1}{2} \cdot \Bigl(1 - \frac{1}{2}\Bigr) = \frac{1}{4} = 0.25.$$</p>
+<p>When ${x \gg 0}$ (large positive):</p>
+<p>$$f(x) \to 1, \quad f&rsquo;(x) = 1 \cdot (1 - 1) = 0.$$</p>
+<p><strong>Gradient approaches 0.</strong></p>
+<p>When ${x \ll 0}$ (large negative):</p>
+<p>$$f(x) \to 0, \quad f&rsquo;(x) = 0 \cdot (1 - 0) = 0.$$</p>
+<p><strong>Gradient also approaches 0.</strong></p>
+<h2 id="categorical-and-multinomial-distributions">Categorical and Multinomial Distributions<a hidden class="anchor" aria-hidden="true" href="#categorical-and-multinomial-distributions">#</a></h2>
+<p>For more than 2 classes, the <strong>categorical distribution</strong> represents a distribution over a finite set of labels ${y \in {1,\dots,C}}$, generalizing the Bernoulli to ${C &gt; 2}$. Its pmf is:</p>
+<p>$$\text{Cat}(y \mid \theta) \triangleq \prod_{c=1}^{C} \theta_c^{\mathbb{I}(y=c)}.$$</p>
+<p>In other words, ${p(y=c \mid \theta)=\theta_c}$, where the parameters are constrained so that ${0\leq\theta_c\leq1}$.</p>
+<p>By converting ${y}$ into a <strong>one-hot vector</strong> with ${C}$ elements (e.g. for ${C=3}$, the classes are encoded as ${ (1,0,0) }$, ${ (0,1,0) }$, and ${ (0,0,1) }$), we can view a fair 6-sided die with outcomes:</p>
+<p>$$y \in {1, 2, 3, 4, 5, 6},$$</p>
+<p>with each face having equal probability:</p>
+<p>$$\theta = \bigl(\tfrac{1}{6}, \tfrac{1}{6}, \tfrac{1}{6}, \tfrac{1}{6}, \tfrac{1}{6}, \tfrac{1}{6}\bigr).$$</p>
+<p>If we roll a 3, the one-hot encoding is:</p>
+<p>$$(0, 0, 1, 0, 0, 0),$$</p>
+<p>and</p>
+<p>$$P(y = 3 \mid \theta) = \theta_3 = \tfrac{1}{6}.$$</p>
+<p>For a biased die with:</p>
+<p>$$\theta = (0.10, 0.15, 0.30, 0.20, 0.15, 0.10),$$</p>
+<p>the probability of rolling a 3 becomes:</p>
+<p>$$P(y = 3 \mid \theta) = \theta_3 = 0.30.$$</p>
+<p>The categorical distribution is a special case of the <strong>multinomial distribution</strong>. If we observe ${N}$ categorical trials, ${y_n \sim Cat(\cdot\mid\theta)}$ for ${n = 1,\dots,N}$, and define ${y_c = \sum_{n=1}^{N}\mathbb{I}(y_n = c)}$, then the vector ${\mathbf{y}}$ follows:</p>
+<p>$$\mathcal{M}(\mathbf{y} \mid N, \theta) \triangleq \binom{N}{y_1 \dots y_C} \prod_{c=1}^{C} \theta_c^{y_c}.$$</p>
+<p>In the conditional case, we can define:</p>
+<p>$$p(y \mid x, \theta) = \text{Cat}(y \mid f(x; \theta)),$$</p>
+<p>or equivalently:</p>
+<p>$$p(y \mid x, \theta) = \mathcal{M}(y \mid 1, f(x; \theta)),$$</p>
+<p>requiring that ${0 \leq f_c(x; \theta) \leq 1}$ and ${\sum_{c=1}^{C} f_c(x; \theta) = 1}$.</p>
+<p>To avoid forcing ${f}$ to directly predict a probability vector, it is common to pass its output into the <strong>softmax</strong> function (or <strong>multinomial logit</strong>), defined as:</p>
+<p>$$softmax(\mathbf{a})\triangleq \begin{bmatrix} \frac{e^{a_1}}{\sum_{c&rsquo;=1}^{C}e^{a_{c&rsquo;}}}, \dots, \frac{e^{a_C}}{\sum_{c&rsquo;=1}^{C}e^{a_{c&rsquo;}}} \end{bmatrix}.$$</p>
+<p>This converts ${\mathbb{R}^C}$ into a probability vector in ${[0,1]^C}$. One weakness is that if</p>
+<p>$$p_c=\frac{e^{a_c}}{Z(\mathbf{a})}=\frac{e^{a_c}}{\sum_{c&rsquo;=1}^{C}e^{a_{c&rsquo;}}},$$</p>
+<p>for logits ${\mathbf{a}=f(\mathbf{x},\theta)}$, then for extreme values like ${\mathbf{a}=(1000,1000,1000)}$ or ${\mathbf{a}=(-1000,-1000,-1000)}$, numerical issues (overflow or underflow) occur. To avoid this, we use the trick:</p>
+<p>$$\log\sum_{c&rsquo;=1}^{C}e^{a_{c&rsquo;}} = m +\log\sum_{c&rsquo;=1}^{C}e^{a_{c&rsquo;}-m},$$</p>
+<p>with ${m=\max_c a_c}$.</p>
+<p>Thus, we have:</p>
+<p>$$\begin{aligned} p(y=c|\mathbf{x}) &amp;= \frac{\exp(a_c-m)}{\sum_{c&rsquo;} \exp(a_{c&rsquo;}-m)} \ &amp;=e^{a_c-lse(\mathbf{a})}. \end{aligned}$$</p>
+<p>The loss for the softmax function is given by:</p>
+<p>$$J(\mathbf{W}; \mathbf{x}, \mathbf{y}) = - \sum_{i=1}^{N} \sum_{j=1}^{C} y_{ji} \log (a_{ji}),$$</p>
+<p>or equivalently:</p>
+<p>$$J(\mathbf{W}; \mathbf{x}, \mathbf{y}) = - \sum_{i=1}^{N} \sum_{j=1}^{C} y_{ji} \log \Bigl( \frac{\exp(\mathbf{W}_j^T \mathbf{x}<em>i)}{\sum</em>{k=1}^{C} \exp(\mathbf{W}_k^T \mathbf{x}_i)} \Bigr).$$</p>
+<p>For a single data point $({\mathbf{x}_i}, {\mathbf{y}_i})$, the loss is:</p>
+<p>$$J_i(\mathbf{W}) \triangleq J(\mathbf{W}; \mathbf{x}<em>i, \mathbf{y}<em>i) = - \sum</em>{j=1}^{C} y</em>{ji} \log \Bigl( \frac{\exp(\mathbf{W}_j^T \mathbf{x}<em>i)}{\sum</em>{k=1}^{C} \exp(\mathbf{W}_k^T \mathbf{x}_i)} \Bigr).$$</p>
+<p>Which can be rewritten as:</p>
+<p>$$J_i(\mathbf{W}) = - \sum_{j=1}^{C} y_{ji},\mathbf{W}_j^T \mathbf{x}<em>i + \log \Bigl( \sum</em>{k=1}^{C} \exp(\mathbf{W}_k^T \mathbf{x}_i) \Bigr).$$</p>
+<p>The gradient for each column ${j}$ is computed as:</p>
+<p>$$\frac{\partial J_i(\mathbf{W})}{\partial \mathbf{W}<em>j} = - y</em>{ji},\mathbf{x}_i + \frac{\exp(\mathbf{W}_j^T \mathbf{x}_i),\mathbf{x}<em>i}{\sum</em>{k=1}^{C} \exp(\mathbf{W}_k^T \mathbf{x}_i)}.$$</p>
+<p>This simplifies to:</p>
+<p>$$\frac{\partial J_i(\mathbf{W})}{\partial \mathbf{W}<em>j} = \mathbf{x}<em>i,(a</em>{ji} - y</em>{ji}),$$</p>
+<p>or equivalently:</p>
+<p>$$\frac{\partial J_i(\mathbf{W})}{\partial \mathbf{W}<em>j} = \mathbf{x}<em>i,e</em>{ji}, \quad \text{where } e</em>{ji} = a_{ji} - y_{ji}.$$</p>
+<p>Collecting for all columns, we have:</p>
+<p>$$\frac{\partial J_i(\mathbf{W})}{\partial \mathbf{W}} = \mathbf{x}<em>i,[e</em>{i1}, e_{i2}, \dots, e_{iC}] = \mathbf{x}_i,\mathbf{e}_i^T,$$</p>
+<p>and thus the full gradient is:</p>
+<p>$$\frac{\partial J(\mathbf{W})}{\partial \mathbf{W}} = \sum_{i=1}^{N} \mathbf{x}_i,\mathbf{e}_i^T = \mathbf{x},\mathbf{E}^T,$$</p>
+<p>where ${\mathbf{E} = \mathbf{A} - \mathbf{Y}}$. This compact gradient expression is useful for <strong>Batch Gradient Descent</strong>, <strong>Stochastic Gradient Descent (SGD)</strong>, and <strong>Mini-batch Gradient Descent</strong>.</p>
+<p>Assuming SGD, the weight matrix ${\mathbf{W}}$ is updated as:</p>
+<p>$$\mathbf{W} = \mathbf{W} + \eta,\mathbf{x}_i,(y_i - a_i)^T.$$</p>
+<h2 id="univariate-gaussian-normal-distribution">Univariate Gaussian (Normal) Distribution<a hidden class="anchor" aria-hidden="true" href="#univariate-gaussian-normal-distribution">#</a></h2>
+<p><img alt="image" loading="lazy" src="/posts/univariate-models/img/gauss_plot.png"></p>
+<p>The cdf of the Gaussian is defined by:</p>
+<p>$$\phi(y;\mu,\sigma^2)\triangleq\int_{-\infty}^{y}\mathcal{N}(z,\mu,\sigma^2)dz.$$</p>
+<p>It can be implemented using:</p>
+<p>$$\phi(y;\mu,\sigma^2)=\tfrac{1}{2}\bigl[1+erf\bigl(\tfrac{z}{\sqrt{2}}\bigr)\bigr],$$</p>
+<p>where ${z=(y-\mu)/\sigma}$ and the <strong>error function</strong> is defined as:</p>
+<p>$$erf(u)\triangleq\frac{2}{\sqrt{\pi}}\int_{0}^{u}e^{-t}dt.$$</p>
+<p>The pdf of the Gaussian is given by:</p>
+<p>$$\mathcal{N}(y\mid\mu,\sigma^2)=\frac{1}{\sqrt{2\pi\sigma^2}},\exp!\Bigl(-\tfrac{1}{2\sigma^2}(y-\mu)^2\Bigr).$$</p>
+<p>The mean of the distribution is:</p>
+<p>$$\mathbb{E}[\mathcal{N}(\cdot\mid\mu,\sigma^2)]=\mu,$$</p>
+<p>and the standard deviation is:</p>
+<p>$$std[\mathcal{N}(\cdot\mid\mu,\sigma^2)]=\sigma.$$</p>
+<p>It is common to parameterize the Gaussian as a function of input variables to create a conditional density model of the form:</p>
+<p>$$p(y\mid\mathbf{x},\theta)=\mathcal{N}\Bigl(y\mid f_{\mu}(\mathbf{x};\theta),, f_{\sigma}(\mathbf{x};\theta)^2\Bigr),$$</p>
+<p>where ${f_{\mu}(\mathbf{x};\theta)\in \mathbb{R}}$ predicts the mean and ${f_{\sigma}(\mathbf{x};\theta)\in \mathbb{R}_+}$ predicts the variance.</p>
+<p>Assuming fixed variance independent of the input (homoscedastic regression) and a linear mean, we have:</p>
+<p>$$p(y\mid\mathbf{x},\theta)=\mathcal{N}\Bigl(y\mid \mathbf{W}^T\mathbf{x}+b,,\sigma^2\Bigr)$$</p>
+<p>with ${\theta=(\mathbf{W},b,\sigma^2)}$. If the variance depends on the input (heteroskedastic regression), then:</p>
+<p>$$p(y\mid\mathbf{x},\theta)=\mathcal{N}\Bigl(y\mid\mathbf{W}<em>{\mu}^T\mathbf{x}+b,\sigma</em>+\bigl(\mathbf{W}_\sigma^T\mathbf{x}\bigr)^2\Bigr)$$</p>
+<p>with $$\theta=(\mathbf{W}<em>\mu,\mathbf{W}</em>\sigma)$$, and $\sigma_+(x)$ being the softplus function mapping ${\mathbb{R}}$ to ${\mathbb{R}_+}$.</p>
+<p>When the variance approaches 0, the Gaussian becomes infinitely narrow:</p>
+<p>$$\lim_{\sigma\rightarrow0}\mathcal{N}(y\mid\mu,\sigma^2)\rightarrow\delta(y-\mu),$$</p>
+<p>where the Dirac delta function is defined as:</p>
+<p>$$\delta(x) = \begin{cases} +\infty &amp; \text{if } x=0, \ 0 &amp; \text{if } x \neq 0 \end{cases},$$</p>
+<p>and similarly,</p>
+<p>$$\delta_y(x) = \begin{cases} +\infty &amp; \text{if } x=y, \ 0 &amp; \text{if } x \neq y \end{cases},$$</p>
+<p>with ${\delta_y(x) = \delta(x-y)}$.</p>
+<h2 id="some-common-other-univariate-distributions">Some Common Other Univariate Distributions<a hidden class="anchor" aria-hidden="true" href="#some-common-other-univariate-distributions">#</a></h2>
+<p><img alt="image" loading="lazy" src="/posts/univariate-models/img/common-uni-distribution.png"></p>
+<h3 id="student-t-distribution">Student t Distribution<a hidden class="anchor" aria-hidden="true" href="#student-t-distribution">#</a></h3>
+<p>$$\mathcal{T}(y \mid \mu, \sigma^2, \nu) ;\propto; \Bigl[ 1 + \tfrac{1}{\nu} \Bigl(\tfrac{y - \mu}{\sigma}\Bigr)^2 \Bigr]^{-\tfrac{\nu + 1}{2}}.$$</p>
+<p>Its properties include:</p>
+<p>$$\text{mean} = \mu,\quad \text{mode} = \mu,\quad \text{var} = \frac{\nu \sigma^2}{\nu - 2},$$</p>
+<p>with the mean defined if ${\nu &gt; 1}$ and the variance if ${\nu &gt; 2}$. For ${\nu \gg 5}$, it approaches a Gaussian. A common choice is ${\nu = 4}$.</p>
+<h3 id="cauchy-distribution">Cauchy Distribution<a hidden class="anchor" aria-hidden="true" href="#cauchy-distribution">#</a></h3>
+<p>For ${\nu=1}$, the Student t distribution becomes the <strong>Cauchy</strong> (or <strong>Lorentz</strong>) distribution:</p>
+<p>$$\mathcal{C}(x\mid\mu,\gamma)=\frac{1}{\pi,\gamma} \Bigl[1+\Bigl(\tfrac{x-\mu}{\gamma}\Bigr)^2\Bigr]^{-1}.$$</p>
+<p>The <strong>Half Cauchy</strong> distribution (with ${\mu=0}$) is defined as:</p>
+<p>$$\mathcal{C}_+(x\mid \gamma) ;\triangleq; \tfrac{2}{\pi,\gamma} \Bigl[1+\Bigl(\tfrac{x}{\gamma}\Bigr)^2\Bigr]^{-1}.$$</p>
+<h3 id="laplace-distribution">Laplace Distribution<a hidden class="anchor" aria-hidden="true" href="#laplace-distribution">#</a></h3>
+<p>Also known as the <strong>double-sided exponential</strong> distribution, the Laplace distribution has the pdf:</p>
+<p>$$\text{Laplace}(y \mid \mu, b) ;\triangleq; \frac{1}{2b} \exp\Bigl(-\tfrac{|y-\mu|}{b}\Bigr),$$</p>
+<p>with properties:</p>
+<p>$$\text{mean} = \mu,\quad \text{mode} = \mu,\quad \text{var} = 2b^2.$$</p>
+<p><img alt="image" loading="lazy" src="/posts/univariate-models/img/beta-gamma-distribution.png"></p>
+<h3 id="beta-distribution">Beta Distribution<a hidden class="anchor" aria-hidden="true" href="#beta-distribution">#</a></h3>
+<p>The <strong>Beta distribution</strong> is supported on the interval ${[0,1]}$ and is defined as:</p>
+<p>$$\text{Beta}(x \mid a, b) ;=; \frac{1}{B(a, b)},x^{,a-1},\bigl(1 - x\bigr)^{b-1},$$</p>
+<p>where the <strong>beta function</strong> is:</p>
+<p>$$B(a, b) ;\triangleq; \frac{\Gamma(a),\Gamma(b)}{\Gamma(a + b)},$$</p>
+<p>and the Gamma function is defined as:</p>
+<p>$$\Gamma(a) ;\triangleq; \int_{0}^{\infty} x^{,a-1}e^{-x},dx.$$</p>
+<p>For ${a = b = 1}$, this is the uniform distribution. When both ${a}$ and ${b}$ are less than 1, the distribution is bimodal with spikes at ${0}$ and ${1}$; when both are greater than 1, it is unimodal. Its properties include:</p>
+<p>$$\text{mean} = \frac{a}{,a+b,}, \quad \text{mode} = \frac{a-1}{,a+b-2,}, \quad \text{var} = \frac{ab}{(,a+b,)^2(,a+b+1,)}.$$</p>
+<h2 id="transformation-of-random-variables">Transformation of Random Variables<a hidden class="anchor" aria-hidden="true" href="#transformation-of-random-variables">#</a></h2>
+<p>Suppose ${\mathbf{x}\sim p()}$ is a random variable, and ${\mathbf{y}=f(\mathbf{x})}$ is a transformation of it. We discuss how to compute ${p(\mathbf{y})}$.</p>
+<h3 id="discrete-case">Discrete Case<a hidden class="anchor" aria-hidden="true" href="#discrete-case">#</a></h3>
+<p>For discrete r.v&rsquo;s, the pmf of ${\mathbf{y}}$ is obtained by summing the pmf of all ${\mathbf{x}}$ such that ${f(\mathbf{x})=\mathbf{y}}$:</p>
+<p>$$p_{\mathbf{y}}(\mathbf{y})=\sum_{\mathbf{x}:,f(\mathbf{x})=\mathbf{y}}p_{\mathbf{x}}(\mathbf{x}).$$</p>
+<p>For example, if ${f(\mathbf{x})=1}$ when ${\mathbf{x}}$ is even and ${0}$ otherwise, and ${\mathbf{x}}$ is uniformly distributed over ${{1,2,\dots,10}}$, then ${p_{\mathbf{y}}(1)=0.5}$ and ${p_{\mathbf{y}}(0)=0.5}$.</p>
+<h3 id="continuous-case">Continuous Case<a hidden class="anchor" aria-hidden="true" href="#continuous-case">#</a></h3>
+<p>For continuous r.v&rsquo;s, we work with the cdf:</p>
+<p>$$P_{\mathbf{y}}(\mathbf{y})=Pr(Y\leq \mathbf{y}) = Pr\Bigl(f(\mathbf{x}) \leq \mathbf{y}\Bigr)=Pr\Bigl(\mathbf{x} \in {x \mid f(x) \leq \mathbf{y}}\Bigr).$$</p>
+<p>If ${f}$ is invertible, differentiating the cdf yields the pdf; if not, Monte Carlo approximation may be used.</p>
+<h3 id="invertible-transformation-bijections-or-one-to-one">Invertible Transformation (Bijections or One-to-One)<a hidden class="anchor" aria-hidden="true" href="#invertible-transformation-bijections-or-one-to-one">#</a></h3>
+<p><img alt="image" loading="lazy" src="/posts/univariate-models/img/bijection.png"></p>
+<p>For a monotonic (and hence invertible) function, if ${x\sim Uni(0,1)}$ and ${y=f(x)=2x+1}$, then for general ${p_x(x)}$ and any monotonic ${f:\mathbb{R}\rightarrow\mathbb{R}}$, let ${g=f^{-1}}$ with ${y=f(x)}$ and ${x=g(y)}$. Then:</p>
+<p>$$P_y(y)=Pr!\bigl(f(X)\leq y\bigr)=Pr!\bigl(X\leq f^{-1}(y)\bigr)=P_x!\bigl(f^{-1}(y)\bigr)=P_x!\bigl(g(y)\bigr).$$</p>
+<p>Differentiating gives:</p>
+<p>$$p_y(y) \triangleq \frac{d}{dy}P_y(y)=p_x!\bigl(g(y)\bigr),\Bigl|\frac{dx}{dy}\Bigr|.$$</p>
+<p>For multivariate cases, if ${f:\mathbb{R}^n\rightarrow\mathbb{R}^n}$ is invertible with inverse ${g}$, then:</p>
+<p>$$p_y(\mathbf{y})=p_x(\mathbf{x}),\Bigl|\det\Bigl[\mathbf{J}_g(\mathbf{y})\Bigr]\Bigr|,$$</p>
+<p>where ${\mathbf{J}_g(\mathbf{y})=\frac{d\mathbf{g}(\mathbf{y})}{,d\mathbf{y}^T}}$ is the Jacobian.</p>
+<h3 id="convolution-theorem">Convolution Theorem<a hidden class="anchor" aria-hidden="true" href="#convolution-theorem">#</a></h3>
+<p><img alt="image" loading="lazy" src="/posts/univariate-models/img/convolution.png"></p>
+<p>For ${Y=X_1+X_2}$ with independent r.v&rsquo;s ${X_1}$ and ${X_2}$, in the discrete case:</p>
+<p>$$p(Y=y)=\sum_{x=-\infty}^{\infty}p(X_1=x),p(X_2=y-x).$$</p>
+<p>In the continuous case:</p>
+<p>$$p(y)=\int p_1(x_1),p_2(y-x_1),dx_1.$$</p>
+<p>This is written as:</p>
+<p>$$p = p_1 \circledast p_2,$$</p>
+<p>where ${\circledast}$ is the <strong>convolution</strong> operator.</p>
+<h3 id="central-limit-theorem">Central Limit Theorem<a hidden class="anchor" aria-hidden="true" href="#central-limit-theorem">#</a></h3>
+<p><img alt="image" loading="lazy" src="/posts/univariate-models/img/CLT.png"></p>
+<p>The Central Limit Theorem states that the sum of ${N}$ independent and identically distributed (i.i.d.) random variables (regardless of their original distribution) will approximate a Gaussian distribution as ${N}$ increases.</p>
+<h3 id="monte-carlo-approximation">Monte Carlo Approximation<a hidden class="anchor" aria-hidden="true" href="#monte-carlo-approximation">#</a></h3>
+<p><img alt="image" loading="lazy" src="/posts/univariate-models/img/monte-carlo.png"></p>
+<p>Suppose ${\mathbf{x}}$ is a random variable and ${\mathbf{y}=f(\mathbf{x})}$. When computing ${p(\mathbf{y})}$ directly is difficult, one can approximate it by drawing a large number of samples from ${p(x)}$, computing ${y_s=f(x_s)}$, and forming the empirical distribution:</p>
+<p>$$p_{\mathbf{y}}(y) \triangleq \frac{1}{N_s} ,\sum_{s=1}^{N_s} \delta!\bigl(y - y_s\bigr).$$</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://nguyentuss.github.io/tags/ai/">AI</a></li>
+      <li><a href="https://nguyentuss.github.io/tags/machine_learning/">Machine_Learning</a></li>
+      <li><a href="https://nguyentuss.github.io/tags/%23probability/">#Probability</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="https://nguyentuss.github.io/">My New Hugo Site</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

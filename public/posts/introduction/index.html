@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Introduction | My New Hugo Site</title>
+<meta name="keywords" content="AI, Machine_Learning, #Introduction">
+<meta name="description" content="Welcome to Hugo Theme Stack">
+<meta name="author" content="">
+<link rel="canonical" href="https://nguyentuss.github.io/posts/introduction/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.6da9a63d25a9608bca2f7f907a030e887a7dd3c3f3918e4cc113129361414bda.css" integrity="sha256-bammPSWpYIvKL3&#43;QegMOiHp908PzkY5MwRMSk2FBS9o=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://nguyentuss.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://nguyentuss.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://nguyentuss.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://nguyentuss.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://nguyentuss.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://nguyentuss.github.io/posts/introduction/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+          delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+          ],
+          throwOnError : false
+        });
+    });
+</script>
+
+
+<meta property="og:url" content="https://nguyentuss.github.io/posts/introduction/">
+  <meta property="og:site_name" content="My New Hugo Site">
+  <meta property="og:title" content="Introduction">
+  <meta property="og:description" content="Welcome to Hugo Theme Stack">
+  <meta property="og:locale" content="en-us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-03-11T10:17:26+07:00">
+    <meta property="article:modified_time" content="2025-03-11T10:17:26+07:00">
+    <meta property="article:tag" content="AI">
+    <meta property="article:tag" content="Machine_Learning">
+    <meta property="article:tag" content="#Introduction">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Introduction">
+<meta name="twitter:description" content="Welcome to Hugo Theme Stack">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://nguyentuss.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Introduction",
+      "item": "https://nguyentuss.github.io/posts/introduction/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Introduction",
+  "name": "Introduction",
+  "description": "Welcome to Hugo Theme Stack",
+  "keywords": [
+    "AI", "Machine_Learning", "#Introduction"
+  ],
+  "articleBody": " Supervised Learning The task $T$ is to learn a mapping $f$ from $x \\in X$ to $y \\in Y$. The $x$ are also called the $\\mathbf{features}$. The output $y$ is called the $\\mathbf{label}$. The experience $E$ is given in the form of a set of $N$ input-output pairs $\\mathcal{D} = {(x_n,y_n)},; n = 1 \\rightarrow N$ called the $\\textbf{training set}$ (with $N$ as the $\\textbf{sample size}$). The performance $P$ depends on the type of output we want to predict.\nClassification In a classification problem, the output space is a set of $C$ labels called $\\textbf{classes}$, $Y = {1,2,…,C}$. The problem of predicting the class label given an input is called $\\textbf{pattern recognition}$. The goal of supervised learning in a classification problem is to predict the label. A common way to measure performance on this task is by the $\\textbf{misclassification rate}$.\n$$\\mathcal{L}(\\boldsymbol{\\theta}) \\triangleq \\frac{1}{N} \\sum_{n=1}^{N} \\mathbb{I}\\left(y_n \\neq f(x_n; \\boldsymbol{\\theta})\\right).$$\nHere, $\\mathbb{I}(e)$ is the indicator function that returns 1 if the condition is true and 0 otherwise. We can also use the notation $\\textbf{loss function}$ $l(y,\\hat{y})$:\n$$\\mathcal{L}(\\boldsymbol{\\theta}) \\triangleq \\frac{1}{N} \\sum_{n=1}^{N} \\ell\\left(y_n, f(x_n; \\boldsymbol{\\theta})\\right).$$\nRegression In regression, the output $y \\in \\mathbb{R}$ is a real value instead of a discrete label $y \\in {1,…,C}$. A common choice for the loss function is the quadratic loss, or $\\ell_2$ loss:\n$$\\ell_2(y,\\hat{y}) = (y - \\hat{y})^2.$$\nThis penalizes large residuals $y-\\hat{y}$. The empirical risk when using quadratic loss is equal to the $\\textbf{Mean Squared Error (MSE)}$:\n$$MSE(\\boldsymbol{\\theta})=\\frac{1}{N} \\sum_{n=1}^{N}(y_n-f(x_n;\\boldsymbol{\\theta}))^2.$$\nAn example of a regression model for 1D data is the $\\textbf{linear regression}$ model:\n$$f(x;\\boldsymbol{\\theta})=b+wx.$$\nFor multiple input features, we can write:\n$$f(\\mathbf{x};\\boldsymbol{\\theta})=b+w_1x_1+\\cdots+w_Dx_D=b+\\mathbf{w}^T\\mathbf{x}.$$\nWe can improve the fit by using a $\\textbf{Polynomial regression}$ model with degree $\\mathcal{D}$:\n$$f(x;\\mathbf{w})=\\mathbf{w}^T\\phi(x),$$\nwhere $\\phi(x)=[1,x,x^2,\\dots,x^D]$ is the feature vector derived from the input.\nOverfitting The empirical risk (training loss function) is given by:\n$$\\mathcal{L}(\\boldsymbol{\\theta}; \\mathcal{D}{\\text{train}}) = \\frac{1}{|\\mathcal{D}{\\text{train}}|} \\sum_{(\\mathbf{x,y}) \\in \\mathcal{D}_{\\text{train}}} \\ell(y, f(x; \\boldsymbol{\\theta})).$$\nThe difference $\\mathcal{L}( \\boldsymbol{\\theta};p^)-\\mathcal{L}(\\boldsymbol{\\theta};\\mathcal{D}_{\\text{train}})$ is called the $\\textbf{generalization gap}$. If a model has a large generalization gap (i.e., low empirical risk but high population risk), it is a sign that it is overfitting. In practice we do not know $p^$, so we partition the data into a training set and a $\\textbf{test set}$ to approximate the population risk using the $\\textbf{test risk}$:\n$$\\mathcal{L}(\\boldsymbol{\\theta}; \\mathcal{D}{\\text{test}}) = \\frac{1}{|\\mathcal{D}{\\text{test}}|} \\sum_{(\\mathbf{x,y}) \\in \\mathcal{D}_{\\text{test}}} \\ell(y, f(x; \\boldsymbol{\\theta})).$$\nWe can drive the training loss function to zero by increasing the degree $\\mathcal{D}$, but this may increase the testing loss function. A model that fits the training data too closely is said to be $\\textbf{overfitting}$, while a model that is too simple and does not capture the underlying structure is said to be $\\textbf{underfitting}$.\nUnsupervised Learning In supervised learning, we assume that each input $x$ in the training set has a corresponding target $y$, and our goal is to learn the input-output mapping. In contrast, unsupervised learning deals with data that has no output labels; the dataset is simply $\\mathcal{D} = {x_n : n = 1,\\dots,N}$. Unsupervised learning focuses on modeling the underlying structure of the data by fitting an unconditional model $p(x)$, rather than a conditional model $p(y|x)$.\nUnsupervised learning avoids the need for large labeled datasets, which can be time-consuming and expensive to collect, and instead finds patterns, structures, or groupings in the data based on inherent similarities or relationships.\nClustering A simple example of unsupervised learning is clustering, where the goal is to partition the input data into regions that contain similar points.\nSelf-supervised Learning $\\textbf{Self-supervised learning}$ automatically generates $\\textbf{labels}$ from $\\textbf{unlabeled data}$. For example, one may learn to predict a color image from its grayscale version, or mask out words in a sentence and predict them from the surrounding context. In this setting, a predictor such as\n$$\\hat{x}_1 = f(x_2;\\boldsymbol{\\theta})$$\n(where $x_2$ is the observed input and $\\hat{x}_1$ is the predicted output) learns useful features from the data that can be leveraged in standard supervised tasks.\nReinforcement Learning In reinforcement learning, an agent learns how to interact with its environment. For example, a bot playing Mario learns to interact with the game world by moving left or right and jumping when encountering obstacles. (Click to see the detail)\nPreprocessing Discrete Input Data One-hot Encoding For categorical features, we often convert them into numerical values using $\\textbf{one-hot encoding}$. For a categorical variable $x$ with $K$ possible values, one-hot encoding is defined as:\n$$\\text{one-hot}(x) = [\\mathbb{I}(x=1), \\dots, \\mathbb{I}(x=K)].$$\nFor example, if $x$ represents one of three colors (red, green, blue), then:\none-hot(red) = $[1,0,0]$ one-hot(green) = $[0,1,0]$ one-hot(blue) = $[0,0,1]$. Feature Crosses To capture interactions between categorical features, we often create composite features. Suppose we want to predict the fuel efficiency of a vehicle based on two categorical variables:\n$x_1$: The type of car (SUV, Truck, Family car). $x_2$: The country of origin (USA, Japan). Using one-hot encoding, we represent these variables as:\n$$\\phi(x) = [1, I(x_1 = S), I(x_1 = T), I(x_1 = F), I(x_2 = U), I(x_2 = J)].$$\nHowever, this encoding does not capture interactions. To capture interactions between car type and country, we define composite features:\n$$\\text{(Car type, Country)} = {(S, U), (T, U), (F, U), (S, J), (T, J), (F, J)}.$$\nThe new model becomes:\n$$f(x; w) = w^T \\phi(x).$$\nExpressing this in full:\n$$\\begin{split}f(x; w) = w_0 + w_1 I(x_1 = S) + w_2 I(x_1 = T) + w_3 I(x_1 = F) \\ + w_4 I(x_2 = U) + w_5 I(x_2 = J) + w_6 I(x_1 = S, x_2 = U) \\ + w_7 I(x_1 = T, x_2 = U) + w_8 I(x_1 = F, x_2 = U) \\ + w_9 I(x_1 = S, x_2 = J) + w_{10} I(x_1 = T, x_2 = J) + w_{11} I(x_1 = F, x_2 = J).\\end{split}$$\nSummary This post introduces key concepts in machine learning—from supervised learning (both classification and regression) to unsupervised, self-supervised, and reinforcement learning. It also covers preprocessing techniques for categorical data such as one-hot encoding and feature crosses. The provided equations are formatted in a single-line style for consistency in this Markdown document.\n",
+  "wordCount" : "995",
+  "inLanguage": "en",
+  "datePublished": "2025-03-11T10:17:26+07:00",
+  "dateModified": "2025-03-11T10:17:26+07:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://nguyentuss.github.io/posts/introduction/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://nguyentuss.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://nguyentuss.github.io/" accesskey="h" title="My New Hugo Site (Alt + H)">My New Hugo Site</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Introduction
+    </h1>
+    <div class="post-description">
+      Welcome to Hugo Theme Stack
+    </div>
+    <div class="post-meta"><span title='2025-03-11 10:17:26 +0700 +07'>March 11, 2025</span>
+
+</div>
+  </header> 
+  <div class="post-content"><hr>
+<h2 id="supervised-learning">Supervised Learning<a hidden class="anchor" aria-hidden="true" href="#supervised-learning">#</a></h2>
+<p>The task $T$ is to learn a mapping $f$ from $x \in X$ to $y \in Y$. The $x$ are also called the $\mathbf{features}$. The output $y$ is called the $\mathbf{label}$. The experience $E$ is given in the form of a set of $N$ input-output pairs $\mathcal{D} = {(x_n,y_n)},; n = 1 \rightarrow N$ called the $\textbf{training set}$ (with $N$ as the $\textbf{sample size}$). The performance $P$ depends on the type of output we want to predict.</p>
+<h2 id="classification">Classification<a hidden class="anchor" aria-hidden="true" href="#classification">#</a></h2>
+<p>In a classification problem, the output space is a set of $C$ labels called $\textbf{classes}$, $Y = {1,2,&hellip;,C}$. The problem of predicting the class label given an input is called $\textbf{pattern recognition}$. The goal of supervised learning in a classification problem is to predict the label. A common way to measure performance on this task is by the $\textbf{misclassification rate}$.</p>
+<p>$$\mathcal{L}(\boldsymbol{\theta}) \triangleq \frac{1}{N} \sum_{n=1}^{N} \mathbb{I}\left(y_n \neq f(x_n; \boldsymbol{\theta})\right).$$</p>
+<p>Here, $\mathbb{I}(e)$ is the indicator function that returns 1 if the condition is true and 0 otherwise. We can also use the notation $\textbf{loss function}$ $l(y,\hat{y})$:</p>
+<p>$$\mathcal{L}(\boldsymbol{\theta}) \triangleq \frac{1}{N} \sum_{n=1}^{N} \ell\left(y_n,  f(x_n; \boldsymbol{\theta})\right).$$</p>
+<h2 id="regression">Regression<a hidden class="anchor" aria-hidden="true" href="#regression">#</a></h2>
+<p>In regression, the output $y \in \mathbb{R}$ is a real value instead of a discrete label $y \in {1,&hellip;,C}$. A common choice for the loss function is the quadratic loss, or $\ell_2$ loss:</p>
+<p>$$\ell_2(y,\hat{y}) = (y - \hat{y})^2.$$</p>
+<p>This penalizes large residuals $y-\hat{y}$. The empirical risk when using quadratic loss is equal to the $\textbf{Mean Squared Error (MSE)}$:</p>
+<p>$$MSE(\boldsymbol{\theta})=\frac{1}{N} \sum_{n=1}^{N}(y_n-f(x_n;\boldsymbol{\theta}))^2.$$</p>
+<p><img alt="image" loading="lazy" src="/posts/introduction/img/linear_regression.png"></p>
+<p>An example of a regression model for 1D data is the $\textbf{linear regression}$ model:</p>
+<p>$$f(x;\boldsymbol{\theta})=b+wx.$$</p>
+<p>For multiple input features, we can write:</p>
+<p>$$f(\mathbf{x};\boldsymbol{\theta})=b+w_1x_1+\cdots+w_Dx_D=b+\mathbf{w}^T\mathbf{x}.$$</p>
+<p><img alt="image" loading="lazy" src="/posts/introduction/img/polynomial_regression.png"></p>
+<p>We can improve the fit by using a $\textbf{Polynomial regression}$ model with degree $\mathcal{D}$:</p>
+<p>$$f(x;\mathbf{w})=\mathbf{w}^T\phi(x),$$</p>
+<p>where $\phi(x)=[1,x,x^2,\dots,x^D]$ is the feature vector derived from the input.</p>
+<h2 id="overfitting">Overfitting<a hidden class="anchor" aria-hidden="true" href="#overfitting">#</a></h2>
+<p>The empirical risk (training loss function) is given by:</p>
+<p>$$\mathcal{L}(\boldsymbol{\theta}; \mathcal{D}<em>{\text{train}}) = \frac{1}{|\mathcal{D}</em>{\text{train}}|} \sum_{(\mathbf{x,y}) \in \mathcal{D}_{\text{train}}} \ell(y, f(x; \boldsymbol{\theta})).$$</p>
+<p>The difference $\mathcal{L}( \boldsymbol{\theta};p^<em>)-\mathcal{L}(\boldsymbol{\theta};\mathcal{D}_{\text{train}})$ is called the $\textbf{generalization gap}$. If a model has a large generalization gap (i.e., low empirical risk but high population risk), it is a sign that it is overfitting. In practice we do not know $p^</em>$, so we partition the data into a training set and a $\textbf{test set}$ to approximate the population risk using the $\textbf{test risk}$:</p>
+<p>$$\mathcal{L}(\boldsymbol{\theta}; \mathcal{D}<em>{\text{test}}) = \frac{1}{|\mathcal{D}</em>{\text{test}}|} \sum_{(\mathbf{x,y}) \in \mathcal{D}_{\text{test}}} \ell(y, f(x; \boldsymbol{\theta})).$$</p>
+<p><img alt="image" loading="lazy" src="/posts/introduction/img/overfitting.png"></p>
+<p>We can drive the training loss function to zero by increasing the degree $\mathcal{D}$, but this may increase the testing loss function. A model that fits the training data too closely is said to be $\textbf{overfitting}$, while a model that is too simple and does not capture the underlying structure is said to be $\textbf{underfitting}$.</p>
+<h2 id="unsupervised-learning">Unsupervised Learning<a hidden class="anchor" aria-hidden="true" href="#unsupervised-learning">#</a></h2>
+<p>In supervised learning, we assume that each input $x$ in the training set has a corresponding target $y$, and our goal is to learn the input-output mapping. In contrast, unsupervised learning deals with data that has no output labels; the dataset is simply $\mathcal{D} = {x_n : n = 1,\dots,N}$. Unsupervised learning focuses on modeling the underlying structure of the data by fitting an unconditional model $p(x)$, rather than a conditional model $p(y|x)$.</p>
+<p>Unsupervised learning avoids the need for large labeled datasets, which can be time-consuming and expensive to collect, and instead finds patterns, structures, or groupings in the data based on inherent similarities or relationships.</p>
+<h2 id="clustering">Clustering<a hidden class="anchor" aria-hidden="true" href="#clustering">#</a></h2>
+<p><img alt="image" loading="lazy" src="/posts/introduction/img/clustering.png"></p>
+<p>A simple example of unsupervised learning is clustering, where the goal is to partition the input data into regions that contain similar points.</p>
+<h2 id="self-supervised-learning">Self-supervised Learning<a hidden class="anchor" aria-hidden="true" href="#self-supervised-learning">#</a></h2>
+<p>$\textbf{Self-supervised learning}$ automatically generates $\textbf{labels}$ from $\textbf{unlabeled data}$. For example, one may learn to predict a color image from its grayscale version, or mask out words in a sentence and predict them from the surrounding context. In this setting, a predictor such as</p>
+<p>$$\hat{x}_1 = f(x_2;\boldsymbol{\theta})$$</p>
+<p>(where $x_2$ is the observed input and $\hat{x}_1$ is the predicted output) learns useful features from the data that can be leveraged in standard supervised tasks.</p>
+<h2 id="reinforcement-learning">Reinforcement Learning<a hidden class="anchor" aria-hidden="true" href="#reinforcement-learning">#</a></h2>
+<p>In reinforcement learning, an agent learns how to interact with its environment. For example, a bot playing Mario learns to interact with the game world by moving left or right and jumping when encountering obstacles. (<a href="https://pytorch.org/tutorials/intermediate/mario_rl_tutorial.html">Click to see the detail</a>)</p>
+<p><img alt="image" loading="lazy" src="/posts/introduction/img/3typeML.png"></p>
+<h2 id="preprocessing-discrete-input-data">Preprocessing Discrete Input Data<a hidden class="anchor" aria-hidden="true" href="#preprocessing-discrete-input-data">#</a></h2>
+<h3 id="one-hot-encoding">One-hot Encoding<a hidden class="anchor" aria-hidden="true" href="#one-hot-encoding">#</a></h3>
+<p>For categorical features, we often convert them into numerical values using $\textbf{one-hot encoding}$. For a categorical variable $x$ with $K$ possible values, one-hot encoding is defined as:</p>
+<p>$$\text{one-hot}(x) = [\mathbb{I}(x=1), \dots, \mathbb{I}(x=K)].$$</p>
+<p>For example, if $x$ represents one of three colors (red, green, blue), then:</p>
+<ul>
+<li>one-hot(red) = $[1,0,0]$</li>
+<li>one-hot(green) = $[0,1,0]$</li>
+<li>one-hot(blue) = $[0,0,1]$.</li>
+</ul>
+<h3 id="feature-crosses">Feature Crosses<a hidden class="anchor" aria-hidden="true" href="#feature-crosses">#</a></h3>
+<p>To capture interactions between categorical features, we often create composite features. Suppose we want to predict the fuel efficiency of a vehicle based on two categorical variables:</p>
+<ul>
+<li>$x_1$: The type of car (SUV, Truck, Family car).</li>
+<li>$x_2$: The country of origin (USA, Japan).</li>
+</ul>
+<p>Using one-hot encoding, we represent these variables as:</p>
+<p>$$\phi(x) = [1, I(x_1 = S), I(x_1 = T), I(x_1 = F), I(x_2 = U), I(x_2 = J)].$$</p>
+<p>However, this encoding does not capture interactions. To capture interactions between car type and country, we define composite features:</p>
+<p>$$\text{(Car type, Country)} = {(S, U), (T, U), (F, U), (S, J), (T, J), (F, J)}.$$</p>
+<p>The new model becomes:</p>
+<p>$$f(x; w) = w^T \phi(x).$$</p>
+<p>Expressing this in full:</p>
+<p>$$\begin{split}f(x; w) = w_0 + w_1 I(x_1 = S) + w_2 I(x_1 = T) + w_3 I(x_1 = F) \ + w_4 I(x_2 = U) + w_5 I(x_2 = J) + w_6 I(x_1 = S, x_2 = U) \ + w_7 I(x_1 = T, x_2 = U) + w_8 I(x_1 = F, x_2 = U) \ + w_9 I(x_1 = S, x_2 = J) + w_{10} I(x_1 = T, x_2 = J) + w_{11} I(x_1 = F, x_2 = J).\end{split}$$</p>
+<h2 id="summary">Summary<a hidden class="anchor" aria-hidden="true" href="#summary">#</a></h2>
+<p>This post introduces key concepts in machine learning—from supervised learning (both classification and regression) to unsupervised, self-supervised, and reinforcement learning. It also covers preprocessing techniques for categorical data such as one-hot encoding and feature crosses. The provided equations are formatted in a single-line style for consistency in this Markdown document.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://nguyentuss.github.io/tags/ai/">AI</a></li>
+      <li><a href="https://nguyentuss.github.io/tags/machine_learning/">Machine_Learning</a></li>
+      <li><a href="https://nguyentuss.github.io/tags/%23introduction/">#Introduction</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="https://nguyentuss.github.io/">My New Hugo Site</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

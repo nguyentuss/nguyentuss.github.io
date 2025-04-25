@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Histogram of Oriented Gradients (HOG) | My New Hugo Site</title>
+<meta name="keywords" content="#CV, #Machine_Learning, #extract_image">
+<meta name="description" content="
+There are many different methods in computer vision. When it comes to image classification, we can apply families of CNN models such as Inception Net, MobileNet, ResNet, DenseNet, AlexNet, U-Net, and so on. For object detection, models like YOLO, SSD, Faster R-CNN, Fast R-CNN, and Mask R-CNN are commonly used.
+All the above algorithms belong to the deep learning category. However, before the deep learning boom, what algorithms were typically used in image processing? Today, we will explore a classic yet highly effective algorithm in image processing: HOG (Histogram of Oriented Gradients).
+This algorithm generates features description for the purpose of object detection. From an image, two key matrices are extracted to store essential information: gradient magnitude and gradient orientation. By combining these two pieces of information into a histogram distribution—where the gradient magnitude is counted in bins according to gradient orientation—we obtain a HOG feature vector that represents the histogram. This is the basic concept, but in practice, the algorithm is more complex. The HOG vector is computed over local regions, similar to how CNNs operate, followed by local normalization to standardize measurements. Finally, the overall HOG vector is aggregated from all local vectors.">
+<meta name="author" content="">
+<link rel="canonical" href="https://nguyentuss.github.io/posts/hog/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.6da9a63d25a9608bca2f7f907a030e887a7dd3c3f3918e4cc113129361414bda.css" integrity="sha256-bammPSWpYIvKL3&#43;QegMOiHp908PzkY5MwRMSk2FBS9o=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://nguyentuss.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://nguyentuss.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://nguyentuss.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://nguyentuss.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://nguyentuss.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://nguyentuss.github.io/posts/hog/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+          delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+          ],
+          throwOnError : false
+        });
+    });
+</script>
+
+
+<meta property="og:url" content="https://nguyentuss.github.io/posts/hog/">
+  <meta property="og:site_name" content="My New Hugo Site">
+  <meta property="og:title" content="Histogram of Oriented Gradients (HOG)">
+  <meta property="og:description" content=" There are many different methods in computer vision. When it comes to image classification, we can apply families of CNN models such as Inception Net, MobileNet, ResNet, DenseNet, AlexNet, U-Net, and so on. For object detection, models like YOLO, SSD, Faster R-CNN, Fast R-CNN, and Mask R-CNN are commonly used. All the above algorithms belong to the deep learning category. However, before the deep learning boom, what algorithms were typically used in image processing? Today, we will explore a classic yet highly effective algorithm in image processing: HOG (Histogram of Oriented Gradients). This algorithm generates features description for the purpose of object detection. From an image, two key matrices are extracted to store essential information: gradient magnitude and gradient orientation. By combining these two pieces of information into a histogram distribution—where the gradient magnitude is counted in bins according to gradient orientation—we obtain a HOG feature vector that represents the histogram. This is the basic concept, but in practice, the algorithm is more complex. The HOG vector is computed over local regions, similar to how CNNs operate, followed by local normalization to standardize measurements. Finally, the overall HOG vector is aggregated from all local vectors.">
+  <meta property="og:locale" content="en-us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-03-11T10:49:42+07:00">
+    <meta property="article:modified_time" content="2025-03-11T10:49:42+07:00">
+    <meta property="article:tag" content="#CV">
+    <meta property="article:tag" content="#Machine_Learning">
+    <meta property="article:tag" content="#Extract_image">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Histogram of Oriented Gradients (HOG)">
+<meta name="twitter:description" content="
+There are many different methods in computer vision. When it comes to image classification, we can apply families of CNN models such as Inception Net, MobileNet, ResNet, DenseNet, AlexNet, U-Net, and so on. For object detection, models like YOLO, SSD, Faster R-CNN, Fast R-CNN, and Mask R-CNN are commonly used.
+All the above algorithms belong to the deep learning category. However, before the deep learning boom, what algorithms were typically used in image processing? Today, we will explore a classic yet highly effective algorithm in image processing: HOG (Histogram of Oriented Gradients).
+This algorithm generates features description for the purpose of object detection. From an image, two key matrices are extracted to store essential information: gradient magnitude and gradient orientation. By combining these two pieces of information into a histogram distribution—where the gradient magnitude is counted in bins according to gradient orientation—we obtain a HOG feature vector that represents the histogram. This is the basic concept, but in practice, the algorithm is more complex. The HOG vector is computed over local regions, similar to how CNNs operate, followed by local normalization to standardize measurements. Finally, the overall HOG vector is aggregated from all local vectors.">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://nguyentuss.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Histogram of Oriented Gradients (HOG)",
+      "item": "https://nguyentuss.github.io/posts/hog/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Histogram of Oriented Gradients (HOG)",
+  "name": "Histogram of Oriented Gradients (HOG)",
+  "description": " There are many different methods in computer vision. When it comes to image classification, we can apply families of CNN models such as Inception Net, MobileNet, ResNet, DenseNet, AlexNet, U-Net, and so on. For object detection, models like YOLO, SSD, Faster R-CNN, Fast R-CNN, and Mask R-CNN are commonly used. All the above algorithms belong to the deep learning category. However, before the deep learning boom, what algorithms were typically used in image processing? Today, we will explore a classic yet highly effective algorithm in image processing: HOG (Histogram of Oriented Gradients). This algorithm generates features description for the purpose of object detection. From an image, two key matrices are extracted to store essential information: gradient magnitude and gradient orientation. By combining these two pieces of information into a histogram distribution—where the gradient magnitude is counted in bins according to gradient orientation—we obtain a HOG feature vector that represents the histogram. This is the basic concept, but in practice, the algorithm is more complex. The HOG vector is computed over local regions, similar to how CNNs operate, followed by local normalization to standardize measurements. Finally, the overall HOG vector is aggregated from all local vectors.\n",
+  "keywords": [
+    "#CV", "#Machine_Learning", "#extract_image"
+  ],
+  "articleBody": " There are many different methods in computer vision. When it comes to image classification, we can apply families of CNN models such as Inception Net, MobileNet, ResNet, DenseNet, AlexNet, U-Net, and so on. For object detection, models like YOLO, SSD, Faster R-CNN, Fast R-CNN, and Mask R-CNN are commonly used. All the above algorithms belong to the deep learning category. However, before the deep learning boom, what algorithms were typically used in image processing? Today, we will explore a classic yet highly effective algorithm in image processing: HOG (Histogram of Oriented Gradients). This algorithm generates features description for the purpose of object detection. From an image, two key matrices are extracted to store essential information: gradient magnitude and gradient orientation. By combining these two pieces of information into a histogram distribution—where the gradient magnitude is counted in bins according to gradient orientation—we obtain a HOG feature vector that represents the histogram. This is the basic concept, but in practice, the algorithm is more complex. The HOG vector is computed over local regions, similar to how CNNs operate, followed by local normalization to standardize measurements. Finally, the overall HOG vector is aggregated from all local vectors.\nHOG Application There are some applications using HOG and which have high accuracy.\nHuman detection: This application first represents in Histogram of Orient Gradients for Human Detection). HOG can detect one or more people walking on a street in an image. Face detection: HOG is a good algorithm on this problem. It has the ability to represent the main contours of the face based on the direction and gradient magnitude through vectors for each cell as shown bellow Recognizing Various Objects: In addition, there are many cases of object recognition in static images, such as vehicles, traffic signals, animals, or even moving images extracted from videos.\nCreating Features for Image Classification Tasks: Many image classification tasks are built on small-sized datasets, where using deep learning networks may not always be effective and can lead to overfitting. The reason is that a small amount of data is often insufficient for training a model to accurately recognize object features. In such cases, using HOG (Histogram of Oriented Gradients) for feature extraction can yield better results. Specifically, I will also demonstrate an example at the end.\nTerminology Before diving into the HOG algorithm, I will first explain the terms used:\nFeature Descriptor: A feature descriptor is a representation of an image or an image patch that simplifies the image by extracting useful information and throwing away extraneous information.\nHistogram: A histogram is a graphical representation of the distribution of color intensities across different value ranges.\nGradient: The derivative or vector of color intensity changes that helps detect movement directions of objects in an image.\nLocal cell: A local cell is a small region in an image. In the HOG algorithm, an image is divided into multiple cells based on a square grid. Each cell is called a local cell.\nLocal portion: A local region is a section of the image where feature extraction is performed. In the algorithm, this local region is referred to as a “block.”\nLocal normalization: Normalization is performed within a local region. It is usually divided by either L2 norm or L1 norm. The purpose of normalization is to standardize color intensity values, making the distribution more consistent. This will be explained in more detail in the algorithm section.\nGradient direction: The gradient direction represents the angle between the gradient vector components $x$ and $y$, which helps determine the direction of intensity change or, in other words, the direction of shading in the image. Given that $G_x$​ and $G_y$​ are the gradient values along the $x$ and $y$ axes of the image, the gradient direction is calculated as:\n$$\\theta = \\arctan\\left(\\frac{G_y}{G_x}\\right)$$\nGradient magnitude: The magnitude of the gradient represents the length of the vector combining the gradients along the $x$ and $y$ directions. The histogram representation of this vector is used to describe the HOG features. The gradient magnitude is computed as:\n$$∣G∣=\\sqrt{G_x^2+G_y^2}$$​\nDefinition The key point in the working principle of HOG is that the local shape of an object can be described using two matrices: the gradient magnitude matrix and the gradient direction matrix. First, the image is divided into a grid of square cells, where many adjacent or overlapping local regions are identified. These regions are similar to the local image regions used in convolutional operations in CNNs. The main purpose of HOG feature extraction is to capture the local shape and edge information of an image. It works by computing the gradients (i.e., the changes in intensity) and then building histograms of these gradients over small, localized regions. This process allows the algorithm to effectively describe the appearance and structure of objects in an image, such as the contours and silhouettes of people.\nA local region consists of multiple local cells (in HOG, there are 4 cells) with a size of 8×8 pixels Then, a histogram of gradient magnitudes is computed for each local cell. The HOG descriptor is formed by concatenating the four histogram vectors corresponding to each cell into a single combined vector. To improve accuracy, each value in the histogram vector of a local region is normalized using either L2-norm or L1-norm. This normalization aims to enhance invariance to lighting and shading changes. The HOG descriptor has several key advantages over other feature descriptors:\nSince it operates on local cells, it is invariant to geometric transformations and brightness changes. Furthermore, as Dalal and Triggs discovered, applying local region normalization allows the descriptor to ignore minor body movements in pedestrian detection, as long as the person maintains an upright posture. This makes HOG particularly well-suited for human detection in images. How HOG Works (Step-by-step) Preprocessing In every image processing algorithm, the first step is preprocessing image. As mentioned earlier HOG feature descriptor used for pedestrian detection is calculated on a $64×128$ patch of an image. Of course, an image may be of any size. Typically, patches at multiple scales are analyzed at many image locations. The only constraint is that the patches being analyzed have a fixed aspect ratio. In our case, the patches need to have an aspect ratio of $1:2$. For example, they can be $100×200$, $128×256$, or $1000×2000$ but not $101×205$.\nWe need to adjust the image to grayscale\nimport numpy as np import cv2 import matplotlib.pyplot as plt #Read the image img = cv2.imread(\"./img/bolt.jpg\") # Load BGR format if img is None: print(\"Image not loaded. Check the file path and file integrity.\") else: # Convert BGR to RGB for proper color display in matplotlib img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB) #Convert to grayscale gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) print(img_rgb.shape) print(gray.shape) #Show the images plt.figure(figsize=(8,6)) plt.subplot(1,2,1) plt.imshow(img_rgb) plt.title(\"Original\") plt.subplot(1,2,2) plt.imshow(gray) plt.title(\"Gray Image\") plt.show() Compute the gradient To calculate a HOG descriptor, we need to first calculate the horizontal and vertical gradients, the common way to compute is using the Sobel operator\nHorizontal gradient $$G_x = \\begin{bmatrix} -1 \u0026 0 \u0026 2 \\ -2 \u0026 0 \u0026 2 \\ -1 \u0026 0 \u0026 1 \\end{bmatrix}*\\textbf{I}$$ Vertical gradient $$G_y = \\begin{bmatrix} -1 \u0026 -2 \u0026 -1 \\ 0 \u0026 0 \u0026 0 \\ 1 \u0026 2 \u0026 1 \\end{bmatrix}\\textbf{I}$$ Where $$ be a convolution between a filter and an image Gradient magnitude $$ G=\\sqrt{G_x^2+G_y^2}$$ Gradient direction $$\\theta=\\arctan\\Bigl(\\frac{G_y}{G_x}\\Bigl)$$ #Calculate gradient gx,gy gx = cv2.Sobel(gray, cv2.CV_32F, dx = 0, dy = 1, ksize=3) gy = cv2.Sobel(gray, cv2.CV_32F, dx = 1, dy = 0, ksize=3) print('gray shape: {}'.format(gray.shape)) print('gx shape: {}'.format(gx.shape)) print('gy shape: {}'.format(gy.shape)) # Compute magnitude and direction gradient g, theta = cv2.cartToPolar(gx, gy, angleInDegrees=True) print('gradient format: {}'.format(g.shape)) print('theta format: {}'.format(theta.shape)) The output\ngray shape: (480, 640) gx shape: (480, 640) gy shape: (480, 640) gradient format: (480, 640) theta format: (480, 640) Visualize the plot\nplt.figure(figsize=(20, 10)) plt.subplot(1, 4, 1) plt.title('gradient of x') plt.imshow(gx) plt.subplot(1, 4, 2) plt.title('gradient of y') plt.imshow(gy) plt.subplot(1, 4, 3) plt.title('Magnitute of gradient') plt.imshow(g) plt.subplot(1, 4, 4) plt.title('Direction of gradient') plt.imshow(theta) plt.show() Calculate Histogram of Gradients in 8 x 8 cells In this step, the image is divided into $8\\times8$ cells and a histogram of gradients is calculated for each $8\\times8$. One of the important reasons to use a feature description to describe a patch of an image is that it provided a compact representation. An $8\\times8$ patch contain $8\\times8\\times3=192$ pixels. The gradient of this patch contains $2$ values (magnitude and direction) per pixel which adds up to $8\\times8\\times2 = 128$ numbers include $64$ values of gradient magnitude and $64$ values of gradient direction. By the end of this section we will see how these $128$ numbers are represented using a 9-bin histogram which can be stored as an array of $9$ numbers. Not only is the representation more compact, calculating a histogram over a patch makes this representation more robust to noise. Individual gradients may have noise, but a histogram over $8\\times8$ patch makes the representation much less sensitive to noise.\nBut why $8\\times8$ patch ? Why not $32\\times32$ ? It is a design choice informed by the scale of features we are looking for. HOG was used for pedestrian detection initially. $8\\times8$ cells in a photo of a pedestrian scaled to $64\\times128$ are big enough to capture interesting features ( e.g. the face, the top of the head etc.). On the right, we see the raw numbers representing the gradients in the 8×8 cells with one minor difference — the angles are between $0$ and $180$ degrees instead of $0$ to $360$ degrees. These are called “unsigned” gradients because a gradient and it’s negative are represented by the same numbers. In other words, a gradient arrow and the one $180$ degrees opposite to it are considered the same. But, why not use the $0$ – $360$ degrees ?\nEmpirically it has been shown that unsigned gradients work better than signed gradients for pedestrian detection. Some implementations of HOG will allow you to specify if you want to use signed gradients.\nThe next step is to create a histogram of gradients in these $8\\times8$ cells. The histogram contains 9 bins corresponding to angles $0, 20, 40 … 160$. The following figure illustrates the process. We are looking at magnitude and direction of the gradient of the same $8\\times8$ patch as in the previous figure. A bin is selected based on the direction, and the vote (the value that goes into the bin) is selected based on the magnitude. Let’s first focus on the pixel encircled in blue. It has an angle (direction) of $80$ degrees and magnitude of $2$. So it adds $2$ to the $5^{th}$ bin. The gradient at the pixel encircled using red has an angle of $10$ degrees and magnitude of $4$. Since $10$ degrees is half way between $0$ and $20$, the vote by the pixel splits evenly into the two bins.\nThe approach when gradient direction doesn’t fall in any bin(like an example 10 degrees), we will use linear interpolation to divided the gradients to 2 continuous bins which gradient direction falls. Obviously, the gradient direction equal $x$ map to the gradient magnitude $y$, where $x \\in [x_0,x_1]$. It’s will fall to a point between $(l-1)$ bin and $l$ bin. So that we write $$ x_{l-1}=\\frac{x_1-x}{x_1-x_0}*y, x_{l}=\\frac{x-x_0}{x_1-x_0}*y $$\nTake a sum of each gradient magnitude belong in one bins from vector bins and we collect Histogram of Gradient\n16×16 Block Normalization In the previous step, we created a histogram based on the gradient of the image. Gradients of an image are sensitive to overall lighting. If you make the image darker by dividing all pixel values by 2, the gradient magnitude will change by half, and therefore the histogram values will change by half.\nIdeally, we want our descriptor to be independent of lighting variations. In other words, we would like to “normalize” the histogram so they are not affected by lighting variations.\nLet’s say we have an RGB color vector $[128, 64, 32]$. This length of this vector is $\\sqrt{128^2+64^2+32^2}\\approx 146.64$. This is call L2 norm. Dividing each element of this vector give us a normalized vector $[0.87,0.43,0.22]$\nNow consider another vector in which the elements are twice the value of the first vector $2 \\times [ 128, 64, 32 ] = [ 256, 128, 64 ]$. You can work it out yourself to see that normalizing $[ 256, 128, 64 ]$ will result in $[0.87, 0.43, 0.22]$, which is the same as the normalized version of the original RGB vector. You can see that normalizing a vector removes the scale.\nThe normalization will be processed in a block size $2\\times 2$ cell (each cell size $8\\times8$ pixel). So we will have 4 vector histogram size $1\\times9$, concatenate vectors and we will have one vector histogram size $1\\times36$ and then normalized in this vector. Sliding the window will process the same as convolution in CNN with step_size = 8 pixels.\nCompute HOG features vector After normalizing the histogram vectors, we then concatenate these $1×36$ vectors into a single large vector. This becomes the HOG vector representing the entire image.\nFor example, suppose our image is divided into a grid of squares of size $16×8$ (each cell is $8×8$). The HOG computation moves $7$ steps horizontally and $15$ steps vertically. Thus, there are a total of $7×15 = 105$ patches, each corresponding to one $36$-dimensional histogram vector. Consequently, the final HOG vector will have $105×36 = 3780$ dimensions. This is a relatively large vector, which allows it to capture the image’s features quite effectively.\nVisualizing Histogram of Oriented Gradients The HOG descriptor of an image patch is usually visualized by plotting the 9×1 normalized histograms in the 8×8 cells. See image on the side. You will notice that dominant direction of the histogram captures the shape of the person, especially around the torso and legs.\nPractice We will use opencv to calculate the HOG features\nprint(\"Original {}\".format(img.shape)) cell_size = (8,8) # h x w pixels block_size = (2,2) # h x w cells nbins = 9 # number of bins in Histogram # winSize = the size of the image region (or window) that will be used by the HOG (Histogram of Oriented Gradients) descriptor winSize = (img.shape[1]// cell_size[1] * cell_size[1], img.shape[0] // cell_size[0] * cell_size[0]) # blockSize = the size compute in pixels blockSize = (block_size[1] * cell_size[1], block_size[0] * cell_size[0]) # blockStride = how far (in pixels) the detection window moves from one block to the next. blockStride = cell_size print(\"winSize\",winSize) print(\"blockSize\",block_size) print(\"blockStride\",blockStride) hog = cv2.HOGDescriptor(_winSize=winSize,_blockSize=blockSize,_blockStride=blockStride,_cellSize=cell_size,_nbins=9) # size of cell grid (from pixel -\u003e cell) n_cell = (winSize[0]//cell_size[0],winSize[1]//cell_size[1]) print(\"n_cell\",n_cell) hog_feature = hog.compute(img).reshape(n_cell[0] - block_size[0] + 1,n_cell[1] - block_size[1] + 1 ,block_size[0],block_size[1],nbins).transpose(1, 0, 2 , 3 , 4) print(\"hog feature\", hog_feature.shape) and the results\nOriginal (395, 634, 3) winSize (632, 392) blockSize (2, 2) blockStride (8, 8) n_cell (79, 49) hog feature (48, 78, 2, 2, 9) Note: Don’t like the order of the .shape, opencv use the order width x height (instead height x width).\nWe can visualize HOG distribution\nfrom skimage import exposure from skimage import feature import cv2 import matplotlib.pyplot as plt (H, hogImage) = feature.hog(gray, orientations=9, pixels_per_cell=(8, 8), cells_per_block=(2, 2), transform_sqrt=True, block_norm=\"L2\", visualize=True) hogImage = exposure.rescale_intensity(hogImage, out_range=(0, 255)) hogImage = hogImage.astype(\"uint8\") plt.imshow(hogImage) Application in HOG Human Detection To detect human in image or also video, we can use a pre-trained SVM (Support Vector Machine) model that makes predictions based on features extracted by the HOG (Histogram of Oriented Gradients) algorithm.\nImport lib from skimage.feature import hog from skimage.transform import pyramid_gaussian from skimage.io import imread import joblib from sklearn.preprocessing import LabelEncoder from sklearn.svm import LinearSVC from sklearn.metrics import classification_report, accuracy_score from sklearn.model_selection import train_test_split from skimage import color from imutils.object_detection import non_max_suppression import imutils import numpy as np import cv2 import argparse import cv2 import os import glob from PIL import Image # This will be used to read/modify images (can be done via OpenCV too) from numpy import * Define path to image base_path_test = \"../data/human-and-non-human/test_set/test_set\" # path for test base_path_train = \"../data/dataset\" # path for train # join the path pos_im_path = os.path.join(base_path_train, \"positive\") neg_im_path = os.path.join(base_path_train, \"negative\") #define negative image for SVM training pos_im_path_test = os.path.join(base_path_test, \"humans\") # for test data neg_im_path_test = os.path.join(base_path_test, \"non-humans\") # Check if there not exist path if not os.path.exists(pos_im_path): print(f\"Error: Path does not exist - {os.path.abspath(pos_im_path)}\") if not os.path.exists(neg_im_path): print(f\"Error: Path does not exist - {os.path.abspath(neg_im_path)}\") if not os.path.exists(pos_im_path_test): print(f\"Error: Path does not exist - {os.path.abspath(pos_im_path_test)}\") if not os.path.exists(neg_im_path_test): print(f\"Error: Path does not exist - {os.path.abspath(neg_im_path_test)}\") # Take the image in that path pos_im_listing = os.listdir(pos_im_path) neg_im_listing = os.listdir(neg_im_path) pos_im_listing_test = os.listdir(pos_im_path_test) neg_im_listing_test = os.listdir(neg_im_path_test) num_pos_samples = size(pos_im_listing) # simply states the total no. of images num_neg_samples = size(neg_im_listing) num_pos_test = size(pos_im_listing_test) num_neg_test = size(neg_im_listing_test) print(num_pos_samples) # prints the number value of the no.of samples in positive dataset print(num_neg_samples) print(num_pos_test) print(num_neg_test) data = [] labels = [] Compute the HOG features and label them # Putting label into positive image winSize = (64, 128) blockSize = (16, 16) blockStride = (8, 8) cellSize = (8, 8) nbins = 9 hog = cv2.HOGDescriptor(winSize, blockSize, blockStride, cellSize, nbins) for file in pos_im_listing: img_path = os.path.join(pos_im_path, file) try: img = Image.open(img_path).convert(\"RGB\") # Open the file # Convert into NumPy array img = np.array(img) # Convert RGB to BGR (for OpenCV compatibility) img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR) # Resize to standard HOG size (64x128) to ensure consistency img = cv2.resize(img, (64, 128)) #Convert to grayscale gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) fd = hog.compute(gray).flatten() # Must change into 1D array (because fd return a multi-dimensional vector) if fd.shape[0] != 3780: # Expected size for 64x128 image print(f\"Skipping {file} due to incorrect HOG feature shape: {fd.shape}\") continue # Skip this sample data.append(fd) labels.append(1) print(f\"Processed training data (positive): {file}\") except Exception as e: print(f\"Skipping {file} (Error: {e})\") # Putting label into negative image for file in neg_im_listing: img_path = os.path.join(neg_im_path, file) try: img = Image.open(img_path).convert(\"RGB\") # Open the file # Convert into NumPy array img = np.array(img) # Convert RGB to BGR (for OpenCV compatibility) img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR) # Resize to standard HOG size (64x128) to ensure consistency img = cv2.resize(img, (64, 128)) #Convert to grayscale gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) fd = hog.compute(gray).flatten() # Must change into 1D array (because fd return a multi-dimensional vector) if fd.shape[0] != 3780: # Expected size for 64x128 image print(f\"Skipping {file} due to incorrect HOG feature shape: {fd.shape}\") continue # Skip this sample data.append(fd) labels.append(0) print(f\"Processed training data (negative): {file}\") except Exception as e: print(f\"Skipping {file} (Error: {e})\") ## Testing label data_test = [] label_test = [] for file in pos_im_listing_test: img_path = os.path.join(pos_im_path_test, file) try: img = Image.open(img_path).convert(\"RGB\") # Open the file # Convert into NumPy array img = np.array(img) # Convert RGB to BGR (for OpenCV compatibility) img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR) # Resize to standard HOG size (64x128) to ensure consistency img = cv2.resize(img, (64, 128)) #Convert to grayscale gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) # Create a base features (if don't add any parameter, opencv will understand to take a base parameter) fd = hog.compute(gray).flatten() # Must change into 1D array (because fd return a multi-dimensional vector) if fd.shape[0] != 3780: # Expected size for 64x128 image print(f\"Skipping {file} due to incorrect HOG feature shape: {fd.shape}\") continue # Skip this sample data_test.append(fd) label_test.append(1) print(f\"Processed test data (positive): {file}\") except Exception as e: print(f\"Skipping {file} (Error: {e})\") # Putting label into negative image for file in neg_im_listing_test: img_path = os.path.join(neg_im_path_test, file) try: img = Image.open(img_path).convert(\"RGB\") # Open the file # Convert into NumPy array img = np.array(img) # Convert RGB to BGR (for OpenCV compatibility) img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR) # Resize to standard HOG size (64x128) to ensure consistency img = cv2.resize(img, (64, 128)) #Convert to grayscale gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) fd = hog.compute(gray).flatten() # Must change into 1D array (because fd return a multi-dimensional vector) if fd.shape[0] != 3780: # Expected size for 64x128 image print(f\"Skipping {file} due to incorrect HOG feature shape: {fd.shape}\") continue # Skip this sample data_test.append(fd) label_test.append(0) print(f\"Processed test data (negative): {file}\") except Exception as e: print(f\"Skipping {file} (Error: {e})\") Model testing print(\" Constructing training/testing split...\") data = np.array(data, dtype=np.float32) labels = np.array(labels, dtype=np.int32) data_test = np.array(data_test, dtype=np.float32) label_test = np.array(label_test, dtype=np.int32) print(data_test.shape) print(label_test.shape) (trainData, testData, trainLabels, testLabels) = (data, data_test, labels, label_test) # Train the linear SVM print(\" Training Linear SVM classifier...\") model = LinearSVC() model.fit(trainData, trainLabels) # Evaluate the classifier print(\" Evaluating classifier on test data ...\") pred = model.predict(testData) # Calculate accuracy accuracy = accuracy_score(testLabels, pred) print(f\"Accuracy: {accuracy}\") print(\"Report\\n\",classification_report(testLabels, pred)) # Save the model joblib.dump(model, 'SVM_HOG.pkl') print(\"SVM Model save Successfully!\") Constructing training/testing split... (1554, 3780) (1554,) Training Linear SVM classifier... Evaluating classifier on test data ... Accuracy: 0.8294723294723295 Report precision recall f1-score support 0 0.84 0.98 0.91 1309 1 0.00 0.00 0.00 245 accuracy 0.83 1554 macro avg 0.42 0.49 0.45 1554 weighted avg 0.71 0.83 0.76 1554 SVM Model save Successfully! Load model # Load the model by joblib model = joblib.load(\"SVM_HOG.pkl\") print(\"SVM Model load Successfully!\") Sliding window # Sliding window technique def sliding_window(image, stepSize, windowSize): for y in range(0, image.shape[0] - windowSize[1], stepSize): for x in range(0, image.shape[1] - windowSize[0], stepSize): yield (x, y, image[y:y + windowSize[1], x:x + windowSize[0]]) Detect people on image down_scale=1.25 window_size=(64,128) output_folder = 'results/' # Detect for file in pos_im_listing_test: scale = 0 img_path = os.path.join(pos_im_path_test, file) try: img = Image.open(img_path).convert(\"RGB\") # Open the file img = np.array(img) img = cv2.resize(img, (300,200)) # Debug: Check the shape of the image if img.shape[2] != 3: print(\"Skip\") continue detections = [] # Using pyramid to detect the larger or smaller object (scaled the image purpose sliding window will detect different object with original cell) for resized in pyramid_gaussian(img, downscale=down_scale, channel_axis = -1): # pyramid_gaussian convert the image into [0, 1] # So we need to convert back to unit8 resized = (resized * 255).astype(np.uint8) # Convert float64 to uint8, go back [0, 255] for (x , y , window) in sliding_window(resized, stepSize = 8, windowSize = window_size): # You can adjust the stepsize # validation the window size if (window.shape[1] != window_size[0] or window.shape[0] != window_size[1]): continue # change the window to gray, easily compute HOG window = cv2.cvtColor(window, cv2.COLOR_RGB2GRAY) #Extract HOG features fds = hog.compute(window) fds = fds.reshape(1 , -1) # Make become 2d #prediction SVM pred = model.predict(fds) # print(pred) if pred == 1: if (model.decision_function(fds) \u003e 0.5): # add threshold back_to_original = down_scale ** scale # When we use pyramid to shrink the image, we will give the detection window back to original size detections.append((x*back_to_original , y*back_to_original , int(window_size[0]*back_to_original), int(window_size[1]*back_to_original),model.decision_function(fds))) scale += 1 # increase the scale clone = img.copy() rects = np.array([[x,y,x + w , y + h] for (x,y,w,h,_) in detections]) sc = [score[0] for (_,_,_,_,score) in detections] sc = np.array(sc) # Apply Non-Maximum Suppression (NMS) if detections exist final_detections = non_max_suppression(rects, probs=sc, overlapThresh=0.35) #Draw bouding boxes for (x , y , w , h) in final_detections: cv2.rectangle(img, (x , y), (x + w, y + h), (0, 255, 0), 2) # Convert BGR to RGB for display in matplotlib img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB) # write down the result output_path = os.path.join(output_folder, file) cv2.imwrite(output_path, img_rgb) print(f\"Processed {file} successful\" ) except Exception as e: print(f\"Skipping {file} (Error: {e})\") Before using NMS\nAfter using NMS\nDetect people on video from IPython.display import display, clear_output import yt_dlp import PIL.Image # Load YouTube video using pafy url = 'https://youtu.be/NyLF8nHIquM' # Get the best video stream ydl_opts = {} with yt_dlp.YoutubeDL(ydl_opts) as ydl: info_dict = ydl.extract_info(url, download=False) video_url = info_dict['url'] cap = cv2.VideoCapture(video_url) # Set Optimized Performance cv2.setUseOptimized(True) cv2.setNumThreads(4) # Adjust based on CPU # Process every nth frame (skip frames) frame_skip = 2 frame_count = 0 # Read and process frames while True: ret, frame = cap.read() if not ret: break if frame_count % frame_skip != 0: frame_count += 1 continue frame_count += 1 # Increment counter img = cv2.resize(frame, (512,512)) detections = [] scale = 0 # Using pyramid to detect the larger or smaller object (scaled the image purpose sliding window will detect different object with original cell) for resized in pyramid_gaussian(img, downscale=down_scale, channel_axis = -1): # pyramid_gaussian convert the image into [0, 1] # So we need to convert back to unit8 resized = (resized * 255).astype(np.uint8) # Convert float64 to uint8, go back [0, 255] for (x , y , window) in sliding_window(resized, stepSize = 8, windowSize = window_size): # You can adjust the stepsize # validation the window size if (window.shape[1] != window_size[0] or window.shape[0] != window_size[1]): continue # change the window to gray, easily compute HOG window = cv2.cvtColor(window, cv2.COLOR_RGB2GRAY) #Extract HOG features fds = hog.compute(window) fds = fds.reshape(1 , -1) # Make become 2d #prediction SVM pred = model.predict(fds) # print(pred) if pred == 1: if (model.decision_function(fds) \u003e 0.5): # add threshold back_to_original = down_scale ** scale # When we use pyramid to shrink the image, we will give the detection window back to original size detections.append((x*back_to_original , y*back_to_original , int(window_size[0]*back_to_original), int(window_size[1]*back_to_original),model.decision_function(fds))) scale += 1 # increase the scale clone = img.copy() rects = np.array([[x,y,x + w , y + h] for (x,y,w,h,_) in detections]) sc = [score[0] for (_,_,_,_,score) in detections] sc = np.array(sc) # Apply Non-Maximum Suppression (NMS) if detections exist final_detections = non_max_suppression(rects, probs=sc, overlapThresh=0.35) #Draw bouding boxes for (x , y , w , h) in final_detections: cv2.rectangle(img, (x , y), (x + w, y + h), (0, 255, 0), 2) cv2.putText(img, 'Person: {:.2f}'.format(np.max(sc)), (x - 2, y - 2), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1) # Convert BGR to RGB for display in matplotlib img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB) img_pil = PIL.Image.fromarray(img_rgb) # Clear previous frame and display new frame clear_output(wait=True) display(img_pil) # Add a small delay and allow stopping if cv2.waitKey(1) == 27: # Press ESC to exit break cap.release() cv2.destroyAllWindows() Summary In image processing, the Histogram of Oriented Gradients (HOG) algorithm is one of the powerful feature descriptors that encodes an image into a feature vector with a sufficiently large number of dimensions to effectively classify images. The algorithm works based on representing a histogram vector of gradient magnitudes according to bins of gradient directions applied to local image regions. Normalization methods are applied to make the aggregated histogram vector invariant to changes in image intensity, ensuring consistency for images with the same content but different brightness levels.\nIn object detection, the HOG algorithm proves to be highly effective, particularly in detecting people at various scales. Additionally, in some image classification cases where the dataset is small, large neural networks such as CNNs may not perform accurately due to the training set not covering all possible variations. In such situations, applying classical feature extraction methods like HOG can yield surprisingly good results while requiring fewer computational resources and lower costs.\nThis demonstrates that although HOG is an older method, it remains highly effective in many applications. Depending on the specific scenario, we may choose to use the HOG algorithm instead of necessarily applying a deep learning model with millions of parameters to achieve high accuracy.\nReference https://phamdinhkhanh.github.io/2019/11/22/HOG.html Object Detection for Dummies Part 1: Gradient Vector, HOG, and SS | Lil’Log Histogram of Oriented Gradients explained using OpenCV https://github.com/nguyentuss/CV (full code and data put in here) ",
+  "wordCount" : "4502",
+  "inLanguage": "en",
+  "datePublished": "2025-03-11T10:49:42+07:00",
+  "dateModified": "2025-03-11T10:49:42+07:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://nguyentuss.github.io/posts/hog/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://nguyentuss.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://nguyentuss.github.io/" accesskey="h" title="My New Hugo Site (Alt + H)">My New Hugo Site</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Histogram of Oriented Gradients (HOG)
+    </h1>
+    <div class="post-meta"><span title='2025-03-11 10:49:42 +0700 +07'>March 11, 2025</span>
+
+</div>
+  </header> 
+  <div class="post-content"><hr>
+<p>There are many different methods in computer vision. When it comes to image classification, we can apply families of CNN models such as Inception Net, MobileNet, ResNet, DenseNet, AlexNet, U-Net, and so on. For object detection, models like YOLO, SSD, Faster R-CNN, Fast R-CNN, and Mask R-CNN are commonly used.
+All the above algorithms belong to the deep learning category. However, before the deep learning boom, what algorithms were typically used in image processing? Today, we will explore a classic yet highly effective algorithm in image processing: <strong>HOG (Histogram of Oriented Gradients).</strong>
+This algorithm generates <strong>features description</strong> for the purpose of <strong>object detection</strong>. From an image, two key matrices are extracted to store essential information: <strong>gradient magnitude</strong> and <strong>gradient orientation</strong>. By combining these two pieces of information into a histogram distribution—where the gradient magnitude is counted in bins according to gradient orientation—we obtain a <strong>HOG feature vector</strong> that represents the histogram. This is the basic concept, but in practice, the algorithm is more complex. The <strong>HOG vector</strong> is computed over <strong>local regions</strong>, similar to how CNNs operate, followed by <strong>local normalization</strong> to standardize measurements. Finally, the overall <strong>HOG vector</strong> is aggregated from all local vectors.</p>
+<h2 id="hog-application">HOG Application<a hidden class="anchor" aria-hidden="true" href="#hog-application">#</a></h2>
+<p>There are some applications using HOG and which have high accuracy.</p>
+<ul>
+<li>
+<p><strong>Human detection</strong>: This application first represents in <a href="https://lear.inrialpes.fr/people/triggs/pubs/Dalal-cvpr05.pdf">Histogram of Orient Gradients for Human Detection</a>). HOG can detect one or more people walking on a street in an image.  <!-- raw HTML omitted -->
+<!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+</li>
+<li>
+<p><strong>Face detection</strong>: HOG is a good algorithm on this problem. It has the ability to represent the main contours of the face based on the direction and gradient magnitude through vectors for each cell as shown bellow <!-- raw HTML omitted -->
+<!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+</li>
+<li>
+<p><strong>Recognizing Various Objects:</strong> In addition, there are many cases of object recognition in static images, such as vehicles, traffic signals, animals, or even moving images extracted from videos.</p>
+</li>
+<li>
+<p><strong>Creating Features for Image Classification Tasks:</strong> Many image classification tasks are built on small-sized datasets, where using deep learning networks may not always be effective and can lead to overfitting. The reason is that a small amount of data is often insufficient for training a model to accurately recognize object features. In such cases, using HOG (Histogram of Oriented Gradients) for feature extraction can yield better results. Specifically, I will also demonstrate an example at the end.</p>
+</li>
+</ul>
+<h2 id="terminology">Terminology<a hidden class="anchor" aria-hidden="true" href="#terminology">#</a></h2>
+<p>Before diving into the HOG algorithm, I will first explain the terms used:</p>
+<ul>
+<li>
+<p><strong>Feature Descriptor:</strong> A feature descriptor is a representation of an image or an image patch that simplifies the image by extracting useful information and throwing away extraneous information.</p>
+</li>
+<li>
+<p><strong>Histogram:</strong> A histogram is a graphical representation of the distribution of color intensities across different value ranges.</p>
+</li>
+<li>
+<p><strong>Gradient:</strong> The derivative or vector of color intensity changes that helps detect movement directions of objects in an image.</p>
+</li>
+<li>
+<p><strong>Local cell:</strong> A local cell is a small region in an image. In the HOG algorithm, an image is divided into multiple cells based on a square grid. Each cell is called a local cell.</p>
+</li>
+<li>
+<p><strong>Local portion:</strong> A local region is a section of the image where feature extraction is performed. In the algorithm, this local region is referred to as a &ldquo;block.&rdquo;</p>
+</li>
+<li>
+<p><strong>Local normalization:</strong> Normalization is performed within a local region. It is usually divided by either L2 norm or L1 norm. The purpose of normalization is to standardize color intensity values, making the distribution more consistent. This will be explained in more detail in the algorithm section.</p>
+</li>
+<li>
+<p><strong>Gradient direction:</strong> The gradient direction represents the angle between the gradient vector components $x$ and $y$, which helps determine the direction of intensity change or, in other words, the direction of shading in the image. Given that $G_x$​ and $G_y$​ are the gradient values along the $x$ and $y$ axes of the image, the gradient direction is calculated as:</p>
+<p>$$\theta = \arctan\left(\frac{G_y}{G_x}\right)$$</p>
+</li>
+<li>
+<p><strong>Gradient magnitude:</strong> The magnitude of the gradient represents the length of the vector combining the gradients along the $x$ and $y$ directions. The histogram representation of this vector is used to describe the HOG features. The gradient magnitude is computed as:</p>
+<p>$$∣G∣=\sqrt{G_x^2+G_y^2}$$​</p>
+</li>
+</ul>
+<h2 id="definition">Definition<a hidden class="anchor" aria-hidden="true" href="#definition">#</a></h2>
+<p>The key point in the working principle of HOG is that the local shape of an object can be described using two matrices: the <strong>gradient magnitude matrix</strong> and the <strong>gradient direction matrix</strong>.
+First, the image is divided into a <strong>grid of square cells</strong>, where many adjacent or overlapping <strong>local regions</strong> are identified. These regions are similar to the <strong>local image regions</strong> used in convolutional operations in CNNs.
+The main purpose of HOG feature extraction is to capture the local shape and edge information of an image. It works by computing the gradients (i.e., the changes in intensity) and then building histograms of these gradients over small, localized regions. This process allows the algorithm to effectively describe the appearance and structure of objects in an image, such as the contours and silhouettes of people.</p>
+<ul>
+<li>A <strong>local region</strong> consists of multiple <strong>local cells</strong> (in HOG, there are <strong>4 cells</strong>) with a size of <strong>8×8 pixels</strong></li>
+<li>Then, a <strong>histogram of gradient magnitudes</strong> is computed for each <strong>local cell</strong>.</li>
+<li>The <strong>HOG descriptor</strong> is formed by <strong>concatenating</strong> the four histogram vectors corresponding to each cell into a single combined vector.</li>
+<li>To improve accuracy, each value in the <strong>histogram vector of a local region</strong> is <strong>normalized</strong> using either <strong>L2-norm</strong> or <strong>L1-norm</strong>.</li>
+<li>This normalization aims to enhance <strong>invariance</strong> to <strong>lighting and shading changes</strong>.</li>
+</ul>
+<!-- raw HTML omitted -->
+<p>The HOG descriptor has several key advantages over other feature descriptors:</p>
+<ul>
+<li>Since it operates on <strong>local cells</strong>, it is <strong>invariant</strong> to <strong>geometric transformations</strong> and <strong>brightness changes</strong>.</li>
+<li>Furthermore, as <strong>Dalal and Triggs</strong> discovered, applying <strong>local region normalization</strong> allows the descriptor to ignore minor <strong>body movements</strong> in pedestrian detection, <strong>as long as the person maintains an upright posture</strong>.</li>
+<li>This makes HOG particularly <strong>well-suited for human detection</strong> in images.</li>
+</ul>
+<h2 id="how-hog-works-step-by-step">How HOG Works (Step-by-step)<a hidden class="anchor" aria-hidden="true" href="#how-hog-works-step-by-step">#</a></h2>
+<h3 id="preprocessing">Preprocessing<a hidden class="anchor" aria-hidden="true" href="#preprocessing">#</a></h3>
+<p>In every image processing algorithm, the first step is preprocessing image. As mentioned earlier HOG feature descriptor used for pedestrian detection is calculated on a $64×128$ patch of an image. Of course, an image may be of any size. Typically, patches at multiple scales are analyzed at many image locations. The only constraint is that the patches being analyzed have a fixed aspect ratio. In our case, the patches need to have an aspect ratio of $1:2$. For example, they can be $100×200$, $128×256$, or $1000×2000$ but not $101×205$.</p>
+<!-- raw HTML omitted -->
+<p>We need to adjust the image to grayscale</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#f92672">import</span> numpy <span style="color:#66d9ef">as</span> np
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> cv2
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#66d9ef">as</span> plt
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#Read the image</span>
+</span></span><span style="display:flex;"><span>img <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>imread(<span style="color:#e6db74">&#34;./img/bolt.jpg&#34;</span>) <span style="color:#75715e"># Load BGR format</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> img <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;Image not loaded. Check the file path and file integrity.&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Convert BGR to RGB for proper color display in matplotlib</span>
+</span></span><span style="display:flex;"><span>    img_rgb <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>cvtColor(img, cv2<span style="color:#f92672">.</span>COLOR_BGR2RGB)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#Convert to grayscale</span>
+</span></span><span style="display:flex;"><span>    gray <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>cvtColor(img, cv2<span style="color:#f92672">.</span>COLOR_BGR2GRAY)
+</span></span><span style="display:flex;"><span>    print(img_rgb<span style="color:#f92672">.</span>shape)
+</span></span><span style="display:flex;"><span>    print(gray<span style="color:#f92672">.</span>shape)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#Show the images</span>
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>figure(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">8</span>,<span style="color:#ae81ff">6</span>))
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>imshow(img_rgb)
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#34;Original&#34;</span>)
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>imshow(gray)
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#34;Gray Image&#34;</span>)
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>show()
+</span></span></code></pre></div><p><img loading="lazy" src="/posts/hog/img/output1.png"></p>
+<h3 id="compute-the-gradient">Compute the gradient<a hidden class="anchor" aria-hidden="true" href="#compute-the-gradient">#</a></h3>
+<p>To calculate a HOG descriptor, we need to first calculate the horizontal and vertical gradients, the common way to compute is using the <strong>Sobel operator</strong></p>
+<ul>
+<li>Horizontal gradient
+$$G_x = \begin{bmatrix}
+-1 &amp; 0 &amp; 2 \
+-2 &amp; 0 &amp; 2 \
+-1 &amp; 0 &amp; 1
+\end{bmatrix}*\textbf{I}$$</li>
+<li>Vertical gradient
+$$G_y = \begin{bmatrix}
+-1 &amp; -2 &amp; -1 \
+0 &amp; 0 &amp; 0 \
+1 &amp; 2 &amp; 1
+\end{bmatrix}<em>\textbf{I}$$
+Where $</em>$ be a convolution between a filter and an image</li>
+<li>Gradient magnitude
+$$ G=\sqrt{G_x^2+G_y^2}$$</li>
+<li>Gradient direction
+$$\theta=\arctan\Bigl(\frac{G_y}{G_x}\Bigl)$$</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#75715e">#Calculate gradient gx,gy</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>gx <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>Sobel(gray, cv2<span style="color:#f92672">.</span>CV_32F, dx <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>, dy <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>, ksize<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>gy <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>Sobel(gray, cv2<span style="color:#f92672">.</span>CV_32F, dx <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>, dy <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>, ksize<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;gray shape: </span><span style="color:#e6db74">{}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(gray<span style="color:#f92672">.</span>shape))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;gx shape: </span><span style="color:#e6db74">{}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(gx<span style="color:#f92672">.</span>shape))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;gy shape: </span><span style="color:#e6db74">{}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(gy<span style="color:#f92672">.</span>shape))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Compute magnitude and direction gradient</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>g, theta <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>cartToPolar(gx, gy, angleInDegrees<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;gradient format: </span><span style="color:#e6db74">{}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(g<span style="color:#f92672">.</span>shape))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;theta format: </span><span style="color:#e6db74">{}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(theta<span style="color:#f92672">.</span>shape))
+</span></span></code></pre></div><p>The output</p>
+<pre tabindex="0"><code>gray shape: (480, 640)
+gx shape: (480, 640)
+gy shape: (480, 640)
+gradient format: (480, 640)
+theta format: (480, 640)
+</code></pre><p>Visualize the plot</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>figure(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">20</span>, <span style="color:#ae81ff">10</span>))
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;gradient of x&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>imshow(gx)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;gradient of y&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>imshow(gy)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">3</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;Magnitute of gradient&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>imshow(g)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">4</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;Direction of gradient&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>imshow(theta)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>show()
+</span></span></code></pre></div><p><img loading="lazy" src="/posts/hog/img/output2.png"></p>
+<h3 id="calculate-histogram-of-gradients-in-8-x-8-cells">Calculate Histogram of Gradients in 8 x 8 cells<a hidden class="anchor" aria-hidden="true" href="#calculate-histogram-of-gradients-in-8-x-8-cells">#</a></h3>
+<p>In this step, the image is divided into $8\times8$ cells and a histogram of gradients is calculated for each $8\times8$. One of the important reasons to use a feature description to describe a patch of an image is that it provided a compact representation. An $8\times8$ patch contain $8\times8\times3=192$ pixels. The gradient of this patch contains $2$ values (magnitude and direction) per pixel which adds up to $8\times8\times2 = 128$ numbers include $64$ values of gradient magnitude and $64$ values of gradient direction.
+By the end of this section we will see how these $128$ numbers are represented using a <strong>9-bin histogram</strong> which can be stored as an array of $9$ numbers. Not only is the representation more compact, calculating a histogram over a patch makes this representation more robust to noise. Individual gradients may have noise, but a histogram over $8\times8$ patch makes the representation much less sensitive to noise.</p>
+<p>But why $8\times8$ patch ? Why not $32\times32$ ? It is a design choice informed by the scale of features we are looking for. HOG was used for pedestrian detection initially. $8\times8$ cells in a photo of a pedestrian scaled to $64\times128$ are big enough to capture interesting features ( e.g. the face, the top of the head etc.).
+<img loading="lazy" src="/posts/hog/img/pic5.png">
+On the right, we see the raw numbers representing the gradients in the 8×8 cells with one minor difference — the angles are between $0$ and $180$ degrees instead of $0$ to $360$ degrees. These are called <strong>“unsigned” gradients</strong> because a gradient and it’s negative are represented by the same numbers. In other words, a gradient arrow and the one $180$ degrees opposite to it are considered the same. But, why not use the $0$ – $360$ degrees ?</p>
+<p>Empirically it has been shown that unsigned gradients work better than signed gradients for pedestrian detection. Some implementations of HOG will allow you to specify if you want to use signed gradients.</p>
+<p>The next step is to create a histogram of gradients in these $8\times8$ cells. The histogram contains 9 bins corresponding to angles $0, 20, 40 … 160$. The following figure illustrates the process. We are looking at magnitude and direction of the gradient of the same $8\times8$ patch as in the previous figure.
+A bin is selected based on the direction, and the vote (the value that goes into the bin) is selected based on the magnitude. Let’s first focus on the pixel encircled in blue. It has an angle (direction) of $80$ degrees and magnitude of $2$. So it adds $2$ to the $5^{th}$ bin. The gradient at the pixel encircled using red has an angle of $10$ degrees and magnitude of $4$. Since $10$ degrees is half way between $0$ and $20$, the vote by the pixel splits evenly into the two bins.</p>
+<!-- raw HTML omitted -->
+<p>The approach when gradient direction doesn&rsquo;t fall in any bin(like an example 10 degrees), we will use linear interpolation to divided the gradients to 2 continuous bins which gradient direction falls. Obviously, the gradient direction equal $x$ map to the gradient magnitude $y$, where $x \in [x_0,x_1]$. It&rsquo;s will fall to a point between $(l-1)$ bin and $l$ bin. So that we write
+$$ x_{l-1}=\frac{x_1-x}{x_1-x_0}*y,  x_{l}=\frac{x-x_0}{x_1-x_0}*y  $$</p>
+<!-- raw HTML omitted -->
+<p>Take a sum of each gradient magnitude belong in one bins from vector bins and we collect <strong>Histogram of Gradient</strong></p>
+<!-- raw HTML omitted -->
+<h3 id="1616-block-normalization">16×16 Block Normalization<a hidden class="anchor" aria-hidden="true" href="#1616-block-normalization">#</a></h3>
+<p>In the previous step, we created a histogram based on the gradient of the image. Gradients of an image are sensitive to overall lighting. If you make the image darker by dividing all pixel values by 2, the gradient magnitude will change by half, and therefore the histogram values will change by half.</p>
+<p>Ideally, we want our descriptor to be independent of lighting variations. In other words, we would like to “normalize” the histogram so they are not affected by lighting variations.</p>
+<p>Let&rsquo;s say we have an RGB color vector $[128, 64, 32]$. This length of this vector is $\sqrt{128^2+64^2+32^2}\approx 146.64$. This is call L2 norm. Dividing each element of this vector give us a normalized vector $[0.87,0.43,0.22]$</p>
+<p>Now consider another vector in which the elements are twice the value of the first vector $2 \times [ 128, 64, 32 ] = [ 256, 128, 64 ]$. You can work it out yourself to see that normalizing $[ 256, 128, 64 ]$ will result in $[0.87, 0.43, 0.22]$, which is the same as the normalized version of the original RGB vector. You can see that normalizing a vector removes the scale.</p>
+<!-- raw HTML omitted -->
+<p>The normalization will be processed in a block size $2\times 2$ cell (each cell size $8\times8$ pixel). So we will have 4 vector histogram size $1\times9$, concatenate vectors and we will have one vector histogram size $1\times36$ and then normalized in this vector. Sliding the window will process the same as convolution in CNN with step_size = 8 pixels.</p>
+<h3 id="compute-hog-features-vector">Compute HOG features vector<a hidden class="anchor" aria-hidden="true" href="#compute-hog-features-vector">#</a></h3>
+<p>After normalizing the histogram vectors, we then concatenate these $1×36$ vectors into a single large vector. This becomes the HOG vector representing the entire image.</p>
+<p>For example, suppose our image is divided into a grid of squares of size $16×8$ (each cell is $8×8$). The HOG computation moves $7$ steps horizontally and $15$ steps vertically. Thus, there are a total of $7×15 = 105$ patches, each corresponding to one $36$-dimensional histogram vector. Consequently, the final HOG vector will have $105×36 = 3780$ dimensions. This is a relatively large vector, which allows it to capture the image’s features quite effectively.</p>
+<h2 id="visualizing-histogram-of-oriented-gradients">Visualizing Histogram of Oriented Gradients<a hidden class="anchor" aria-hidden="true" href="#visualizing-histogram-of-oriented-gradients">#</a></h2>
+<p>The HOG descriptor of an image patch is usually visualized by plotting the 9×1 normalized histograms in the 8×8 cells. See image on the side. You will notice that dominant direction of the histogram captures the shape of the person, especially around the torso and legs.</p>
+<!-- raw HTML omitted -->
+<h2 id="practice">Practice<a hidden class="anchor" aria-hidden="true" href="#practice">#</a></h2>
+<p>We will use opencv to calculate the HOG features</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;Original </span><span style="color:#e6db74">{}</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">.</span>format(img<span style="color:#f92672">.</span>shape))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>cell_size <span style="color:#f92672">=</span> (<span style="color:#ae81ff">8</span>,<span style="color:#ae81ff">8</span>) <span style="color:#75715e"># h x w pixels</span>
+</span></span><span style="display:flex;"><span>block_size <span style="color:#f92672">=</span> (<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">2</span>) <span style="color:#75715e"># h x w cells</span>
+</span></span><span style="display:flex;"><span>nbins <span style="color:#f92672">=</span> <span style="color:#ae81ff">9</span> <span style="color:#75715e"># number of bins in Histogram</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># winSize = the size of the image region (or window) that will be used by the HOG (Histogram of Oriented Gradients) descriptor</span>
+</span></span><span style="display:flex;"><span>winSize <span style="color:#f92672">=</span> (img<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">//</span> cell_size[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">*</span> cell_size[<span style="color:#ae81ff">1</span>], img<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">//</span> cell_size[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">*</span> cell_size[<span style="color:#ae81ff">0</span>])
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># blockSize = the size compute in pixels</span>
+</span></span><span style="display:flex;"><span>blockSize <span style="color:#f92672">=</span> (block_size[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">*</span> cell_size[<span style="color:#ae81ff">1</span>], block_size[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">*</span> cell_size[<span style="color:#ae81ff">0</span>])
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># blockStride = how far (in pixels) the detection window moves from one block to the next.</span>
+</span></span><span style="display:flex;"><span>blockStride <span style="color:#f92672">=</span> cell_size
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;winSize&#34;</span>,winSize)
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;blockSize&#34;</span>,block_size)
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;blockStride&#34;</span>,blockStride)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>hog <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>HOGDescriptor(_winSize<span style="color:#f92672">=</span>winSize,_blockSize<span style="color:#f92672">=</span>blockSize,_blockStride<span style="color:#f92672">=</span>blockStride,_cellSize<span style="color:#f92672">=</span>cell_size,_nbins<span style="color:#f92672">=</span><span style="color:#ae81ff">9</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># size of cell grid (from pixel -&gt; cell)</span>
+</span></span><span style="display:flex;"><span>n_cell <span style="color:#f92672">=</span> (winSize[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">//</span>cell_size[<span style="color:#ae81ff">0</span>],winSize[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">//</span>cell_size[<span style="color:#ae81ff">1</span>])
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;n_cell&#34;</span>,n_cell)
+</span></span><span style="display:flex;"><span>hog_feature <span style="color:#f92672">=</span> hog<span style="color:#f92672">.</span>compute(img)<span style="color:#f92672">.</span>reshape(n_cell[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">-</span> block_size[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>,n_cell[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">-</span> block_size[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>                                       ,block_size[<span style="color:#ae81ff">0</span>],block_size[<span style="color:#ae81ff">1</span>],nbins)<span style="color:#f92672">.</span>transpose(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">2</span> , <span style="color:#ae81ff">3</span> , <span style="color:#ae81ff">4</span>)
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;hog feature&#34;</span>, hog_feature<span style="color:#f92672">.</span>shape)
+</span></span></code></pre></div><p>and the results</p>
+<pre tabindex="0"><code>Original (395, 634, 3)
+winSize (632, 392)
+blockSize (2, 2)
+blockStride (8, 8)
+n_cell (79, 49)
+hog feature (48, 78, 2, 2, 9)
+</code></pre><p><strong>Note:</strong> Don&rsquo;t like the order of the .shape, opencv use the order width x height (instead height x width).<br>
+We can visualize HOG distribution</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#f92672">from</span> skimage <span style="color:#f92672">import</span> exposure
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> skimage <span style="color:#f92672">import</span> feature
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> cv2
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#66d9ef">as</span> plt
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>(H, hogImage) <span style="color:#f92672">=</span> feature<span style="color:#f92672">.</span>hog(gray, orientations<span style="color:#f92672">=</span><span style="color:#ae81ff">9</span>, pixels_per_cell<span style="color:#f92672">=</span>(<span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">8</span>),
+</span></span><span style="display:flex;"><span>    cells_per_block<span style="color:#f92672">=</span>(<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>), transform_sqrt<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>, block_norm<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;L2&#34;</span>,
+</span></span><span style="display:flex;"><span>    visualize<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>hogImage <span style="color:#f92672">=</span> exposure<span style="color:#f92672">.</span>rescale_intensity(hogImage, out_range<span style="color:#f92672">=</span>(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">255</span>))
+</span></span><span style="display:flex;"><span>hogImage <span style="color:#f92672">=</span> hogImage<span style="color:#f92672">.</span>astype(<span style="color:#e6db74">&#34;uint8&#34;</span>)
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>imshow(hogImage)
+</span></span></code></pre></div><!-- raw HTML omitted -->
+<h2 id="application-in-hog">Application in HOG<a hidden class="anchor" aria-hidden="true" href="#application-in-hog">#</a></h2>
+<h3 id="human-detection">Human Detection<a hidden class="anchor" aria-hidden="true" href="#human-detection">#</a></h3>
+<p>To detect human in image or also video, we can use a pre-trained SVM (Support Vector Machine) model that makes predictions based on features extracted by the HOG (Histogram of Oriented Gradients) algorithm.</p>
+<h3 id="import-lib">Import lib<a hidden class="anchor" aria-hidden="true" href="#import-lib">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#f92672">from</span> skimage.feature <span style="color:#f92672">import</span> hog
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> skimage.transform <span style="color:#f92672">import</span> pyramid_gaussian
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> skimage.io <span style="color:#f92672">import</span> imread
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> joblib
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> sklearn.preprocessing <span style="color:#f92672">import</span> LabelEncoder
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> sklearn.svm <span style="color:#f92672">import</span> LinearSVC
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> sklearn.metrics <span style="color:#f92672">import</span> classification_report, accuracy_score
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> sklearn.model_selection <span style="color:#f92672">import</span> train_test_split
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> skimage <span style="color:#f92672">import</span> color
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> imutils.object_detection <span style="color:#f92672">import</span> non_max_suppression
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> imutils
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> numpy <span style="color:#66d9ef">as</span> np
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> cv2 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> argparse
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> cv2
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> os
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> glob
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> PIL <span style="color:#f92672">import</span> Image <span style="color:#75715e"># This will be used to read/modify images (can be done via OpenCV too)</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> numpy <span style="color:#f92672">import</span> <span style="color:#f92672">*</span>
+</span></span></code></pre></div><h3 id="define-path-to-image">Define path to image<a hidden class="anchor" aria-hidden="true" href="#define-path-to-image">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span>base_path_test <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;../data/human-and-non-human/test_set/test_set&#34;</span> <span style="color:#75715e"># path for test</span>
+</span></span><span style="display:flex;"><span>base_path_train <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;../data/dataset&#34;</span> <span style="color:#75715e"># path for train</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># join the path</span>
+</span></span><span style="display:flex;"><span>pos_im_path <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>join(base_path_train, <span style="color:#e6db74">&#34;positive&#34;</span>) 
+</span></span><span style="display:flex;"><span>neg_im_path <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>join(base_path_train, <span style="color:#e6db74">&#34;negative&#34;</span>) <span style="color:#75715e">#define negative image for SVM training</span>
+</span></span><span style="display:flex;"><span>pos_im_path_test <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>join(base_path_test, <span style="color:#e6db74">&#34;humans&#34;</span>) <span style="color:#75715e"># for test data</span>
+</span></span><span style="display:flex;"><span>neg_im_path_test <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>join(base_path_test, <span style="color:#e6db74">&#34;non-humans&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Check if there not exist path</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>exists(pos_im_path):
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Error: Path does not exist - </span><span style="color:#e6db74">{</span>os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>abspath(pos_im_path)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>exists(neg_im_path):
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Error: Path does not exist - </span><span style="color:#e6db74">{</span>os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>abspath(neg_im_path)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>exists(pos_im_path_test):
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Error: Path does not exist - </span><span style="color:#e6db74">{</span>os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>abspath(pos_im_path_test)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>exists(neg_im_path_test):
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Error: Path does not exist - </span><span style="color:#e6db74">{</span>os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>abspath(neg_im_path_test)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Take the image in that path</span>
+</span></span><span style="display:flex;"><span>pos_im_listing <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>listdir(pos_im_path)
+</span></span><span style="display:flex;"><span>neg_im_listing <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>listdir(neg_im_path)
+</span></span><span style="display:flex;"><span>pos_im_listing_test <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>listdir(pos_im_path_test)
+</span></span><span style="display:flex;"><span>neg_im_listing_test <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>listdir(neg_im_path_test)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>num_pos_samples <span style="color:#f92672">=</span> size(pos_im_listing) <span style="color:#75715e"># simply states the total no. of images</span>
+</span></span><span style="display:flex;"><span>num_neg_samples <span style="color:#f92672">=</span> size(neg_im_listing)
+</span></span><span style="display:flex;"><span>num_pos_test <span style="color:#f92672">=</span> size(pos_im_listing_test)
+</span></span><span style="display:flex;"><span>num_neg_test <span style="color:#f92672">=</span> size(neg_im_listing_test)
+</span></span><span style="display:flex;"><span>print(num_pos_samples) <span style="color:#75715e"># prints the number value of the no.of samples in positive dataset</span>
+</span></span><span style="display:flex;"><span>print(num_neg_samples)
+</span></span><span style="display:flex;"><span>print(num_pos_test)
+</span></span><span style="display:flex;"><span>print(num_neg_test)
+</span></span><span style="display:flex;"><span>data <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>labels <span style="color:#f92672">=</span> []
+</span></span></code></pre></div><h3 id="compute-the-hog-features-and-label-them">Compute the HOG features and label them<a hidden class="anchor" aria-hidden="true" href="#compute-the-hog-features-and-label-them">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#75715e"># Putting label into positive image</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>winSize <span style="color:#f92672">=</span> (<span style="color:#ae81ff">64</span>, <span style="color:#ae81ff">128</span>)
+</span></span><span style="display:flex;"><span>blockSize <span style="color:#f92672">=</span> (<span style="color:#ae81ff">16</span>, <span style="color:#ae81ff">16</span>)
+</span></span><span style="display:flex;"><span>blockStride <span style="color:#f92672">=</span> (<span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">8</span>)
+</span></span><span style="display:flex;"><span>cellSize <span style="color:#f92672">=</span> (<span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">8</span>)
+</span></span><span style="display:flex;"><span>nbins <span style="color:#f92672">=</span> <span style="color:#ae81ff">9</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>hog <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>HOGDescriptor(winSize, blockSize, blockStride, cellSize, nbins)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> file <span style="color:#f92672">in</span> pos_im_listing:
+</span></span><span style="display:flex;"><span>    img_path <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>join(pos_im_path, file)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>        img <span style="color:#f92672">=</span> Image<span style="color:#f92672">.</span>open(img_path)<span style="color:#f92672">.</span>convert(<span style="color:#e6db74">&#34;RGB&#34;</span>) <span style="color:#75715e"># Open the file</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Convert into NumPy array</span>
+</span></span><span style="display:flex;"><span>        img <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array(img)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Convert RGB to BGR (for OpenCV compatibility) </span>
+</span></span><span style="display:flex;"><span>        img <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>cvtColor(img, cv2<span style="color:#f92672">.</span>COLOR_RGB2BGR)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Resize to standard HOG size (64x128) to ensure consistency</span>
+</span></span><span style="display:flex;"><span>        img <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>resize(img, (<span style="color:#ae81ff">64</span>, <span style="color:#ae81ff">128</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">#Convert to grayscale</span>
+</span></span><span style="display:flex;"><span>        gray <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>cvtColor(img, cv2<span style="color:#f92672">.</span>COLOR_BGR2GRAY) 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        fd <span style="color:#f92672">=</span> hog<span style="color:#f92672">.</span>compute(gray)<span style="color:#f92672">.</span>flatten() <span style="color:#75715e"># Must change into 1D array (because fd return a multi-dimensional vector)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> fd<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">!=</span> <span style="color:#ae81ff">3780</span>:  <span style="color:#75715e"># Expected size for 64x128 image</span>
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Skipping </span><span style="color:#e6db74">{</span>file<span style="color:#e6db74">}</span><span style="color:#e6db74"> due to incorrect HOG feature shape: </span><span style="color:#e6db74">{</span>fd<span style="color:#f92672">.</span>shape<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">continue</span>  <span style="color:#75715e"># Skip this sample</span>
+</span></span><span style="display:flex;"><span>        data<span style="color:#f92672">.</span>append(fd)
+</span></span><span style="display:flex;"><span>        labels<span style="color:#f92672">.</span>append(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Processed training data (positive): </span><span style="color:#e6db74">{</span>file<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span> <span style="color:#66d9ef">as</span> e:
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Skipping </span><span style="color:#e6db74">{</span>file<span style="color:#e6db74">}</span><span style="color:#e6db74"> (Error: </span><span style="color:#e6db74">{</span>e<span style="color:#e6db74">}</span><span style="color:#e6db74">)&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Putting label into negative image</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> file <span style="color:#f92672">in</span> neg_im_listing:
+</span></span><span style="display:flex;"><span>    img_path <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>join(neg_im_path, file)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>        img <span style="color:#f92672">=</span> Image<span style="color:#f92672">.</span>open(img_path)<span style="color:#f92672">.</span>convert(<span style="color:#e6db74">&#34;RGB&#34;</span>) <span style="color:#75715e"># Open the file</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Convert into NumPy array</span>
+</span></span><span style="display:flex;"><span>        img <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array(img)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Convert RGB to BGR (for OpenCV compatibility) </span>
+</span></span><span style="display:flex;"><span>        img <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>cvtColor(img, cv2<span style="color:#f92672">.</span>COLOR_RGB2BGR)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Resize to standard HOG size (64x128) to ensure consistency</span>
+</span></span><span style="display:flex;"><span>        img <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>resize(img, (<span style="color:#ae81ff">64</span>, <span style="color:#ae81ff">128</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">#Convert to grayscale</span>
+</span></span><span style="display:flex;"><span>        gray <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>cvtColor(img, cv2<span style="color:#f92672">.</span>COLOR_BGR2GRAY)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        fd <span style="color:#f92672">=</span> hog<span style="color:#f92672">.</span>compute(gray)<span style="color:#f92672">.</span>flatten() <span style="color:#75715e"># Must change into 1D array (because fd return a multi-dimensional vector)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> fd<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">!=</span> <span style="color:#ae81ff">3780</span>:  <span style="color:#75715e"># Expected size for 64x128 image</span>
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Skipping </span><span style="color:#e6db74">{</span>file<span style="color:#e6db74">}</span><span style="color:#e6db74"> due to incorrect HOG feature shape: </span><span style="color:#e6db74">{</span>fd<span style="color:#f92672">.</span>shape<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">continue</span>  <span style="color:#75715e"># Skip this sample</span>
+</span></span><span style="display:flex;"><span>        data<span style="color:#f92672">.</span>append(fd)
+</span></span><span style="display:flex;"><span>        labels<span style="color:#f92672">.</span>append(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Processed training data (negative): </span><span style="color:#e6db74">{</span>file<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span> <span style="color:#66d9ef">as</span> e:
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Skipping </span><span style="color:#e6db74">{</span>file<span style="color:#e6db74">}</span><span style="color:#e6db74"> (Error: </span><span style="color:#e6db74">{</span>e<span style="color:#e6db74">}</span><span style="color:#e6db74">)&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Testing label</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>data_test <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>label_test <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> file <span style="color:#f92672">in</span> pos_im_listing_test:
+</span></span><span style="display:flex;"><span>    img_path <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>join(pos_im_path_test, file)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>        img <span style="color:#f92672">=</span> Image<span style="color:#f92672">.</span>open(img_path)<span style="color:#f92672">.</span>convert(<span style="color:#e6db74">&#34;RGB&#34;</span>) <span style="color:#75715e"># Open the file</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Convert into NumPy array</span>
+</span></span><span style="display:flex;"><span>        img <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array(img)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Convert RGB to BGR (for OpenCV compatibility) </span>
+</span></span><span style="display:flex;"><span>        img <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>cvtColor(img, cv2<span style="color:#f92672">.</span>COLOR_RGB2BGR)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Resize to standard HOG size (64x128) to ensure consistency</span>
+</span></span><span style="display:flex;"><span>        img <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>resize(img, (<span style="color:#ae81ff">64</span>, <span style="color:#ae81ff">128</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">#Convert to grayscale</span>
+</span></span><span style="display:flex;"><span>        gray <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>cvtColor(img, cv2<span style="color:#f92672">.</span>COLOR_BGR2GRAY)
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Create a base features (if don&#39;t add any parameter, opencv will understand to take a base parameter)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        fd <span style="color:#f92672">=</span> hog<span style="color:#f92672">.</span>compute(gray)<span style="color:#f92672">.</span>flatten() <span style="color:#75715e"># Must change into 1D array (because fd return a multi-dimensional vector)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> fd<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">!=</span> <span style="color:#ae81ff">3780</span>:  <span style="color:#75715e"># Expected size for 64x128 image</span>
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Skipping </span><span style="color:#e6db74">{</span>file<span style="color:#e6db74">}</span><span style="color:#e6db74"> due to incorrect HOG feature shape: </span><span style="color:#e6db74">{</span>fd<span style="color:#f92672">.</span>shape<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">continue</span>  <span style="color:#75715e"># Skip this sample</span>
+</span></span><span style="display:flex;"><span>        data_test<span style="color:#f92672">.</span>append(fd)
+</span></span><span style="display:flex;"><span>        label_test<span style="color:#f92672">.</span>append(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Processed test data (positive): </span><span style="color:#e6db74">{</span>file<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span> <span style="color:#66d9ef">as</span> e:
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Skipping </span><span style="color:#e6db74">{</span>file<span style="color:#e6db74">}</span><span style="color:#e6db74"> (Error: </span><span style="color:#e6db74">{</span>e<span style="color:#e6db74">}</span><span style="color:#e6db74">)&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Putting label into negative image</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> file <span style="color:#f92672">in</span> neg_im_listing_test:
+</span></span><span style="display:flex;"><span>    img_path <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>join(neg_im_path_test, file)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>        img <span style="color:#f92672">=</span> Image<span style="color:#f92672">.</span>open(img_path)<span style="color:#f92672">.</span>convert(<span style="color:#e6db74">&#34;RGB&#34;</span>) <span style="color:#75715e"># Open the file</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Convert into NumPy array</span>
+</span></span><span style="display:flex;"><span>        img <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array(img)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Convert RGB to BGR (for OpenCV compatibility) </span>
+</span></span><span style="display:flex;"><span>        img <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>cvtColor(img, cv2<span style="color:#f92672">.</span>COLOR_RGB2BGR)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Resize to standard HOG size (64x128) to ensure consistency</span>
+</span></span><span style="display:flex;"><span>        img <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>resize(img, (<span style="color:#ae81ff">64</span>, <span style="color:#ae81ff">128</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">#Convert to grayscale</span>
+</span></span><span style="display:flex;"><span>        gray <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>cvtColor(img, cv2<span style="color:#f92672">.</span>COLOR_BGR2GRAY)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        fd <span style="color:#f92672">=</span> hog<span style="color:#f92672">.</span>compute(gray)<span style="color:#f92672">.</span>flatten() <span style="color:#75715e"># Must change into 1D array (because fd return a multi-dimensional vector)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> fd<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">!=</span> <span style="color:#ae81ff">3780</span>:  <span style="color:#75715e"># Expected size for 64x128 image</span>
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Skipping </span><span style="color:#e6db74">{</span>file<span style="color:#e6db74">}</span><span style="color:#e6db74"> due to incorrect HOG feature shape: </span><span style="color:#e6db74">{</span>fd<span style="color:#f92672">.</span>shape<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">continue</span>  <span style="color:#75715e"># Skip this sample</span>
+</span></span><span style="display:flex;"><span>        data_test<span style="color:#f92672">.</span>append(fd)
+</span></span><span style="display:flex;"><span>        label_test<span style="color:#f92672">.</span>append(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Processed test data (negative): </span><span style="color:#e6db74">{</span>file<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span> <span style="color:#66d9ef">as</span> e:
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Skipping </span><span style="color:#e6db74">{</span>file<span style="color:#e6db74">}</span><span style="color:#e6db74"> (Error: </span><span style="color:#e6db74">{</span>e<span style="color:#e6db74">}</span><span style="color:#e6db74">)&#34;</span>)
+</span></span></code></pre></div><h3 id="model-testing">Model testing<a hidden class="anchor" aria-hidden="true" href="#model-testing">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34; Constructing training/testing split...&#34;</span>)
+</span></span><span style="display:flex;"><span>data <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array(data, dtype<span style="color:#f92672">=</span>np<span style="color:#f92672">.</span>float32)
+</span></span><span style="display:flex;"><span>labels <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array(labels, dtype<span style="color:#f92672">=</span>np<span style="color:#f92672">.</span>int32)
+</span></span><span style="display:flex;"><span>data_test <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array(data_test, dtype<span style="color:#f92672">=</span>np<span style="color:#f92672">.</span>float32)
+</span></span><span style="display:flex;"><span>label_test <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array(label_test, dtype<span style="color:#f92672">=</span>np<span style="color:#f92672">.</span>int32)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(data_test<span style="color:#f92672">.</span>shape)
+</span></span><span style="display:flex;"><span>print(label_test<span style="color:#f92672">.</span>shape)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>(trainData, testData, trainLabels, testLabels) <span style="color:#f92672">=</span> (data, data_test, labels, label_test)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Train the linear SVM</span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34; Training Linear SVM classifier...&#34;</span>)
+</span></span><span style="display:flex;"><span>model <span style="color:#f92672">=</span> LinearSVC()
+</span></span><span style="display:flex;"><span>model<span style="color:#f92672">.</span>fit(trainData, trainLabels)
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Evaluate the classifier</span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34; Evaluating classifier on test data ...&#34;</span>)
+</span></span><span style="display:flex;"><span>pred <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>predict(testData)
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Calculate accuracy</span>
+</span></span><span style="display:flex;"><span>accuracy <span style="color:#f92672">=</span> accuracy_score(testLabels, pred)
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Accuracy: </span><span style="color:#e6db74">{</span>accuracy<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;Report</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>,classification_report(testLabels, pred))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Save the model</span>
+</span></span><span style="display:flex;"><span>joblib<span style="color:#f92672">.</span>dump(model, <span style="color:#e6db74">&#39;SVM_HOG.pkl&#39;</span>)
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;SVM Model save Successfully!&#34;</span>)
+</span></span></code></pre></div><pre tabindex="0"><code>Constructing training/testing split...
+(1554, 3780)
+(1554,)
+ Training Linear SVM classifier...
+ Evaluating classifier on test data ...
+Accuracy: 0.8294723294723295
+Report
+               precision    recall  f1-score   support
+
+           0       0.84      0.98      0.91      1309
+           1       0.00      0.00      0.00       245
+
+    accuracy                           0.83      1554
+   macro avg       0.42      0.49      0.45      1554
+weighted avg       0.71      0.83      0.76      1554
+
+SVM Model save Successfully!
+</code></pre><h3 id="load-model">Load model<a hidden class="anchor" aria-hidden="true" href="#load-model">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#75715e"># Load the model by joblib</span>
+</span></span><span style="display:flex;"><span>model <span style="color:#f92672">=</span> joblib<span style="color:#f92672">.</span>load(<span style="color:#e6db74">&#34;SVM_HOG.pkl&#34;</span>)
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;SVM Model load Successfully!&#34;</span>)
+</span></span></code></pre></div><h3 id="sliding-window">Sliding window<a hidden class="anchor" aria-hidden="true" href="#sliding-window">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#75715e"># Sliding window technique</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">sliding_window</span>(image, stepSize, windowSize):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> y <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">0</span>, image<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">-</span> windowSize[<span style="color:#ae81ff">1</span>], stepSize):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">0</span>, image<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">-</span> windowSize[<span style="color:#ae81ff">0</span>], stepSize):
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">yield</span> (x, y, image[y:y <span style="color:#f92672">+</span> windowSize[<span style="color:#ae81ff">1</span>], x:x <span style="color:#f92672">+</span> windowSize[<span style="color:#ae81ff">0</span>]])
+</span></span></code></pre></div><h3 id="detect-people-on-image">Detect people on image<a hidden class="anchor" aria-hidden="true" href="#detect-people-on-image">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span>down_scale<span style="color:#f92672">=</span><span style="color:#ae81ff">1.25</span>
+</span></span><span style="display:flex;"><span>window_size<span style="color:#f92672">=</span>(<span style="color:#ae81ff">64</span>,<span style="color:#ae81ff">128</span>)
+</span></span><span style="display:flex;"><span>output_folder <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;results/&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Detect</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> file <span style="color:#f92672">in</span> pos_im_listing_test:
+</span></span><span style="display:flex;"><span>    scale <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    img_path <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>join(pos_im_path_test, file)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>        img <span style="color:#f92672">=</span> Image<span style="color:#f92672">.</span>open(img_path)<span style="color:#f92672">.</span>convert(<span style="color:#e6db74">&#34;RGB&#34;</span>) <span style="color:#75715e"># Open the file</span>
+</span></span><span style="display:flex;"><span>        img <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array(img)
+</span></span><span style="display:flex;"><span>        img <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>resize(img, (<span style="color:#ae81ff">300</span>,<span style="color:#ae81ff">200</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Debug: Check the shape of the image</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> img<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">2</span>] <span style="color:#f92672">!=</span> <span style="color:#ae81ff">3</span>: 
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">&#34;Skip&#34;</span>)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">continue</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        detections <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Using pyramid to detect the larger or smaller object (scaled the image purpose sliding window will detect different object with original cell)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> resized <span style="color:#f92672">in</span> pyramid_gaussian(img, downscale<span style="color:#f92672">=</span>down_scale, channel_axis <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>):
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># pyramid_gaussian convert the image into [0, 1]</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># So we need to convert back to unit8 </span>
+</span></span><span style="display:flex;"><span>            resized <span style="color:#f92672">=</span> (resized <span style="color:#f92672">*</span> <span style="color:#ae81ff">255</span>)<span style="color:#f92672">.</span>astype(np<span style="color:#f92672">.</span>uint8)  <span style="color:#75715e"># Convert float64 to uint8, go back [0, 255]</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> (x , y , window) <span style="color:#f92672">in</span> sliding_window(resized, stepSize <span style="color:#f92672">=</span> <span style="color:#ae81ff">8</span>, windowSize <span style="color:#f92672">=</span> window_size): <span style="color:#75715e"># You can adjust the stepsize</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e"># validation the window size</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (window<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">!=</span> window_size[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">or</span> window<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">!=</span> window_size[<span style="color:#ae81ff">1</span>]):
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">continue</span>
+</span></span><span style="display:flex;"><span>                    
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e"># change the window to gray, easily compute HOG                    </span>
+</span></span><span style="display:flex;"><span>                window <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>cvtColor(window, cv2<span style="color:#f92672">.</span>COLOR_RGB2GRAY)
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">#Extract HOG features</span>
+</span></span><span style="display:flex;"><span>                fds <span style="color:#f92672">=</span> hog<span style="color:#f92672">.</span>compute(window)
+</span></span><span style="display:flex;"><span>                fds <span style="color:#f92672">=</span> fds<span style="color:#f92672">.</span>reshape(<span style="color:#ae81ff">1</span> , <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>) <span style="color:#75715e"># Make become 2d</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">#prediction SVM</span>
+</span></span><span style="display:flex;"><span>                pred <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>predict(fds)
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e"># print(pred)</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> pred <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>:
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">if</span> (model<span style="color:#f92672">.</span>decision_function(fds) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0.5</span>): <span style="color:#75715e"># add threshold</span>
+</span></span><span style="display:flex;"><span>                        back_to_original <span style="color:#f92672">=</span> down_scale <span style="color:#f92672">**</span> scale <span style="color:#75715e"># When we use pyramid to shrink the image, we will give the detection window back to original size</span>
+</span></span><span style="display:flex;"><span>                        detections<span style="color:#f92672">.</span>append((x<span style="color:#f92672">*</span>back_to_original , y<span style="color:#f92672">*</span>back_to_original
+</span></span><span style="display:flex;"><span>                                           , int(window_size[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">*</span>back_to_original), int(window_size[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">*</span>back_to_original),model<span style="color:#f92672">.</span>decision_function(fds)))
+</span></span><span style="display:flex;"><span>            scale <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span> <span style="color:#75715e"># increase the scale </span>
+</span></span><span style="display:flex;"><span>        clone <span style="color:#f92672">=</span> img<span style="color:#f92672">.</span>copy()
+</span></span><span style="display:flex;"><span>        rects <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array([[x,y,x <span style="color:#f92672">+</span> w , y <span style="color:#f92672">+</span> h] <span style="color:#66d9ef">for</span> (x,y,w,h,_) <span style="color:#f92672">in</span> detections])
+</span></span><span style="display:flex;"><span>        sc <span style="color:#f92672">=</span> [score[<span style="color:#ae81ff">0</span>] <span style="color:#66d9ef">for</span> (_,_,_,_,score) <span style="color:#f92672">in</span> detections]
+</span></span><span style="display:flex;"><span>        sc <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array(sc)
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Apply Non-Maximum Suppression (NMS) if detections exist</span>
+</span></span><span style="display:flex;"><span>        final_detections <span style="color:#f92672">=</span> non_max_suppression(rects, probs<span style="color:#f92672">=</span>sc, overlapThresh<span style="color:#f92672">=</span><span style="color:#ae81ff">0.35</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">#Draw bouding boxes</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> (x , y , w , h) <span style="color:#f92672">in</span> final_detections:
+</span></span><span style="display:flex;"><span>            cv2<span style="color:#f92672">.</span>rectangle(img, (x , y), (x <span style="color:#f92672">+</span> w, y <span style="color:#f92672">+</span> h), (<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">255</span>, <span style="color:#ae81ff">0</span>), <span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Convert BGR to RGB for display in matplotlib</span>
+</span></span><span style="display:flex;"><span>        img_rgb <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>cvtColor(img, cv2<span style="color:#f92672">.</span>COLOR_BGR2RGB)
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># write down the result</span>
+</span></span><span style="display:flex;"><span>        output_path <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>join(output_folder, file)
+</span></span><span style="display:flex;"><span>        cv2<span style="color:#f92672">.</span>imwrite(output_path, img_rgb)
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Processed </span><span style="color:#e6db74">{</span>file<span style="color:#e6db74">}</span><span style="color:#e6db74"> successful&#34;</span> )
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span> <span style="color:#66d9ef">as</span> e:
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Skipping </span><span style="color:#e6db74">{</span>file<span style="color:#e6db74">}</span><span style="color:#e6db74"> (Error: </span><span style="color:#e6db74">{</span>e<span style="color:#e6db74">}</span><span style="color:#e6db74">)&#34;</span>)
+</span></span><span style="display:flex;"><span>    
+</span></span></code></pre></div><p>Before using NMS</p>
+<!-- raw HTML omitted -->
+<p>After using NMS</p>
+<!-- raw HTML omitted -->
+<h3 id="detect-people-on-video">Detect people on video<a hidden class="anchor" aria-hidden="true" href="#detect-people-on-video">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#f92672">from</span> IPython.display <span style="color:#f92672">import</span> display, clear_output
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> yt_dlp  
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> PIL.Image
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Load YouTube video using pafy</span>
+</span></span><span style="display:flex;"><span>url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;https://youtu.be/NyLF8nHIquM&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Get the best video stream</span>
+</span></span><span style="display:flex;"><span>ydl_opts <span style="color:#f92672">=</span> {}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">with</span> yt_dlp<span style="color:#f92672">.</span>YoutubeDL(ydl_opts) <span style="color:#66d9ef">as</span> ydl:
+</span></span><span style="display:flex;"><span>    info_dict <span style="color:#f92672">=</span> ydl<span style="color:#f92672">.</span>extract_info(url, download<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>)
+</span></span><span style="display:flex;"><span>    video_url <span style="color:#f92672">=</span> info_dict[<span style="color:#e6db74">&#39;url&#39;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>cap <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>VideoCapture(video_url)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Set Optimized Performance</span>
+</span></span><span style="display:flex;"><span>cv2<span style="color:#f92672">.</span>setUseOptimized(<span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>cv2<span style="color:#f92672">.</span>setNumThreads(<span style="color:#ae81ff">4</span>)  <span style="color:#75715e"># Adjust based on CPU</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Process every nth frame (skip frames)</span>
+</span></span><span style="display:flex;"><span>frame_skip <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>frame_count <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Read and process frames</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">while</span> <span style="color:#66d9ef">True</span>:
+</span></span><span style="display:flex;"><span>    ret, frame <span style="color:#f92672">=</span> cap<span style="color:#f92672">.</span>read()
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> ret:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> frame_count <span style="color:#f92672">%</span> frame_skip <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>        frame_count <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">continue</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    frame_count <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>  <span style="color:#75715e"># Increment counter</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    img <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>resize(frame, (<span style="color:#ae81ff">512</span>,<span style="color:#ae81ff">512</span>))
+</span></span><span style="display:flex;"><span>    detections <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>    scale <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Using pyramid to detect the larger or smaller object (scaled the image purpose sliding window will detect different object with original cell)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> resized <span style="color:#f92672">in</span> pyramid_gaussian(img, downscale<span style="color:#f92672">=</span>down_scale, channel_axis <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>):
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># pyramid_gaussian convert the image into [0, 1]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># So we need to convert back to unit8 </span>
+</span></span><span style="display:flex;"><span>        resized <span style="color:#f92672">=</span> (resized <span style="color:#f92672">*</span> <span style="color:#ae81ff">255</span>)<span style="color:#f92672">.</span>astype(np<span style="color:#f92672">.</span>uint8)  <span style="color:#75715e"># Convert float64 to uint8, go back [0, 255]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> (x , y , window) <span style="color:#f92672">in</span> sliding_window(resized, stepSize <span style="color:#f92672">=</span> <span style="color:#ae81ff">8</span>, windowSize <span style="color:#f92672">=</span> window_size): <span style="color:#75715e"># You can adjust the stepsize</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># validation the window size</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (window<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">!=</span> window_size[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">or</span> window<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">!=</span> window_size[<span style="color:#ae81ff">1</span>]):
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">continue</span>
+</span></span><span style="display:flex;"><span>                
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># change the window to gray, easily compute HOG                    </span>
+</span></span><span style="display:flex;"><span>            window <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>cvtColor(window, cv2<span style="color:#f92672">.</span>COLOR_RGB2GRAY)
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">#Extract HOG features</span>
+</span></span><span style="display:flex;"><span>            fds <span style="color:#f92672">=</span> hog<span style="color:#f92672">.</span>compute(window)
+</span></span><span style="display:flex;"><span>            fds <span style="color:#f92672">=</span> fds<span style="color:#f92672">.</span>reshape(<span style="color:#ae81ff">1</span> , <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>) <span style="color:#75715e"># Make become 2d</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">#prediction SVM</span>
+</span></span><span style="display:flex;"><span>            pred <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>predict(fds)
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># print(pred)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> pred <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (model<span style="color:#f92672">.</span>decision_function(fds) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0.5</span>): <span style="color:#75715e"># add threshold</span>
+</span></span><span style="display:flex;"><span>                    back_to_original <span style="color:#f92672">=</span> down_scale <span style="color:#f92672">**</span> scale <span style="color:#75715e"># When we use pyramid to shrink the image, we will give the detection window back to original size</span>
+</span></span><span style="display:flex;"><span>                    detections<span style="color:#f92672">.</span>append((x<span style="color:#f92672">*</span>back_to_original , y<span style="color:#f92672">*</span>back_to_original
+</span></span><span style="display:flex;"><span>                                        , int(window_size[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">*</span>back_to_original), int(window_size[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">*</span>back_to_original),model<span style="color:#f92672">.</span>decision_function(fds)))
+</span></span><span style="display:flex;"><span>        scale <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span> <span style="color:#75715e"># increase the scale </span>
+</span></span><span style="display:flex;"><span>    clone <span style="color:#f92672">=</span> img<span style="color:#f92672">.</span>copy()
+</span></span><span style="display:flex;"><span>    rects <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array([[x,y,x <span style="color:#f92672">+</span> w , y <span style="color:#f92672">+</span> h] <span style="color:#66d9ef">for</span> (x,y,w,h,_) <span style="color:#f92672">in</span> detections])
+</span></span><span style="display:flex;"><span>    sc <span style="color:#f92672">=</span> [score[<span style="color:#ae81ff">0</span>] <span style="color:#66d9ef">for</span> (_,_,_,_,score) <span style="color:#f92672">in</span> detections]
+</span></span><span style="display:flex;"><span>    sc <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array(sc)
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Apply Non-Maximum Suppression (NMS) if detections exist</span>
+</span></span><span style="display:flex;"><span>    final_detections <span style="color:#f92672">=</span> non_max_suppression(rects, probs<span style="color:#f92672">=</span>sc, overlapThresh<span style="color:#f92672">=</span><span style="color:#ae81ff">0.35</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#Draw bouding boxes</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (x , y , w , h) <span style="color:#f92672">in</span> final_detections:
+</span></span><span style="display:flex;"><span>        cv2<span style="color:#f92672">.</span>rectangle(img, (x , y), (x <span style="color:#f92672">+</span> w, y <span style="color:#f92672">+</span> h), (<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">255</span>, <span style="color:#ae81ff">0</span>), <span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>        cv2<span style="color:#f92672">.</span>putText(img, <span style="color:#e6db74">&#39;Person: </span><span style="color:#e6db74">{:.2f}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(np<span style="color:#f92672">.</span>max(sc)), (x <span style="color:#f92672">-</span> <span style="color:#ae81ff">2</span>, y <span style="color:#f92672">-</span> <span style="color:#ae81ff">2</span>), cv2<span style="color:#f92672">.</span>FONT_HERSHEY_SIMPLEX, <span style="color:#ae81ff">0.5</span>, (<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">255</span>, <span style="color:#ae81ff">0</span>), <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Convert BGR to RGB for display in matplotlib</span>
+</span></span><span style="display:flex;"><span>    img_rgb <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>cvtColor(img, cv2<span style="color:#f92672">.</span>COLOR_BGR2RGB)
+</span></span><span style="display:flex;"><span>    img_pil <span style="color:#f92672">=</span> PIL<span style="color:#f92672">.</span>Image<span style="color:#f92672">.</span>fromarray(img_rgb)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Clear previous frame and display new frame</span>
+</span></span><span style="display:flex;"><span>    clear_output(wait<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>    display(img_pil)
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Add a small delay and allow stopping</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> cv2<span style="color:#f92672">.</span>waitKey(<span style="color:#ae81ff">1</span>) <span style="color:#f92672">==</span> <span style="color:#ae81ff">27</span>:  <span style="color:#75715e"># Press ESC to exit</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>cap<span style="color:#f92672">.</span>release()
+</span></span><span style="display:flex;"><span>cv2<span style="color:#f92672">.</span>destroyAllWindows()
+</span></span></code></pre></div><!-- raw HTML omitted -->
+<h2 id="summary">Summary<a hidden class="anchor" aria-hidden="true" href="#summary">#</a></h2>
+<p>In image processing, the Histogram of Oriented Gradients (HOG) algorithm is one of the powerful feature descriptors that encodes an image into a feature vector with a sufficiently large number of dimensions to effectively classify images. The algorithm works based on representing a histogram vector of gradient magnitudes according to bins of gradient directions applied to local image regions. Normalization methods are applied to make the aggregated histogram vector invariant to changes in image intensity, ensuring consistency for images with the same content but different brightness levels.</p>
+<p>In object detection, the HOG algorithm proves to be highly effective, particularly in detecting people at various scales. Additionally, in some image classification cases where the dataset is small, large neural networks such as CNNs may not perform accurately due to the training set not covering all possible variations. In such situations, applying classical feature extraction methods like HOG can yield surprisingly good results while requiring fewer computational resources and lower costs.</p>
+<p>This demonstrates that although HOG is an older method, it remains highly effective in many applications. Depending on the specific scenario, we may choose to use the HOG algorithm instead of necessarily applying a deep learning model with millions of parameters to achieve high accuracy.</p>
+<h2 id="reference">Reference<a hidden class="anchor" aria-hidden="true" href="#reference">#</a></h2>
+<ol>
+<li><a href="https://phamdinhkhanh.github.io/2019/11/22/HOG.html">https://phamdinhkhanh.github.io/2019/11/22/HOG.html</a></li>
+<li><a href="https://lilianweng.github.io/posts/2017-10-29-object-recognition-part-1/">Object Detection for Dummies Part 1: Gradient Vector, HOG, and SS | Lil&rsquo;Log</a></li>
+<li><a href="https://learnopencv.com/histogram-of-oriented-gradients/">Histogram of Oriented Gradients explained using OpenCV</a></li>
+<li><a href="https://github.com/nguyentuss/CV">https://github.com/nguyentuss/CV</a> (full code and data put in here)</li>
+</ol>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://nguyentuss.github.io/tags/%23cv/">#CV</a></li>
+      <li><a href="https://nguyentuss.github.io/tags/%23machine_learning/">#Machine_Learning</a></li>
+      <li><a href="https://nguyentuss.github.io/tags/%23extract_image/">#Extract_image</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="https://nguyentuss.github.io/">My New Hugo Site</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

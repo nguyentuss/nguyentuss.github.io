@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Math on My New Hugo Site</title>
+    <link>https://nguyentuss.github.io/tags/math/</link>
+    <description>Recent content in Math on My New Hugo Site</description>
+    <generator>Hugo -- 0.146.7</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 20 Apr 2025 13:34:38 +0700</lastBuildDate>
+    <atom:link href="https://nguyentuss.github.io/tags/math/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Optimization</title>
+      <link>https://nguyentuss.github.io/posts/optimization/</link>
+      <pubDate>Sun, 20 Apr 2025 13:34:38 +0700</pubDate>
+      <guid>https://nguyentuss.github.io/posts/optimization/</guid>
+      <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;In &lt;em&gt;Machine Learning&lt;/em&gt;, the core problem is that solving the parameter estimation (model fitting), we want to find the values for a set of variable $\theta\in\Theta$, that minimized the scalar &lt;strong&gt;loss function&lt;/strong&gt; or &lt;strong&gt;cost function&lt;/strong&gt; $\mathcal{L}(\theta) \rightarrow \mathbb{R}$. This is called a &lt;strong&gt;optimization problem&lt;/strong&gt;.
+$$
+\theta^* \in \arg\min \mathcal{L}(\theta)
+$$
+We will assume that the &lt;em&gt;parameter space&lt;/em&gt; is given by $\Theta \subseteq \mathbb{R}^D$, where $D$ is the number of variables being optimized over.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Statistic</title>
+      <link>https://nguyentuss.github.io/posts/statistic/</link>
+      <pubDate>Sun, 20 Apr 2025 12:03:54 +0700</pubDate>
+      <guid>https://nguyentuss.github.io/posts/statistic/</guid>
+      <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;In the section &lt;a href=&#34;https://nguyentuss.github.io/p/univariate-models/&#34;&gt;Univariate Models&lt;/a&gt; and  &lt;a href=&#34;https://nguyentuss.github.io/p/multivariate-models/&#34;&gt;Multivariate Models&lt;/a&gt;, we assumed all the parameters $\theta$ is known. In this section, we discuss how to learn these parameters from data.
+The process of estimating $\theta$ from $\mathcal{D}$ is call &lt;strong&gt;model fitting&lt;/strong&gt;, or &lt;strong&gt;training&lt;/strong&gt;, and is at the heart of machine learning. There are many methods for producing such estimates, but most boil down to an optimization problem of the form.
+$$
+\widehat{\theta} = \arg\min_{\theta} \mathcal{L}(\theta)
+$$
+where $\mathcal{L(\theta)}$ is some kind of loss function or objective function. We discuss several different loss functions in this chapter. In some cases we also discuss how to solve the optimization problem in closed form. In general, however we will need to use some kind of generic optimization algorithm, which we will discuss in &lt;a href=&#34;https://nguyentuss.github.io/p/optimization/&#34;&gt;Optimization&lt;/a&gt;.
+In addition to computing a &lt;strong&gt;point estimate $\widehat{\theta}$&lt;/strong&gt;. We discuss how to model our uncertainty or confidence in this estimate. In statistics, the process of quantifying uncertainty about an unknown quantity estimated from a finite sample of data is called &lt;strong&gt;inference&lt;/strong&gt;.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Information Theory</title>
+      <link>https://nguyentuss.github.io/posts/information-theory/</link>
+      <pubDate>Sun, 20 Apr 2025 11:34:08 +0700</pubDate>
+      <guid>https://nguyentuss.github.io/posts/information-theory/</guid>
+      <description>&lt;h2 id=&#34;kl-divergence&#34;&gt;KL Divergence&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Kullback-Leibler (KL) divergence&lt;/strong&gt; measures how one probability distribution diverges from a second, expected distribution.&lt;/p&gt;
+&lt;h3 id=&#34;definition&#34;&gt;Definition&lt;/h3&gt;
+&lt;p&gt;For discrete distributions $P$ and $Q$ over a set $\mathcal{X}$:&lt;/p&gt;
+&lt;p&gt;$$
+D_{KL}(P \parallel Q) = \sum_{x \in \mathcal{X}} P(x) \log \frac{P(x)}{Q(x)}
+$$&lt;/p&gt;
+&lt;p&gt;For continuous distributions with densities $p(x)$ and $q(x)$:&lt;/p&gt;
+&lt;p&gt;$$
+D_{KL}(P \parallel Q) = \int_{-\infty}^{\infty} p(x) \log \frac{p(x)}{q(x)} , dx
+$$&lt;/p&gt;
+&lt;h3 id=&#34;intuition&#34;&gt;Intuition&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;KL divergence quantifies the &lt;strong&gt;extra information&lt;/strong&gt; needed when using $Q$ instead of the true distribution $P$.&lt;/li&gt;
+&lt;li&gt;It is &lt;strong&gt;asymmetric&lt;/strong&gt;, so generally:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;$$
+D_{KL}(P \parallel Q) \ne D_{KL}(Q \parallel P)
+$$&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
