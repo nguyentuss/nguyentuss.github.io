@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head>
+	<meta name="generator" content="Hugo 0.146.7"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
-<title>Computer Vision | My New Hugo Site</title>
-<meta name="keywords" content="">
+<title>My New Hugo Site</title>
+
 <meta name="description" content="">
 <meta name="author" content="">
-<link rel="canonical" href="http://localhost:1313/categories/computer-vision/">
+<link rel="canonical" href="http://localhost:1313/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.6da9a63d25a9608bca2f7f907a030e887a7dd3c3f3918e4cc113129361414bda.css" integrity="sha256-bammPSWpYIvKL3&#43;QegMOiHp908PzkY5MwRMSk2FBS9o=" rel="preload stylesheet" as="style">
 <link rel="icon" href="http://localhost:1313/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
@@ -18,8 +19,9 @@
 <link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/categories/computer-vision/index.xml">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/categories/computer-vision/">
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/index.xml">
+<link rel="alternate" type="application/json" href="http://localhost:1313/index.json">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/">
 <noscript>
     <style>
         #theme-toggle,
@@ -75,15 +77,28 @@
 </script>
 
 
-<meta property="og:url" content="http://localhost:1313/categories/computer-vision/">
+<meta property="og:url" content="http://localhost:1313/">
   <meta property="og:site_name" content="My New Hugo Site">
-  <meta property="og:title" content="Computer Vision">
+  <meta property="og:title" content="My New Hugo Site">
   <meta property="og:locale" content="en">
   <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Computer Vision">
+<meta name="twitter:title" content="My New Hugo Site">
 <meta name="twitter:description" content="">
 
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "My New Hugo Site",
+  "url": "http://localhost:1313/",
+  "description": "",
+  "logo": "http://localhost:1313/favicon.ico",
+  "sameAs": [
+      "https://github.com/nguyentuss", "mailto:nttu.93tn@gmail.com"
+  ]
+}
+</script>
 </head>
 
 <body class="list" id="top">
@@ -156,45 +171,33 @@
     </nav>
 </header>
 <main class="main"> 
-<header class="page-header"><div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/categories/">Categories</a></div>
-  <h1>
-    Computer Vision
-    <a href="/categories/computer-vision/index.xml" title="RSS" aria-label="RSS">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-        stroke-linecap="round" stroke-linejoin="round" height="23">
-        <path d="M4 11a9 9 0 0 1 9 9" />
-        <path d="M4 4a16 16 0 0 1 16 16" />
-        <circle cx="5" cy="19" r="1" />
-      </svg>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Univariate Models
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Introduction Calling sample space ${\mathcal{X}}$ are all possible experiences, and an event will be a subset of the sample space.
+Union $$Pr(A \land B)=Pr(A,B).$$
+If independent events,
+$$Pr(A \land B)=Pr(A)Pr(B).$$
+We say a set of variables ${X_1, \dots, X_n}$ is (mutually) independent if the joint can be written as a product of marginals for all subsets ${{X_1,\dots, X_m} \subseteq {X_1,\dots,X_n}}$,
+$$p(X_1,X_2,\dots,X_n)=\prod_{i=1}^{m}p(X_i).$$
+Disjoint $$Pr(A \vee B)=Pr(A)&#43;Pr(B)-Pr(A\land B).$$
+Conditional Probability $$Pr(B|A)\triangleq \frac{Pr(A,B)}{Pr(A)}.$$
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-03-10 21:50:35 +0700 +07'>March 10, 2025</span>&nbsp;·&nbsp;12 min</footer>
+  <a class="entry-link" aria-label="post link to Univariate Models" href="http://localhost:1313/posts/univariate-models/"></a>
+</article>
+<footer class="page-footer">
+  <nav class="pagination">
+    <a class="prev" href="http://localhost:1313/page/2/">
+      «&nbsp;Prev&nbsp;2/3
     </a>
-  </h1>
-</header>
-
-<article class="post-entry tag-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">Optical Flow
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>Optical flow quantifies the motion of objects between consecutive frames captured by a camera. These algorithms attempt to capture the apparent motion of brightness patterns in the image. It is an important subfield of computer vision, enabling machines to understand scene dynamics and movement. What is brightness Lets break down the definition of brightness. In an image, brightness refers to the intensity of light at each pixel. It determines how light or dark a pixel appears.
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2025-03-13 22:05:35 +0700 +07'>March 13, 2025</span>&nbsp;·&nbsp;6 min</footer>
-  <a class="entry-link" aria-label="post link to Optical Flow" href="http://localhost:1313/posts/optical-flow/"></a>
-</article>
-
-<article class="post-entry tag-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">Histogram of Oriented Gradients (HOG)
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p> There are many different methods in computer vision. When it comes to image classification, we can apply families of CNN models such as Inception Net, MobileNet, ResNet, DenseNet, AlexNet, U-Net, and so on. For object detection, models like YOLO, SSD, Faster R-CNN, Fast R-CNN, and Mask R-CNN are commonly used. All the above algorithms belong to the deep learning category. However, before the deep learning boom, what algorithms were typically used in image processing? Today, we will explore a classic yet highly effective algorithm in image processing: HOG (Histogram of Oriented Gradients). This algorithm generates features description for the purpose of object detection. From an image, two key matrices are extracted to store essential information: gradient magnitude and gradient orientation. By combining these two pieces of information into a histogram distribution—where the gradient magnitude is counted in bins according to gradient orientation—we obtain a HOG feature vector that represents the histogram. This is the basic concept, but in practice, the algorithm is more complex. The HOG vector is computed over local regions, similar to how CNNs operate, followed by local normalization to standardize measurements. Finally, the overall HOG vector is aggregated from all local vectors.
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2025-03-11 10:49:42 +0700 +07'>March 11, 2025</span>&nbsp;·&nbsp;22 min</footer>
-  <a class="entry-link" aria-label="post link to Histogram of Oriented Gradients (HOG)" href="http://localhost:1313/posts/hog/"></a>
-</article>
+  </nav>
+</footer>
     </main>
     
 <footer class="footer">

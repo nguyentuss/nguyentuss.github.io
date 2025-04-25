@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>#Introduction on My New Hugo Site</title>
-    <link>https://nguyentuss.github.io/tags/%23introduction/</link>
+    <link>http://localhost:1313/tags/%23introduction/</link>
     <description>Recent content in #Introduction on My New Hugo Site</description>
     <generator>Hugo -- 0.146.7</generator>
-    <language>en-us</language>
+    <language>en</language>
     <lastBuildDate>Tue, 11 Mar 2025 10:17:26 +0700</lastBuildDate>
-    <atom:link href="https://nguyentuss.github.io/tags/%23introduction/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/tags/%23introduction/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Introduction</title>
-      <link>https://nguyentuss.github.io/posts/introduction/</link>
+      <link>http://localhost:1313/posts/introduction/</link>
       <pubDate>Tue, 11 Mar 2025 10:17:26 +0700</pubDate>
-      <guid>https://nguyentuss.github.io/posts/introduction/</guid>
+      <guid>http://localhost:1313/posts/introduction/</guid>
       <description>Welcome to Hugo Theme Stack</description>
     </item>
   </channel>

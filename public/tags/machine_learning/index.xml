@@ -2,36 +2,36 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Machine_Learning on My New Hugo Site</title>
-    <link>https://nguyentuss.github.io/tags/machine_learning/</link>
+    <link>http://localhost:1313/tags/machine_learning/</link>
     <description>Recent content in Machine_Learning on My New Hugo Site</description>
     <generator>Hugo -- 0.146.7</generator>
-    <language>en-us</language>
+    <language>en</language>
     <lastBuildDate>Sun, 20 Apr 2025 13:34:38 +0700</lastBuildDate>
-    <atom:link href="https://nguyentuss.github.io/tags/machine_learning/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/tags/machine_learning/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Optimization</title>
-      <link>https://nguyentuss.github.io/posts/optimization/</link>
+      <link>http://localhost:1313/posts/optimization/</link>
       <pubDate>Sun, 20 Apr 2025 13:34:38 +0700</pubDate>
-      <guid>https://nguyentuss.github.io/posts/optimization/</guid>
+      <guid>http://localhost:1313/posts/optimization/</guid>
       <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
 &lt;p&gt;In &lt;em&gt;Machine Learning&lt;/em&gt;, the core problem is that solving the parameter estimation (model fitting), we want to find the values for a set of variable $\theta\in\Theta$, that minimized the scalar &lt;strong&gt;loss function&lt;/strong&gt; or &lt;strong&gt;cost function&lt;/strong&gt; $\mathcal{L}(\theta) \rightarrow \mathbb{R}$. This is called a &lt;strong&gt;optimization problem&lt;/strong&gt;.
 $$
-\theta^* \in \arg\min \mathcal{L}(\theta)
+\theta^{opt} \in \arg\min \mathcal{L}(\theta)
 $$
 We will assume that the &lt;em&gt;parameter space&lt;/em&gt; is given by $\Theta \subseteq \mathbb{R}^D$, where $D$ is the number of variables being optimized over.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Introduction</title>
-      <link>https://nguyentuss.github.io/posts/introduction/</link>
+      <link>http://localhost:1313/posts/introduction/</link>
       <pubDate>Tue, 11 Mar 2025 10:17:26 +0700</pubDate>
-      <guid>https://nguyentuss.github.io/posts/introduction/</guid>
+      <guid>http://localhost:1313/posts/introduction/</guid>
       <description>Welcome to Hugo Theme Stack</description>
     </item>
     <item>
       <title>Univariate Models</title>
-      <link>https://nguyentuss.github.io/posts/univariate-models/</link>
+      <link>http://localhost:1313/posts/univariate-models/</link>
       <pubDate>Mon, 10 Mar 2025 21:50:35 +0700</pubDate>
-      <guid>https://nguyentuss.github.io/posts/univariate-models/</guid>
+      <guid>http://localhost:1313/posts/univariate-models/</guid>
       <description>Welcome to Hugo Theme Stack</description>
     </item>
   </channel>

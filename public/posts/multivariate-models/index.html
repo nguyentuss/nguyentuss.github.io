@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto">
 
-<head><meta charset="utf-8">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
@@ -17,21 +17,49 @@ The covariance between two random variables ${X}$ and ${Y}$ measures the directi
 
 $$\textrm{Cov}[X,Y] \triangleq \mathbb{E}\Bigl[(X-\mathbb{E}[X])(Y-\mathbb{E}[Y])\Bigr] = \mathbb{E}[XY] - \mathbb{E}[X]\mathbb{E}[Y].$$">
 <meta name="author" content="">
-<link rel="canonical" href="https://nguyentuss.github.io/posts/multivariate-models/">
+<link rel="canonical" href="http://localhost:1313/posts/multivariate-models/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.6da9a63d25a9608bca2f7f907a030e887a7dd3c3f3918e4cc113129361414bda.css" integrity="sha256-bammPSWpYIvKL3&#43;QegMOiHp908PzkY5MwRMSk2FBS9o=" rel="preload stylesheet" as="style">
-<link rel="icon" href="https://nguyentuss.github.io/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://nguyentuss.github.io/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://nguyentuss.github.io/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://nguyentuss.github.io/apple-touch-icon.png">
-<link rel="mask-icon" href="https://nguyentuss.github.io/safari-pinned-tab.svg">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="https://nguyentuss.github.io/posts/multivariate-models/">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/multivariate-models/">
 <noscript>
     <style>
         #theme-toggle,
         .top-link {
             display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
         }
 
     </style>
@@ -54,12 +82,12 @@ $$\textrm{Cov}[X,Y] \triangleq \mathbb{E}\Bigl[(X-\mathbb{E}[X])(Y-\mathbb{E}[Y]
 </script>
 
 
-<meta property="og:url" content="https://nguyentuss.github.io/posts/multivariate-models/">
+<meta property="og:url" content="http://localhost:1313/posts/multivariate-models/">
   <meta property="og:site_name" content="My New Hugo Site">
   <meta property="og:title" content="Multivariate Models">
   <meta property="og:description" content="Joint distributions for multiple random variables Covariance The covariance between two random variables ${X}$ and ${Y}$ measures the direction of the linear relationship to which ${X}$ and ${Y}$ are (linearly) related. It quantifies how the random variables change together.
 Positive: If one increases, the other also increases. Negative: If one increases while the other decreases. Zero: There is no relationship between the variables. $$\textrm{Cov}[X,Y] \triangleq \mathbb{E}\Bigl[(X-\mathbb{E}[X])(Y-\mathbb{E}[Y])\Bigr] = \mathbb{E}[XY] - \mathbb{E}[X]\mathbb{E}[Y].$$">
-  <meta property="og:locale" content="en-us">
+  <meta property="og:locale" content="en">
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
     <meta property="article:published_time" content="2025-03-10T21:50:35+07:00">
@@ -88,13 +116,13 @@ $$\textrm{Cov}[X,Y] \triangleq \mathbb{E}\Bigl[(X-\mathbb{E}[X])(Y-\mathbb{E}[Y]
       "@type": "ListItem",
       "position":  1 ,
       "name": "Posts",
-      "item": "https://nguyentuss.github.io/posts/"
+      "item": "http://localhost:1313/posts/"
     }, 
     {
       "@type": "ListItem",
       "position":  2 ,
       "name": "Multivariate Models",
-      "item": "https://nguyentuss.github.io/posts/multivariate-models/"
+      "item": "http://localhost:1313/posts/multivariate-models/"
     }
   ]
 }
@@ -116,24 +144,28 @@ $$\textrm{Cov}[X,Y] \triangleq \mathbb{E}\Bigl[(X-\mathbb{E}[X])(Y-\mathbb{E}[Y]
   "dateModified": "2025-03-10T21:50:35+07:00",
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "https://nguyentuss.github.io/posts/multivariate-models/"
+    "@id": "http://localhost:1313/posts/multivariate-models/"
   },
   "publisher": {
     "@type": "Organization",
     "name": "My New Hugo Site",
     "logo": {
       "@type": "ImageObject",
-      "url": "https://nguyentuss.github.io/favicon.ico"
+      "url": "http://localhost:1313/favicon.ico"
     }
   }
 }
 </script>
 </head>
 
-<body class=" dark" id="top">
+<body class="" id="top">
 <script>
-    if (localStorage.getItem("pref-theme") === "light") {
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
         document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
     }
 
 </script>
@@ -141,7 +173,7 @@ $$\textrm{Cov}[X,Y] \triangleq \mathbb{E}\Bigl[(X-\mathbb{E}[X])(Y-\mathbb{E}[Y]
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="https://nguyentuss.github.io/" accesskey="h" title="My New Hugo Site (Alt + H)">My New Hugo Site</a>
+            <a href="http://localhost:1313/" accesskey="h" title="My New Hugo Site (Alt + H)">My New Hugo Site</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -166,6 +198,32 @@ $$\textrm{Cov}[X,Y] \triangleq \mathbb{E}\Bigl[(X-\mathbb{E}[X])(Y-\mathbb{E}[Y]
             </div>
         </div>
         <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/archives" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://github.com/adityatelange/hugo-PaperMod/wiki/" title="WiKi">
+                    <span>WiKi</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                </a>
+            </li>
         </ul>
     </nav>
 </header>
@@ -173,14 +231,56 @@ $$\textrm{Cov}[X,Y] \triangleq \mathbb{E}\Bigl[(X-\mathbb{E}[X])(Y-\mathbb{E}[Y]
 
 <article class="post-single">
   <header class="post-header">
-    
+    <div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/posts/">Posts</a></div>
     <h1 class="post-title entry-hint-parent">
       Multivariate Models
     </h1>
-    <div class="post-meta"><span title='2025-03-10 21:50:35 +0700 +07'>March 10, 2025</span>
+    <div class="post-meta"><span title='2025-03-10 21:50:35 +0700 +07'>March 10, 2025</span>&nbsp;·&nbsp;5 min
 
 </div>
-  </header> 
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#joint-distributions-for-multiple-random-variables" aria-label="Joint distributions for multiple random variables">Joint distributions for multiple random variables</a><ul>
+                        
+                <li>
+                    <a href="#covariance" aria-label="Covariance">Covariance</a></li>
+                <li>
+                    <a href="#correlation" aria-label="Correlation">Correlation</a></li>
+                <li>
+                    <a href="#simpson-paradox" aria-label="Simpson Paradox">Simpson Paradox</a></li></ul>
+                </li>
+                <li>
+                    <a href="#the-multivariate-gaussian-normal-distribution" aria-label="The Multivariate Gaussian (Normal) Distribution">The Multivariate Gaussian (Normal) Distribution</a><ul>
+                        
+                <li>
+                    <a href="#marginals-and-conditionals-of-an-mvn" aria-label="Marginals and Conditionals of an MVN">Marginals and Conditionals of an MVN</a></li>
+                <li>
+                    <a href="#example-missing-data" aria-label="Example: Missing Data">Example: Missing Data</a></li></ul>
+                </li>
+                <li>
+                    <a href="#linear-gaussian-systems" aria-label="Linear Gaussian Systems">Linear Gaussian Systems</a><ul>
+                        
+                <li>
+                    <a href="#bayes-rule-for-gaussians" aria-label="Bayes Rule for Gaussians">Bayes Rule for Gaussians</a></li>
+                <li>
+                    <a href="#derivation" aria-label="Derivation">Derivation</a></li>
+                <li>
+                    <a href="#example-inferring-an-unknown-scalar" aria-label="Example: Inferring an Unknown Scalar">Example: Inferring an Unknown Scalar</a></li></ul>
+                </li>
+                <li>
+                    <a href="#mixture-models" aria-label="Mixture Models">Mixture Models</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
   <div class="post-content"><h2 id="joint-distributions-for-multiple-random-variables">Joint distributions for multiple random variables<a hidden class="anchor" aria-hidden="true" href="#joint-distributions-for-multiple-random-variables">#</a></h2>
 <h3 id="covariance">Covariance<a hidden class="anchor" aria-hidden="true" href="#covariance">#</a></h3>
 <p>The <strong>covariance</strong> between two random variables ${X}$ and ${Y}$ measures the <strong>direction</strong> of the <strong>linear relationship</strong> to which ${X}$ and ${Y}$ are (linearly) related. It quantifies how the random variables change together.</p>
@@ -285,15 +385,28 @@ $$\quad \mu_{1|2} = \mu_1 + \Sigma_{12}\Sigma_{22}^{-1}(y_2 - \mu_2), \quad \Sig
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="https://nguyentuss.github.io/tags/%23ai/">#AI</a></li>
-      <li><a href="https://nguyentuss.github.io/tags/%23machine_learning/">#Machine_Learning</a></li>
+      <li><a href="http://localhost:1313/tags/%23ai/">#AI</a></li>
+      <li><a href="http://localhost:1313/tags/%23machine_learning/">#Machine_Learning</a></li>
     </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/posts/introduction/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>Introduction</span>
+  </a>
+  <a class="next" href="http://localhost:1313/posts/univariate-models/">
+    <span class="title">Next »</span>
+    <br>
+    <span>Univariate Models</span>
+  </a>
+</nav>
+
   </footer>
 </article>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2025 <a href="https://nguyentuss.github.io/">My New Hugo Site</a></span> · 
+        <span>&copy; 2025 <a href="http://localhost:1313/">My New Hugo Site</a></span> · 
 
     <span>
         Powered by
@@ -360,6 +473,53 @@ $$\quad \mu_{1|2} = \mu_1 + \Sigma_{12}\Sigma_{22}^{-1}(y_2 - \mu_2), \quad \Sig
         }
     })
 
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
 </script>
 </body>
 

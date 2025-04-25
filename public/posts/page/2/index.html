@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto">
 
-<head><meta charset="utf-8">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
@@ -9,22 +9,50 @@
 <meta name="keywords" content="">
 <meta name="description" content="Posts - My New Hugo Site">
 <meta name="author" content="">
-<link rel="canonical" href="https://nguyentuss.github.io/posts/">
+<link rel="canonical" href="http://localhost:1313/posts/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.6da9a63d25a9608bca2f7f907a030e887a7dd3c3f3918e4cc113129361414bda.css" integrity="sha256-bammPSWpYIvKL3&#43;QegMOiHp908PzkY5MwRMSk2FBS9o=" rel="preload stylesheet" as="style">
-<link rel="icon" href="https://nguyentuss.github.io/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://nguyentuss.github.io/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://nguyentuss.github.io/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://nguyentuss.github.io/apple-touch-icon.png">
-<link rel="mask-icon" href="https://nguyentuss.github.io/safari-pinned-tab.svg">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" type="application/rss+xml" href="https://nguyentuss.github.io/posts/index.xml">
-<link rel="alternate" hreflang="en" href="https://nguyentuss.github.io/posts/">
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/posts/index.xml">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/">
 <noscript>
     <style>
         #theme-toggle,
         .top-link {
             display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
         }
 
     </style>
@@ -47,10 +75,10 @@
 </script>
 
 
-<meta property="og:url" content="https://nguyentuss.github.io/posts/">
+<meta property="og:url" content="http://localhost:1313/posts/">
   <meta property="og:site_name" content="My New Hugo Site">
   <meta property="og:title" content="Posts">
-  <meta property="og:locale" content="en-us">
+  <meta property="og:locale" content="en">
   <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Posts">
@@ -66,17 +94,21 @@
       "@type": "ListItem",
       "position":  1 ,
       "name": "Posts",
-      "item": "https://nguyentuss.github.io/posts/"
+      "item": "http://localhost:1313/posts/"
     }
   ]
 }
 </script>
 </head>
 
-<body class="list dark" id="top">
+<body class="list" id="top">
 <script>
-    if (localStorage.getItem("pref-theme") === "light") {
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
         document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
     }
 
 </script>
@@ -84,7 +116,7 @@
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="https://nguyentuss.github.io/" accesskey="h" title="My New Hugo Site (Alt + H)">My New Hugo Site</a>
+            <a href="http://localhost:1313/" accesskey="h" title="My New Hugo Site (Alt + H)">My New Hugo Site</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -109,15 +141,101 @@
             </div>
         </div>
         <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/archives" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://github.com/adityatelange/hugo-PaperMod/wiki/" title="WiKi">
+                    <span>WiKi</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                </a>
+            </li>
         </ul>
     </nav>
 </header>
 <main class="main"> 
-<header class="page-header">
+<header class="page-header"><div class="breadcrumbs"><a href="http://localhost:1313/">Home</a></div>
   <h1>
     Posts
+    <a href="/posts/index.xml" title="RSS" aria-label="RSS">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" height="23">
+        <path d="M4 11a9 9 0 0 1 9 9" />
+        <path d="M4 4a16 16 0 0 1 16 16" />
+        <circle cx="5" cy="19" r="1" />
+      </svg>
+    </a>
   </h1>
 </header>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Optical Flow
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Optical flow quantifies the motion of objects between consecutive frames captured by a camera. These algorithms attempt to capture the apparent motion of brightness patterns in the image. It is an important subfield of computer vision, enabling machines to understand scene dynamics and movement. What is brightness Lets break down the definition of brightness. In an image, brightness refers to the intensity of light at each pixel. It determines how light or dark a pixel appears.
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-03-13 22:05:35 +0700 +07'>March 13, 2025</span>&nbsp;·&nbsp;6 min</footer>
+  <a class="entry-link" aria-label="post link to Optical Flow" href="http://localhost:1313/posts/optical-flow/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Convolution Neural Network
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Convolutional Neural Networks are very similar to ordinary Neural Networks, they are made up of neurons that have learnable weights and biases. Each neuron receives some inputs, performs a dot product and optionally follows it with a non-linearity. The whole network still expresses a single differentiable score function: from the raw image pixels on one end to class scores at the other. And they still have a loss function (e.g. SVM/Softmax) on the last (fully-connected) layer and all the tips/tricks we developed for learning regular Neural Networks still apply.
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-03-13 21:29:50 +0700 +07'>March 13, 2025</span>&nbsp;·&nbsp;18 min</footer>
+  <a class="entry-link" aria-label="post link to Convolution Neural Network" href="http://localhost:1313/posts/cnn/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Histogram of Oriented Gradients (HOG)
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p> There are many different methods in computer vision. When it comes to image classification, we can apply families of CNN models such as Inception Net, MobileNet, ResNet, DenseNet, AlexNet, U-Net, and so on. For object detection, models like YOLO, SSD, Faster R-CNN, Fast R-CNN, and Mask R-CNN are commonly used. All the above algorithms belong to the deep learning category. However, before the deep learning boom, what algorithms were typically used in image processing? Today, we will explore a classic yet highly effective algorithm in image processing: HOG (Histogram of Oriented Gradients). This algorithm generates features description for the purpose of object detection. From an image, two key matrices are extracted to store essential information: gradient magnitude and gradient orientation. By combining these two pieces of information into a histogram distribution—where the gradient magnitude is counted in bins according to gradient orientation—we obtain a HOG feature vector that represents the histogram. This is the basic concept, but in practice, the algorithm is more complex. The HOG vector is computed over local regions, similar to how CNNs operate, followed by local normalization to standardize measurements. Finally, the overall HOG vector is aggregated from all local vectors.
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-03-11 10:49:42 +0700 +07'>March 11, 2025</span>&nbsp;·&nbsp;22 min</footer>
+  <a class="entry-link" aria-label="post link to Histogram of Oriented Gradients (HOG)" href="http://localhost:1313/posts/hog/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Introduction
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p> Supervised Learning The task $T$ is to learn a mapping $f$ from $x \in X$ to $y \in Y$. The $x$ are also called the $\mathbf{features}$. The output $y$ is called the $\mathbf{label}$. The experience $E$ is given in the form of a set of $N$ input-output pairs $\mathcal{D} = {(x_n,y_n)},; n = 1 \rightarrow N$ called the $\textbf{training set}$ (with $N$ as the $\textbf{sample size}$). The performance $P$ depends on the type of output we want to predict.
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-03-11 10:17:26 +0700 +07'>March 11, 2025</span>&nbsp;·&nbsp;5 min</footer>
+  <a class="entry-link" aria-label="post link to Introduction" href="http://localhost:1313/posts/introduction/"></a>
+</article>
 
 <article class="post-entry"> 
   <header class="entry-header">
@@ -129,40 +247,22 @@
 Positive: If one increases, the other also increases. Negative: If one increases while the other decreases. Zero: There is no relationship between the variables. $$\textrm{Cov}[X,Y] \triangleq \mathbb{E}\Bigl[(X-\mathbb{E}[X])(Y-\mathbb{E}[Y])\Bigr] = \mathbb{E}[XY] - \mathbb{E}[X]\mathbb{E}[Y].$$
 ...</p>
   </div>
-  <footer class="entry-footer"><span title='2025-03-10 21:50:35 +0700 +07'>March 10, 2025</span></footer>
-  <a class="entry-link" aria-label="post link to Multivariate Models" href="https://nguyentuss.github.io/posts/multivariate-models/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">Univariate Models
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>Introduction Calling sample space ${\mathcal{X}}$ are all possible experiences, and an event will be a subset of the sample space.
-Union $$Pr(A \land B)=Pr(A,B).$$
-If independent events,
-$$Pr(A \land B)=Pr(A)Pr(B).$$
-We say a set of variables ${X_1, \dots, X_n}$ is (mutually) independent if the joint can be written as a product of marginals for all subsets ${{X_1,\dots, X_m} \subseteq {X_1,\dots,X_n}}$,
-$$p(X_1,X_2,\dots,X_n)=\prod_{i=1}^{m}p(X_i).$$
-Disjoint $$Pr(A \vee B)=Pr(A)&#43;Pr(B)-Pr(A\land B).$$
-Conditional Probability $$Pr(B|A)\triangleq \frac{Pr(A,B)}{Pr(A)}.$$
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2025-03-10 21:50:35 +0700 +07'>March 10, 2025</span></footer>
-  <a class="entry-link" aria-label="post link to Univariate Models" href="https://nguyentuss.github.io/posts/univariate-models/"></a>
+  <footer class="entry-footer"><span title='2025-03-10 21:50:35 +0700 +07'>March 10, 2025</span>&nbsp;·&nbsp;5 min</footer>
+  <a class="entry-link" aria-label="post link to Multivariate Models" href="http://localhost:1313/posts/multivariate-models/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">
-    <a class="prev" href="https://nguyentuss.github.io/posts/">
-      «&nbsp;Prev&nbsp;
+    <a class="prev" href="http://localhost:1313/posts/">
+      «&nbsp;Prev&nbsp;1/3
+    </a>
+    <a class="next" href="http://localhost:1313/posts/page/3/">Next&nbsp;3/3&nbsp;»
     </a>
   </nav>
 </footer>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2025 <a href="https://nguyentuss.github.io/">My New Hugo Site</a></span> · 
+        <span>&copy; 2025 <a href="http://localhost:1313/">My New Hugo Site</a></span> · 
 
     <span>
         Powered by

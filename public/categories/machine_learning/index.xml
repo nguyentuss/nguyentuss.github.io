@@ -2,24 +2,24 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Machine_Learning on My New Hugo Site</title>
-    <link>https://nguyentuss.github.io/categories/machine_learning/</link>
+    <link>http://localhost:1313/categories/machine_learning/</link>
     <description>Recent content in Machine_Learning on My New Hugo Site</description>
     <generator>Hugo -- 0.146.7</generator>
-    <language>en-us</language>
+    <language>en</language>
     <lastBuildDate>Tue, 11 Mar 2025 10:17:26 +0700</lastBuildDate>
-    <atom:link href="https://nguyentuss.github.io/categories/machine_learning/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/categories/machine_learning/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Introduction</title>
-      <link>https://nguyentuss.github.io/posts/introduction/</link>
+      <link>http://localhost:1313/posts/introduction/</link>
       <pubDate>Tue, 11 Mar 2025 10:17:26 +0700</pubDate>
-      <guid>https://nguyentuss.github.io/posts/introduction/</guid>
+      <guid>http://localhost:1313/posts/introduction/</guid>
       <description>Welcome to Hugo Theme Stack</description>
     </item>
     <item>
       <title>Multivariate Models</title>
-      <link>https://nguyentuss.github.io/posts/multivariate-models/</link>
+      <link>http://localhost:1313/posts/multivariate-models/</link>
       <pubDate>Mon, 10 Mar 2025 21:50:35 +0700</pubDate>
-      <guid>https://nguyentuss.github.io/posts/multivariate-models/</guid>
+      <guid>http://localhost:1313/posts/multivariate-models/</guid>
       <description>&lt;h2 id=&#34;joint-distributions-for-multiple-random-variables&#34;&gt;Joint distributions for multiple random variables&lt;/h2&gt;
 &lt;h3 id=&#34;covariance&#34;&gt;Covariance&lt;/h3&gt;
 &lt;p&gt;The &lt;strong&gt;covariance&lt;/strong&gt; between two random variables ${X}$ and ${Y}$ measures the &lt;strong&gt;direction&lt;/strong&gt; of the &lt;strong&gt;linear relationship&lt;/strong&gt; to which ${X}$ and ${Y}$ are (linearly) related. It quantifies how the random variables change together.&lt;/p&gt;
@@ -32,9 +32,9 @@
     </item>
     <item>
       <title>Univariate Models</title>
-      <link>https://nguyentuss.github.io/posts/univariate-models/</link>
+      <link>http://localhost:1313/posts/univariate-models/</link>
       <pubDate>Mon, 10 Mar 2025 21:50:35 +0700</pubDate>
-      <guid>https://nguyentuss.github.io/posts/univariate-models/</guid>
+      <guid>http://localhost:1313/posts/univariate-models/</guid>
       <description>Welcome to Hugo Theme Stack</description>
     </item>
   </channel>

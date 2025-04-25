@@ -15,7 +15,7 @@ math: true
 
 In *Machine Learning*, the core problem is that solving the parameter estimation (model fitting), we want to find the values for a set of variable $\theta\in\Theta$, that minimized the scalar **loss function** or **cost function** $\mathcal{L}(\theta) \rightarrow \mathbb{R}$. This is called a **optimization problem**.
 $$
-\theta^* \in \arg\min \mathcal{L}(\theta)
+\theta^{opt} \in \arg\min \mathcal{L}(\theta)
 $$
 We will assume that the *parameter space* is given by $\Theta \subseteq \mathbb{R}^D$, where $D$ is the number of variables being optimized over.
 
@@ -30,22 +30,22 @@ In general, finding global optimum is very hard to compute. In such cases we wil
 	<img src="img/local_minimum.png" width="400">
 </div>
 
-* A point $x^*$ is called a **local minimum** if:
+* A point $x^{opt}$ is called a **local minimum** if:
   $$
-\exists \, \varepsilon > 0 \text{ such that } f(x^*) \leq f(x), \quad \forall x \text{ with } \|x - x^*\| < \varepsilon.
+\exists \varepsilon > 0 \text{ such that } f(x^{opt} ) \leq f(x), \quad \forall x \text{ with } \|x - x^{opt} \| < \varepsilon.
 $$
 
-* A point $x^*$ is a **local maximum** if:
+* A point $x^{opt}$ is a **local maximum** if:
   $$
-\exists \, \varepsilon > 0 \text{ such that } f(x^*) \geq f(x), \quad \forall x \text{ with } \|x - x^*\| < \varepsilon.
+\exists \varepsilon > 0 \text{ such that } f(x^{opt} ) \geq f(x), \quad \forall x \text{ with } \|x - x^{opt} \| < \varepsilon.
 $$
 
 ### Optimality conditions for local and global optimum
 
-For continuous, twice differentiable functions, we can precisely characterize the points which correspond to local minima. Let $g(\theta) = \nabla\mathcal{L}(\theta)$ be the *gradient vector*, and $H(\theta)=\nabla^2 \mathcal{L}(\theta)$ be the Hessian matrix. Let $g^{}=g({\theta}^{*})$ be the gradient of that point and $H^*=H(\theta^*)$ be the corresponding Hessian. We can show that the following
+For continuous, twice differentiable functions, we can precisely characterize the points which correspond to local minima. Let $g(\theta) = \nabla\mathcal{L}(\theta)$ be the *gradient vector*, and $H(\theta)=\nabla^2 \mathcal{L}(\theta)$ be the Hessian matrix. Let $g^{}=g({\theta}^{opt})$ be the gradient of that point and $H^{opt}=H(\theta^{opt})$ be the corresponding Hessian. We can show that the following
 
-* Necessary condition: If $\theta^*$ is a local minimum, then $g^*=0$ and $H^*$ must be [positive semi-difinite](https://www.math.purdue.edu/~eremenko/dvi/lect4.9)
-* Sufficient condition: If $g^*=0$ and $H^*$ is positive definite, then $\theta^*$ is a local minimum.
+* Necessary condition: If $\theta^{opt}$ is a local minimum, then $g^{opt}=0$ and $H^{opt}$ must be [positive semi-difinite](https://www.math.purdue.edu/~eremenko/dvi/lect4.9)
+* Sufficient condition: If $g^{opt}=0$ and $H^{opt}$ is positive definite, then $\theta^{opt}$ is a local minimum.
   To see why the first condition is necessary, suppose we were at a point $\theta^*$ at which the gradient is non-zero, we could decrease the function by following the negative gradient a small distance, this can make the gradient become zero, but would not be the optimal. Note that the **stationary point** could be local minimum, local maximum or saddle point, which is a point where some directions point downhill, and some uphill. More precisely, at a saddle point, the eigenvalues of the Hessian will be both positive and negative. However, if the Hessian at a point is positive semi-definite, then some directions may point uphill, while others are flat. Moreover, if the Hessian is strictly positive definite, then we are at the bottom of a “bowl”, and all directions point uphill, which is sufficient for this to be a minimum.
 
 <div style="text-align: center;">

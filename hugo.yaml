@@ -3,12 +3,73 @@ languageCode: en-us
 title: My New Hugo Site
 theme: PaperMod
 
+enableInlineShortcodes: true
+enableRobotsTXT: true
+buildDrafts: false
+buildFuture: false
+buildExpired: false
+enableEmoji: true
+pygmentsUseClasses: true
+mainsections: ["posts", "papermod"]
+
+minify:
+  disableXML: true
+  # minifyOutput: true
+
+pagination:
+  disableAliases: false
+  pagerSize: 5
+
+languages:
+  en:
+    languageName: "English"
+    weight: 1
+    taxonomies:
+      category: categories
+      tag: tags
+      series: series
+    menu:
+      main:
+        - name: Archive
+          url: archives
+          weight: 5
+        - name: Search
+          url: search/
+          weight: 10
+        - name: Tags
+          url: tags/
+          weight: 10
+        - name: WiKi
+          url: https://github.com/adityatelange/hugo-PaperMod/wiki/
+
+outputs:
+  home:
+    - HTML
+    - RSS
+    - JSON
+
 params:
-  defaultTheme: dark
+  defaultTheme: auto
+  # ShowShareButtons: true
+  ShowReadingTime: true
+  displayFullLangName: true
+  ShowPostNavLinks: true
+  ShowBreadCrumbs: true
+  ShowCodeCopyButtons: true
+  ShowRssButtonInSectionTermList: true
+  ShowAllPagesInArchive: true
+  ShowPageNums: true
+  ShowToc: true
+  
 
   homeInfoParams:
     Title: "Welcome to My Site"
-    Content: "This is my personal blog built with Hugo and PaperMod."
+    Content: >
+      - My name is Nguyen Ngoc Tu, and I do research in AI, focusing on Computer Vision. 
+
+      - I am a research fellow at CVIP, where I work on improving how AI understands images and videos. 
+
+      - I enjoy exploring new ideas and finding ways to make AI more useful in real life.
 
   socialIcons:
     - name: github

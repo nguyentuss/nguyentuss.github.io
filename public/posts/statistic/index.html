@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto">
 
-<head><meta charset="utf-8">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
@@ -16,21 +16,49 @@ $$
 where $\mathcal{L(\theta)}$ is some kind of loss function or objective function. We discuss several different loss functions in this chapter. In some cases we also discuss how to solve the optimization problem in closed form. In general, however we will need to use some kind of generic optimization algorithm, which we will discuss in Optimization.
 In addition to computing a point estimate $\widehat{\theta}$. We discuss how to model our uncertainty or confidence in this estimate. In statistics, the process of quantifying uncertainty about an unknown quantity estimated from a finite sample of data is called inference.">
 <meta name="author" content="">
-<link rel="canonical" href="https://nguyentuss.github.io/posts/statistic/">
+<link rel="canonical" href="http://localhost:1313/posts/statistic/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.6da9a63d25a9608bca2f7f907a030e887a7dd3c3f3918e4cc113129361414bda.css" integrity="sha256-bammPSWpYIvKL3&#43;QegMOiHp908PzkY5MwRMSk2FBS9o=" rel="preload stylesheet" as="style">
-<link rel="icon" href="https://nguyentuss.github.io/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://nguyentuss.github.io/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://nguyentuss.github.io/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://nguyentuss.github.io/apple-touch-icon.png">
-<link rel="mask-icon" href="https://nguyentuss.github.io/safari-pinned-tab.svg">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="https://nguyentuss.github.io/posts/statistic/">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/statistic/">
 <noscript>
     <style>
         #theme-toggle,
         .top-link {
             display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
         }
 
     </style>
@@ -53,11 +81,11 @@ In addition to computing a point estimate $\widehat{\theta}$. We discuss how to 
 </script>
 
 
-<meta property="og:url" content="https://nguyentuss.github.io/posts/statistic/">
+<meta property="og:url" content="http://localhost:1313/posts/statistic/">
   <meta property="og:site_name" content="My New Hugo Site">
   <meta property="og:title" content="Statistic">
   <meta property="og:description" content="Introduction In the section Univariate Models and Multivariate Models, we assumed all the parameters $\theta$ is known. In this section, we discuss how to learn these parameters from data. The process of estimating $\theta$ from $\mathcal{D}$ is call model fitting, or training, and is at the heart of machine learning. There are many methods for producing such estimates, but most boil down to an optimization problem of the form. $$ \widehat{\theta} = \arg\min_{\theta} \mathcal{L}(\theta) $$ where $\mathcal{L(\theta)}$ is some kind of loss function or objective function. We discuss several different loss functions in this chapter. In some cases we also discuss how to solve the optimization problem in closed form. In general, however we will need to use some kind of generic optimization algorithm, which we will discuss in Optimization. In addition to computing a point estimate $\widehat{\theta}$. We discuss how to model our uncertainty or confidence in this estimate. In statistics, the process of quantifying uncertainty about an unknown quantity estimated from a finite sample of data is called inference.">
-  <meta property="og:locale" content="en-us">
+  <meta property="og:locale" content="en">
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
     <meta property="article:published_time" content="2025-04-20T12:03:54+07:00">
@@ -85,13 +113,13 @@ In addition to computing a point estimate $\widehat{\theta}$. We discuss how to 
       "@type": "ListItem",
       "position":  1 ,
       "name": "Posts",
-      "item": "https://nguyentuss.github.io/posts/"
+      "item": "http://localhost:1313/posts/"
     }, 
     {
       "@type": "ListItem",
       "position":  2 ,
       "name": "Statistic",
-      "item": "https://nguyentuss.github.io/posts/statistic/"
+      "item": "http://localhost:1313/posts/statistic/"
     }
   ]
 }
@@ -113,24 +141,28 @@ In addition to computing a point estimate $\widehat{\theta}$. We discuss how to 
   "dateModified": "2025-04-20T12:03:54+07:00",
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "https://nguyentuss.github.io/posts/statistic/"
+    "@id": "http://localhost:1313/posts/statistic/"
   },
   "publisher": {
     "@type": "Organization",
     "name": "My New Hugo Site",
     "logo": {
       "@type": "ImageObject",
-      "url": "https://nguyentuss.github.io/favicon.ico"
+      "url": "http://localhost:1313/favicon.ico"
     }
   }
 }
 </script>
 </head>
 
-<body class=" dark" id="top">
+<body class="" id="top">
 <script>
-    if (localStorage.getItem("pref-theme") === "light") {
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
         document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
     }
 
 </script>
@@ -138,7 +170,7 @@ In addition to computing a point estimate $\widehat{\theta}$. We discuss how to 
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="https://nguyentuss.github.io/" accesskey="h" title="My New Hugo Site (Alt + H)">My New Hugo Site</a>
+            <a href="http://localhost:1313/" accesskey="h" title="My New Hugo Site (Alt + H)">My New Hugo Site</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -163,6 +195,32 @@ In addition to computing a point estimate $\widehat{\theta}$. We discuss how to 
             </div>
         </div>
         <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/archives" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://github.com/adityatelange/hugo-PaperMod/wiki/" title="WiKi">
+                    <span>WiKi</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                </a>
+            </li>
         </ul>
     </nav>
 </header>
@@ -170,14 +228,41 @@ In addition to computing a point estimate $\widehat{\theta}$. We discuss how to 
 
 <article class="post-single">
   <header class="post-header">
-    
+    <div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/posts/">Posts</a></div>
     <h1 class="post-title entry-hint-parent">
       Statistic
     </h1>
-    <div class="post-meta"><span title='2025-04-20 12:03:54 +0700 +07'>April 20, 2025</span>
+    <div class="post-meta"><span title='2025-04-20 12:03:54 +0700 +07'>April 20, 2025</span>&nbsp;·&nbsp;7 min
 
 </div>
-  </header> 
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#introduction" aria-label="Introduction">Introduction</a></li>
+                <li>
+                    <a href="#maximum-likelihood-estimation-mle" aria-label="Maximum likelihood estimation (MLE)">Maximum likelihood estimation (MLE)</a><ul>
+                        
+                <li>
+                    <a href="#definition" aria-label="Definition">Definition</a></li>
+                <li>
+                    <a href="#justification-for-mle" aria-label="Justification for MLE">Justification for MLE</a></li>
+                <li>
+                    <a href="#example-mle-for-the-bernoulli-distribution" aria-label="Example: MLE for the Bernoulli distribution">Example: MLE for the Bernoulli distribution</a></li>
+                <li>
+                    <a href="#example-mle-for-the-categorical-distribution" aria-label="Example: MLE for the categorical distribution">Example: MLE for the categorical distribution</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
   <div class="post-content"><h2 id="introduction">Introduction<a hidden class="anchor" aria-hidden="true" href="#introduction">#</a></h2>
 <p>In the section <a href="https://nguyentuss.github.io/p/univariate-models/">Univariate Models</a> and  <a href="https://nguyentuss.github.io/p/multivariate-models/">Multivariate Models</a>, we assumed all the parameters $\theta$ is known. In this section, we discuss how to learn these parameters from data.
 The process of estimating $\theta$ from $\mathcal{D}$ is call <strong>model fitting</strong>, or <strong>training</strong>, and is at the heart of machine learning. There are many methods for producing such estimates, but most boil down to an optimization problem of the form.
@@ -306,15 +391,28 @@ To compute the MLE, we have to minimize the NLL subject to the constraint that $
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="https://nguyentuss.github.io/tags/math/">Math</a></li>
-      <li><a href="https://nguyentuss.github.io/tags/probability/">Probability</a></li>
+      <li><a href="http://localhost:1313/tags/math/">Math</a></li>
+      <li><a href="http://localhost:1313/tags/probability/">Probability</a></li>
     </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/posts/optimization/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>Optimization</span>
+  </a>
+  <a class="next" href="http://localhost:1313/posts/information-theory/">
+    <span class="title">Next »</span>
+    <br>
+    <span>Information Theory</span>
+  </a>
+</nav>
+
   </footer>
 </article>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2025 <a href="https://nguyentuss.github.io/">My New Hugo Site</a></span> · 
+        <span>&copy; 2025 <a href="http://localhost:1313/">My New Hugo Site</a></span> · 
 
     <span>
         Powered by
@@ -381,6 +479,53 @@ To compute the MLE, we have to minimize the NLL subject to the constraint that $
         }
     })
 
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
 </script>
 </body>
 
