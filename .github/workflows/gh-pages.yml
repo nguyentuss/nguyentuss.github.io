@@ -17,7 +17,6 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -30,6 +29,11 @@ jobs:
 
       - name: Build site
         run: hugo --minify
+
+      - name: Debug Hugo Output
+        run: |
+          echo "Listing ./public directory"
+          ls -lah ./public || echo "❌ No public directory found"
 
       - name: Upload public folder
         uses: actions/upload-pages-artifact@v3
